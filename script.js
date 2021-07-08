@@ -1,4 +1,4 @@
-/* function createProductImageElement(imageSource) {
+function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
@@ -12,7 +12,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -40,4 +40,25 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { }; */
+
+// aprendi com o fechamento de hoje dia 8 de julho com o tio Jack
+const productComponent = (items) => {
+  items.forEach((item) => {
+    const productItem = createProductItemElement(item);
+    const sectionItem = document.querySelector(".items");
+    sectionItem.appendChild(productItem);
+  });
+}
+
+const fetchML = (query) => {
+  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
+    .then((response) => {
+      response.json().then((data) => {
+        productComponent(data.results);
+      });
+    });
+};
+
+window.onload = () => {
+  fetchML("computador");
+ };
