@@ -1,4 +1,20 @@
-/* function createProductImageElement(imageSource) {
+window.onload = function onload() { 
+  fetchURL(URL_MLB);
+};
+
+// codigo criado com a ajuda do aluno Thalles
+const URL_MLB = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+
+async function fetchURL(URL_MLB) {
+  const response = await fetch(URL_MLB);
+  const data = await response.json();
+  const arrayResults = data["results"];
+  arrayResults.forEach((product) => document.querySelector('.items').appendChild(createProductItemElement(product)));
+}
+
+
+
+function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
@@ -12,7 +28,8 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+// feito com a ajuda do aluno Thalles (renomear os parametros da desestruturacao)
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -24,13 +41,13 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
+/* function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
-}
+} */
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -39,6 +56,3 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
-window.onload = () => { };
- */
