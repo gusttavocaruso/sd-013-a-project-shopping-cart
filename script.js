@@ -40,7 +40,7 @@ function createProductItemElement({ sku, name, image }) {
 // *********************************************
 const fetchProdutos = (QUERY) => { // Conecta na API e busca o item QUERY
   // Posiciona o elemento dentro do .items (que é o noome do grupo onde vai estar todos itens)
-  const loadingId = document.querySelector('#loading');
+  const loadingId = document.querySelector('.loading');
   const itemsSection = document.querySelector('.items');
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${QUERY}`) // chama a API
     .then((response) => response.json())
@@ -49,13 +49,11 @@ const fetchProdutos = (QUERY) => { // Conecta na API e busca o item QUERY
         .forEach(({ id, title, thumbnail }) => {
           itemsSection.appendChild( // Fala que os itens abaixo serão filhos do grupo .items
             createProductItemElement({ // Adiciona os produtos ao abrir a pagina
-              sku: id,
-              name: title,
-              image: thumbnail,
+              sku: id, name: title, image: thumbnail,
             }),
           );
       });
-      // loadingId.remove(); // requisito 07
+      loadingId.remove(); // requisito 07
     });
 };
 
