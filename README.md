@@ -38,7 +38,7 @@ Aqui você vai encontrar os detalhes de como estruturar o desenvolvimento do seu
 
 --- 
 
-## Habilidades
+## Habilidades w
 
 Nesse projeto, você será capaz de:
 
