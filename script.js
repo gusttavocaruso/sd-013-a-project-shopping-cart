@@ -1,10 +1,4 @@
-/*
-function createProductImageElement(imageSource) {
-  const img = document.createElement('img');
-  img.className = 'item__image';
-  img.src = imageSource;
-  return img;
-}
+const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
 
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
@@ -13,18 +7,38 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductImageElement(imageSource) {
+  const img = document.createElement('img');
+  img.className = 'item__image';
+  img.src = imageSource;
+  return img;
+}
+
+function createProductItemElement({ id, title, thumbnail }) {
+  const sectionItems = document.querySelector('.items');
   const section = document.createElement('section');
   section.className = 'item';
 
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
+  section.appendChild(createCustomElement('span', 'item__sku', id));
+  section.appendChild(createCustomElement('span', 'item__title', title));
+  section.appendChild(createProductImageElement(thumbnail));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
-  return section;
+  sectionItems.appendChild(section);
 }
 
+const fetchProduct = () => {
+  const myObject = {
+    method: 'GET',
+    headers: { Accept: 'application/json' },
+  };
+
+  fetch(API_URL, myObject)
+    .then((response) => response.json()
+    .then((data) => data.results
+      .forEach((item) => createProductItemElement(item))));
+};
+/*
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
@@ -40,6 +54,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
-window.onload = () => { };
 */
+window.onload = () => {
+  fetchProduct();
+};
