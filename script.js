@@ -51,16 +51,16 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-function fillCart() {
+function fillCart(event) {
   const item = event.target.parentElement;
   const itemID = getSkuFromProductItem(item);
-  const url = 'https://api.mercadolibre.com/items/${itemID}';
+  const url = `https://api.mercadolibre.com/items/${itemID}`;
 
   fetch(url)
     .then((response) => response.json())
     .then((object) => {
-      object.forEach((item) => {
-        cart.appendChild(createCartItemElement(item));
+      object.forEach((obj) => {
+        cart.appendChild(createCartItemElement(obj));
       });
     });
 }
