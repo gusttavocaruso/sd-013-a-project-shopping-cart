@@ -1,4 +1,4 @@
-function createProductImageElement(imageSource) {
+/* function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
@@ -29,7 +29,6 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -41,3 +40,4 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 window.onload = () => { };
+ */
