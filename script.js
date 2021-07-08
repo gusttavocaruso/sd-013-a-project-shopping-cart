@@ -12,7 +12,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -40,4 +40,24 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => {};
+const addItenstoSection = (items) => {
+  items.forEach((item) => {
+    const itemElement = createProductItemElement(item);
+    const section = document.querySelector('.items');
+    section.appendChild(itemElement);
+  });
+};
+
+const fetchML = (query) => {
+  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
+    .then((response) => {
+      response.json().then((data) => {
+        addItenstoSection(data.results);
+      });
+      console.log(fetchML);
+    });
+};
+
+window.onload = () => {
+  fetchML('computador');
+};
