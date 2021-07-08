@@ -127,10 +127,33 @@ function cartItemClickListener(event) { // requisito 03
   elementOlCarrinho.removeChild(event.target);
 }
 
+// *****************************************************
+// Requisito 04 - CARREGUE O CARRINHO PELO LOCAL STORAGE
+// *****************************************************
+const addStorageCarrinho = () => { // Armazena no Local Storage o HTML do carrinho
+  localStorage.setItem('carrinho', elementOlCarrinho.innerHTML);
+};
 
+const pegaValoresLS = () => {
+  const valoresLocalStorage = Object.values(localStorage);
+  if (valoresLocalStorage.length > 0) {
+    valoresLocalStorage
+      .forEach((item) => {
+        const elemento = JSON.parse(item); // constroi o elemento com dados do JSON
+        elementOlCarrinho.appendChild(createCartItemElement(elemento));
+        arrayDeRetorno.push({ sku: elemento.sku, salePrice: elemento.salePrice });
+        // somaCarrinho(); // Puxa a soma do carrinho
+      });
+  }
+};
+
+// ***********************************************************
+// DADOS PARA ON LOAD - QUANDO ABRIR A PÁGINA CHAMA AS FUNÇÕES
+// ***********************************************************
 window.onload = function onload() {
   elementOlCarrinho = document.querySelector('.cart__items'); // Seleciona a OL de lista de carrinho
 
   getProdutos(); // requisito 01
   addItemNoCarrinho(); // requisito 02
+  pegaValoresLS(); // requisito 04
 };
