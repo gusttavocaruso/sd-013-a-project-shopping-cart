@@ -36,7 +36,7 @@ Aqui você vai encontrar os detalhes de como estruturar o desenvolvimento do seu
 - [Revisando um Pull Request](#revisando-um-pull-request)
 - [Avisos finais](#avisos-finais)
 
----
+--- 
 
 ## Habilidades
 
