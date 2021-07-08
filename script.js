@@ -97,15 +97,13 @@ async function getProducts(search) {
   const loading = document.createElement('div');
   loading.className = 'loading';
   loading.innerHTML = 'loading...';
+  items.appendChild(loading);
 
   const { results } = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`)
-  .then((data) => {
-    items.appendChild(loading);
-    return data;
-  })
-  .then((response) => response.json());
-
-  items.removeChild(loading);
+  .then((response) => {
+    items.removeChild(loading);
+    return response.json();
+  });
 
   return results;
 }
