@@ -65,18 +65,28 @@ const getProdutos = async () => { // requisito 01
   }
 };
 
+// *******************************************************
+// Requisito 05 - SOME O VALOR TOTAL DOS ITENS DO CARRINHO
+// *******************************************************
+// total-price
+const somaCarrinho = () => {
+  const total = document.querySelector('.total-price'); // Pega a classe onde vai jogar o total
+  let resultado;
+  let soma = 0;
+  if (elementOlCarrinho.childNodes.length >= 1) { // ChildNodes retorna o HTML Collection com todos os nós filhos
+    for (let index = 0; index < arrayDeRetorno.length; index += 1) {
+      soma += arrayDeRetorno[index].salePrice;
+    }
+    resultado = Math.round(soma * 100) / 100; // Math.round retorna o valor de um número arredondado para o inteiro mais proximo
+    total.innerHTML = resultado.toFixed(2); // mostra resultado final, com duas casas decimais
+  } else {
+    total.innerHTML = 0.00.toFixed(2); // mostra 0 se o carrinho estiver vazio
+  }
+};
+
 // *********************************************************
 // Requisito 02 - POSSIBILITA ADICIONAR PRODUTOS NO CARRINHO
 // *********************************************************
-const addItemNoCarrinho = () => { // Identifica que está sendo clicado no 'Adicionar ao carrinho'
-  const botaoAddItemNoCarrinho = document.querySelector('.items');
-  botaoAddItemNoCarrinho.addEventListener('click', (evento) => {
-    if (evento.target.className === 'item__add') {
-      requisicaoAddItem(evento);
-    }
-  });
-};
-
 const requisicaoAddItem = (evento) => {
   const buscaClasseItem = evento.target.parentElement.querySelector('span.item__sku'); // busca a classe que tem o item dentro através do parentElement que retorna o elemento pai
   const idItem = buscaClasseItem.innerText; // mostra o texto da classe encontrada
@@ -94,9 +104,32 @@ const requisicaoAddItem = (evento) => {
     });
 };
 
+const addItemNoCarrinho = () => { // Identifica que está sendo clicado no 'Adicionar ao carrinho'
+  const botaoAddItemNoCarrinho = document.querySelector('.items');
+  botaoAddItemNoCarrinho.addEventListener('click', (evento) => {
+    if (evento.target.className === 'item__add') {
+      requisicaoAddItem(evento);
+    }
+  });
+};
+
 // ******************************************************************
 // Requisito 03 - REMOVE O ITEM DO CARRINHO DE COMPRAS AO CLICAR NELE
 // ******************************************************************
+const removeCarrinho = (itemRemover) => { // requisito 03
+  const excluir = arrayDeRetorno
+    .find((elemento) => elemento.sku === itemRemover);
+  console.log(`arrayDeRetorno: ${arrayDeRetorno}`);
+  arrayDeRetorno // Percorre o arrayDeRetorno
+    .forEach((elemento, index) => {
+      if (elemento === excluir) {
+        arrayDeRetorno.splice(index, 1); // Splice altera conteudos de uma lista
+        localStorage.removeItem(itemRemover); // Remove item do LocalStorage
+      }
+    });
+  return somaCarrinho(); // atualiza somatória com a remoção do item
+};
+
 function cartItemClickListener(event) { // requisito 03
   const removeItemLocalStorage = event.target.innerText.substring(5, 18);
   console.log(`removeItemLocalStorage: ${removeItemLocalStorage}`);
@@ -112,20 +145,6 @@ function createCartItemElement({ sku, name, salePrice }) { // Função já vinda
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
-const removeCarrinho = (itemRemover) => { // requisito 03
-  const excluir = arrayDeRetorno
-    .find((elemento) => elemento.sku === itemRemover);
-  console.log(`arrayDeRetorno: ${arrayDeRetorno}`);
-  arrayDeRetorno // Percorre o arrayDeRetorno
-    .forEach((elemento, index) => {
-      if (elemento === excluir) {
-        arrayDeRetorno.splice(index, 1); // Splice altera conteudos de uma lista
-        localStorage.removeItem(itemRemover); // Remove item do LocalStorage
-      }
-    });
-  return somaCarrinho(); // atualiza somatória com a remoção do item
-};
 
 // *****************************************************
 // Requisito 04 - CARREGUE O CARRINHO PELO LOCAL STORAGE
@@ -144,25 +163,6 @@ const pegaValoresLS = () => {
         arrayDeRetorno.push({ sku: elemento.sku, salePrice: elemento.salePrice });
         somaCarrinho(); // Puxa a soma do carrinho
       });
-  }
-};
-
-// *******************************************************
-// Requisito 05 - SOME O VALOR TOTAL DOS ITENS DO CARRINHO
-// *******************************************************
-// total-price
-const somaCarrinho = () => {
-  const total = document.querySelector('.total-price'); // Pega a classe onde vai jogar o total
-  let resultado;
-  let soma = 0;
-  if (elementOlCarrinho.childNodes.length >= 1) { // ChildNodes retorna o HTML Collection com todos os nós filhos
-    for (let index = 0; index < arrayDeRetorno.length; index += 1) {
-      soma += arrayDeRetorno[index].salePrice;
-    }
-    resultado = Math.round(soma * 100) / 100; // Math.round retorna o valor de um número arredondado para o inteiro mais proximo
-    total.innerHTML = resultado.toFixed(2); // mostra resultado final, com duas casas decimais
-  } else {
-    total.innerHTML = 0.00.toFixed(2); // mostra 0 se o carrinho estiver vazio
   }
 };
 
