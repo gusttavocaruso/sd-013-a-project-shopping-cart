@@ -110,4 +110,5 @@ window.onload = function onload() {
   elementOlCarrinho = document.querySelector('.cart__items'); // Seleciona a OL de lista de carrinho
 
   getProdutos(); // requisito 01
+  addItemNoCarrinho(); // requisito 02
 };
