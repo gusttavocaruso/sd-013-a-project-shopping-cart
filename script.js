@@ -55,7 +55,7 @@ const fetchProdutos = (QUERY) => { // Conecta na API e busca o item QUERY
             }),
           );
       });
-      loadingId.remove(); // requisito 07
+      // loadingId.remove(); // requisito 07
     });
 };
 
@@ -80,7 +80,7 @@ const somaCarrinho = () => {
       soma += arrayDeRetorno[index].salePrice;
     }
     resultado = Math.round(soma * 100) / 100; // Math.round retorna o valor de um número arredondado para o inteiro mais proximo
-    total.innerHTML = resultado.toFixed(2); // mostra resultado final, com duas casas decimais
+    total.innerHTML = resultado; // mostra resultado final
   } else {
     total.innerHTML = 0; // mostra 0 se o carrinho estiver vazio
   }
@@ -151,10 +151,6 @@ const addItemNoCarrinho = () => { // Identifica que está sendo clicado no 'Adic
 // *****************************************************
 // Requisito 04 - CARREGUE O CARRINHO PELO LOCAL STORAGE
 // *****************************************************
-// const addStorageCarrinho = () => { // Armazena no Local Storage o HTML do carrinho
-//   localStorage.setItem('carrinho', elementOlCarrinho.innerHTML);
-// };
-
 const pegaValoresLS = () => {
   const valoresLocalStorage = Object.values(localStorage);
   if (valoresLocalStorage.length > 0) {
