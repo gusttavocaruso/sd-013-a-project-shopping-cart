@@ -27,8 +27,8 @@ const listaComputadorPorId = async (id) => {
 };
 
 function computadoresNoCarrinho() {
-  const listaComputadores = localStorage.getItem('pc');
-  document.querySelector('.cart__items').innerHTML = listaComputadores;
+  const pcs = document.querySelector('.cart__items');
+  pcs.innerHTML = localStorage.getItem('pc');
 }
 
 function cartItemClickListener(event) {
@@ -45,6 +45,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 
 function addCart() {
   const idComputador = this.parentNode.firstChild.innerText;
+  const pcs = document.querySelector('.cart__items');
   listaComputadorPorId(idComputador)
     .then((response) => {
       const objComputador = {
@@ -53,8 +54,8 @@ function addCart() {
         salePrice: response.price,
       };
       const computador = createCartItemElement(objComputador);
-      document.querySelector('.cart__items').appendChild(computador);
-      localStorage.setItem('pc', document.querySelector('.cart__items').innerHTML);
+      pcs.appendChild(computador);
+      localStorage.setItem('pc', pcs.innerHTML);
     });
 }
 
