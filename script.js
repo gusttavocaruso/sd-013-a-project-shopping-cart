@@ -28,18 +28,6 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
-  event.target.remove();
-}
-
-function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
-
 const cartItemsOl = () => document.getElementsByClassName('cart__items')[0];
 
 const saveLocalStorage = () => {
@@ -50,6 +38,24 @@ const loadLocalStorage = () => new Promise((resolve) => {
   if (localStorage.getItem('cartList')) {
     cartItemsOl().innerHTML = localStorage.getItem('cartList');
   }
+  resolve();
+});
+
+function cartItemClickListener(event) {
+  event.target.remove();
+  saveLocalStorage();
+}
+
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+const deleteLoading = () => new Promise((resolve) => {
+  document.querySelector('.loading').remove();
   resolve();
 });
 
@@ -95,6 +101,7 @@ const fetchPromise = async () => {
   try {
     await fetchMeLiAPI('computador');
     await fetchItem();
+    await deleteLoading();
     await loadLocalStorage();
     await emptyCart();
   } catch (error) {
