@@ -1,5 +1,5 @@
 // INFORMAÇÕES INICIAIS
-const arrayDeRetorno = []; // Variável que guarda arrays de retorno - onde é guardado o carrinho como array
+let arrayDeRetorno = []; // Variável que guarda arrays de retorno - onde é guardado o carrinho como array
 let elementOlCarrinho;
 
 function createProductImageElement(imageSource) {
@@ -50,15 +50,15 @@ const fetchProdutos = (QUERY) => { // Conecta na API e busca o item QUERY
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${QUERY}`) // chama a API
     .then((response) => response.json())
     .then((produtos) => {
-      produtos.results
-        .forEach(({ id, title, thumbnail }) => {
-          itemsSection.appendChild( // Fala que os itens abaixo serão filhos do grupo .items
-            createProductItemElement({ // Adiciona os produtos ao abrir a pagina
-              sku: id,
-              name: title,
-              image: thumbnail,
-            }),
-          );
+ produtos.results
+      .forEach(({ id, title, thumbnail }) => {
+        itemsSection.appendChild( // Fala que os itens abaixo serão filhos do grupo .items
+          createProductItemElement({ // Adiciona os produtos ao abrir a pagina
+            sku: id,
+            name: title,
+            image: thumbnail,
+          }),
+        );
       });
       loadingId.remove(); // requisito 07
     });
@@ -67,7 +67,7 @@ const fetchProdutos = (QUERY) => { // Conecta na API e busca o item QUERY
 const getProdutos = async () => { // requisito 01
   try {
     await fetchProdutos('computador'); // Conjunto de itens a procurar
-    // await fetchProdutos('monitores'); // Conjunto de itens a procurar
+    await fetchProdutos('monitores'); // Conjunto de itens a procurar
   } catch (error) {
     alert('Ocorreu um erro ao buscar o produto');
   }
@@ -95,7 +95,7 @@ const requisicaoAddItem = (evento) => {
       localStorage.setItem(objeto.id, JSON.stringify(item)); // requisito 04 - stringify transforma em string para colocar chave/valor no localstorage
       elementOlCarrinho.appendChild(createCartItemElement(item)); // Adiciona o item
       arrayDeRetorno.push({ sku: objeto.id, salePrice: objeto.price });
-      somaCarrinho(); // Requisito 5
+      somaCarrinho();
     })
     .catch((error) => {
       window.alert(error);
@@ -105,6 +105,14 @@ const requisicaoAddItem = (evento) => {
 // ******************************************************************
 // Requisito 03 - REMOVE O ITEM DO CARRINHO DE COMPRAS AO CLICAR NELE
 // ******************************************************************
+function cartItemClickListener(event) { // requisito 03
+  const removeItemLocalStorage = event.target.innerText.substring(5, 18);
+  console.log(`removeItemLocalStorage: ${removeItemLocalStorage}`);
+  removeCarrinho(removeItemLocalStorage); // Chama a função e remove item do carrinho
+  console.log(`event.target: ${event.target}`);
+  elementOlCarrinho.removeChild(event.target);
+}
+
 const removeCarrinho = (itemRemover) => { // requisito 03
   const excluir = arrayDeRetorno
     .find((elemento) => elemento.sku === itemRemover);
@@ -116,16 +124,8 @@ const removeCarrinho = (itemRemover) => { // requisito 03
         localStorage.removeItem(itemRemover); // Remove item do LocalStorage
       }
     });
-  return somaCarrinho(); // Requisito 5 - atualiza somatória com a remoção do item
+  return somaCarrinho(); // atualiza somatória com a remoção do item
 };
-
-function cartItemClickListener(event) { // requisito 03
-  const removeItemLocalStorage = event.target.innerText.substring(5, 18);
-  console.log(`removeItemLocalStorage: ${removeItemLocalStorage}`);
-  removeCarrinho(removeItemLocalStorage); // Chama a função e remove item do carrinho
-  console.log(`event.target: ${event.target}`);
-  elementOlCarrinho.removeChild(event.target);
-}
 
 // *****************************************************
 // Requisito 04 - CARREGUE O CARRINHO PELO LOCAL STORAGE
@@ -182,9 +182,11 @@ function esvaziaCarrinho() {
   });
 }
 
-// ***********************************************************
-// DADOS PARA ON LOAD - QUANDO ABRIR A PÁGINA CHAMA AS FUNÇÕES
-// ***********************************************************
+// ****************************************************************
+// Requisito 07 - ADICIONAR TEXTO DE LOADING DURANTE REQUISIÇÃO API
+// ****************************************************************
+// Adicionado resolução dentro do requisito 01 onde automaticamente é colocado um loading dentro do index.html e é retirado na resposta do fetch da API
+// 
 window.onload = function onload() {
   elementOlCarrinho = document.querySelector('.cart__items'); // Seleciona a OL de lista de carrinho
 
