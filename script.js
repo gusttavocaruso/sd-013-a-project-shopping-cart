@@ -26,6 +26,11 @@ const listaComputadorPorId = async (id) => {
     .then((data) => data));
 };
 
+function computadoresNoCarrinho() {
+  const listaComputadores = localStorage.getItem('pc');
+  document.querySelector('.cart__items').innerHTML = listaComputadores;
+}
+
 function cartItemClickListener(event) {
   event.target.remove();
 }
@@ -49,6 +54,7 @@ function addCart() {
       };
       const computador = createCartItemElement(objComputador);
       document.querySelector('.cart__items').appendChild(computador);
+      localStorage.setItem('pc', document.querySelector('.cart__items').innerHTML);
     });
 }
 
@@ -82,4 +88,5 @@ window.onload = () => {
         document.querySelector('.items').appendChild(computadores);
       });
     });
+  computadoresNoCarrinho();
 };
