@@ -24,30 +24,46 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
+function cartItemClickListener(event) {
+  console.log('Só pra passar o lint');
+}
 
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+function addCartItem(event) {
+  const idItem = getSkuFromProductItem(event.path[1]);
+  console.log(idItem);
+  fetch(`https://api.mercadolibre.com/items/${idItem}`)
+    .then((item) => item.json()).then((produto) => {
+      document.querySelector('.cart__items').appendChild(createCartItemElement(produto));
+    });
+}
+
+const addEventButton = () => {
+  const buttons = document.querySelectorAll('.item__add');
+  buttons.forEach((button) => {
+    button.addEventListener('click', addCartItem);
+  });
+};
 
 const fetchProduto = () => {
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((produtos) => produtos.json()).then((produto) => {
       const lista = produto.results;
-      for (let i = 0; i < lista.length; i += 1) {
-        document.querySelector('.items').appendChild(createProductItemElement(lista[i]));
-      }
-    });
+      lista.forEach((element) => {
+        document.querySelector('.items').appendChild(createProductItemElement(element));
+      });
+    }).then(() => { addEventButton(); });
 };
 
 window.onload = () => { 
