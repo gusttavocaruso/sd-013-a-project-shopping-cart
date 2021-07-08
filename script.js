@@ -167,6 +167,22 @@ const somaCarrinho = () => {
 };
 
 // ***********************************************************
+// Requisito 06 - FAZER FUNCIONAR O BOTAO DE ESVAZIAR CARRINHO
+// ***********************************************************
+function esvaziaCarrinho() {
+  const botaoEsvaziarCarrinho = document.querySelector('.empty-cart');
+  botaoEsvaziarCarrinho.addEventListener('click', () => {
+    localStorage.clear(); // Esvazia o LocalStorage que contem o carrinho
+    const itensCarrinho = document.querySelectorAll('.cart__item'); // seleciona todos itens do carrinho
+    for (let index = itensCarrinho.length; index > 0; index -= 1) {
+      elementOlCarrinho.removeChild(itensCarrinho[index - 1]); // remove o item
+    }
+    arrayDeRetorno = []; // Esvazia o array que armazena internamente o carrinho
+    somaCarrinho(); // Executa a soma para atualizar total sem itens
+  });
+}
+
+// ***********************************************************
 // DADOS PARA ON LOAD - QUANDO ABRIR A PÁGINA CHAMA AS FUNÇÕES
 // ***********************************************************
 window.onload = function onload() {
@@ -176,4 +192,5 @@ window.onload = function onload() {
   addItemNoCarrinho(); // requisito 02
   pegaValoresLS(); // requisito 04
   somaCarrinho(); // requisito 05
+  esvaziaCarrinho(); // requisito 06
 };
