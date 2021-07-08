@@ -135,7 +135,7 @@ const requisicaoAddItem = (evento) => {
     });
 };
 
-const addItemNoCarrinho = () => { // Identifica que está sendo clicado no 'Adicionar ao carrinho'
+const addItemNoCarrinho = () => { // Identifica que está sendo clicado no 'Adicionar ao carrinh
   const botaoAddItemNoCarrinho = document.querySelector('.items');
   botaoAddItemNoCarrinho.addEventListener('click', (evento) => {
     if (evento.target.className === 'item__add') {
