@@ -40,17 +40,17 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+const cartItemsOl = () => document.getElementsByClassName('cart__items')[0];
+
 const saveLocalStorage = () => {
-  const cartItemsOl = document.getElementsByClassName('cart__items')[0];
-  localStorage.setItem('cartList', cartItemsOl.innerHTML);
-}
+  localStorage.setItem('cartList', cartItemsOl().innerHTML);
+};
 
 const loadLocalStorage = () => new Promise((resolve) => {
   if (localStorage.getItem('cartList')) {
-    const cartItemsOl = document.getElementsByClassName('cart__items')[0];
-    cartItemsOl.innerHTML = localStorage.getItem('cartList');
-    resolve();
+    cartItemsOl().innerHTML = localStorage.getItem('cartList');
   }
+  resolve();
 });
 
 const fetchMeLiAPI = (product) => new Promise((resolve) => {
@@ -74,11 +74,19 @@ const fetchItem = () => new Promise((resolve) => {
       fetch(itemUrl)
         .then((response) => response.json()
         .then((jsonProduct) => {
-          const cartItemsOl = document.getElementsByClassName('cart__items')[0];
-          cartItemsOl.appendChild(createCartItemElement(jsonProduct));
+          cartItemsOl().appendChild(createCartItemElement(jsonProduct));
           saveLocalStorage();
         }));
     });
+  });
+  resolve();
+});
+
+const emptyCart = () => new Promise((resolve) => {
+  const emptyBtn = document.getElementsByClassName('empty-cart')[0];
+  emptyBtn.addEventListener('click', () => {
+    cartItemsOl().innerHTML = '';
+    saveLocalStorage();
   });
   resolve();
 });
@@ -88,6 +96,7 @@ const fetchPromise = async () => {
     await fetchMeLiAPI('computador');
     await fetchItem();
     await loadLocalStorage();
+    await emptyCart();
   } catch (error) {
     console.log(error);
   }
