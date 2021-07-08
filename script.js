@@ -2,6 +2,9 @@
 let arrayDeRetorno = []; // Variável que guarda arrays de retorno - onde é guardado o carrinho como array
 let elementOlCarrinho;
 
+// ****************************************************************
+// FUNÇÕES DIVERSAS DO PROJETO
+// ****************************************************************
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -28,9 +31,9 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 // *********************************************
 // Requisito 01 - CHAMA OS PRODUTOS PARA A TELA
@@ -59,7 +62,6 @@ const fetchProdutos = (QUERY) => { // Conecta na API e busca o item QUERY
 const getProdutos = async () => { // requisito 01
   try {
     await fetchProdutos('computador'); // Conjunto de itens a procurar
-    // await fetchProdutos('monitores'); // Conjunto de itens a procurar
   } catch (error) {
     alert('Ocorreu um erro ao buscar o produto');
   }
@@ -80,37 +82,8 @@ const somaCarrinho = () => {
     resultado = Math.round(soma * 100) / 100; // Math.round retorna o valor de um número arredondado para o inteiro mais proximo
     total.innerHTML = resultado.toFixed(2); // mostra resultado final, com duas casas decimais
   } else {
-    total.innerHTML = 0.00.toFixed(2); // mostra 0 se o carrinho estiver vazio
+    total.innerHTML = 0; // mostra 0 se o carrinho estiver vazio
   }
-};
-
-// *********************************************************
-// Requisito 02 - POSSIBILITA ADICIONAR PRODUTOS NO CARRINHO
-// *********************************************************
-const requisicaoAddItem = (evento) => {
-  const buscaClasseItem = evento.target.parentElement.querySelector('span.item__sku'); // busca a classe que tem o item dentro através do parentElement que retorna o elemento pai
-  const idItem = buscaClasseItem.innerText; // mostra o texto da classe encontrada
-  fetch(`https://api.mercadolibre.com/items/${idItem}`)
-    .then((response) => response.json())
-    .then((objeto) => {
-      const item = { sku: objeto.id, name: objeto.title, salePrice: objeto.price };
-      localStorage.setItem(objeto.id, JSON.stringify(item)); // requisito 04 - stringify transforma em string para colocar chave/valor no localstorage
-      elementOlCarrinho.appendChild(createCartItemElement(item)); // Adiciona o item
-      arrayDeRetorno.push({ sku: objeto.id, salePrice: objeto.price });
-      somaCarrinho();
-    })
-    .catch((error) => {
-      window.alert(error);
-    });
-};
-
-const addItemNoCarrinho = () => { // Identifica que está sendo clicado no 'Adicionar ao carrinho'
-  const botaoAddItemNoCarrinho = document.querySelector('.items');
-  botaoAddItemNoCarrinho.addEventListener('click', (evento) => {
-    if (evento.target.className === 'item__add') {
-      requisicaoAddItem(evento);
-    }
-  });
 };
 
 // ******************************************************************
@@ -146,12 +119,41 @@ function createCartItemElement({ sku, name, salePrice }) { // Função já vinda
   return li;
 }
 
+// *********************************************************
+// Requisito 02 - POSSIBILITA ADICIONAR PRODUTOS NO CARRINHO
+// *********************************************************
+const requisicaoAddItem = (evento) => {
+  const buscaClasseItem = evento.target.parentElement.querySelector('span.item__sku'); // busca a classe que tem o item dentro através do parentElement que retorna o elemento pai
+  const idItem = buscaClasseItem.innerText; // mostra o texto da classe encontrada
+  fetch(`https://api.mercadolibre.com/items/${idItem}`)
+    .then((response) => response.json())
+    .then((objeto) => {
+      const item = { sku: objeto.id, name: objeto.title, salePrice: objeto.price };
+      localStorage.setItem(objeto.id, JSON.stringify(item)); // requisito 04 - stringify transforma em string para colocar chave/valor no localstorage
+      elementOlCarrinho.appendChild(createCartItemElement(item)); // Adiciona o item
+      arrayDeRetorno.push({ sku: objeto.id, salePrice: objeto.price });
+      somaCarrinho();
+    })
+    .catch((error) => {
+      window.alert(error);
+    });
+};
+
+const addItemNoCarrinho = () => { // Identifica que está sendo clicado no 'Adicionar ao carrinho'
+  const botaoAddItemNoCarrinho = document.querySelector('.items');
+  botaoAddItemNoCarrinho.addEventListener('click', (evento) => {
+    if (evento.target.className === 'item__add') {
+      requisicaoAddItem(evento);
+    }
+  });
+};
+
 // *****************************************************
 // Requisito 04 - CARREGUE O CARRINHO PELO LOCAL STORAGE
 // *****************************************************
-const addStorageCarrinho = () => { // Armazena no Local Storage o HTML do carrinho
-  localStorage.setItem('carrinho', elementOlCarrinho.innerHTML);
-};
+// const addStorageCarrinho = () => { // Armazena no Local Storage o HTML do carrinho
+//   localStorage.setItem('carrinho', elementOlCarrinho.innerHTML);
+// };
 
 const pegaValoresLS = () => {
   const valoresLocalStorage = Object.values(localStorage);
@@ -187,10 +189,6 @@ function esvaziaCarrinho() {
 // ****************************************************************
 // Adicionado resolução dentro do requisito 01 onde automaticamente é colocado um loading dentro do index.html e é retirado na resposta do fetch da API
 // 
-
-// ****************************************************************
-// ****************************************************************
-// ****************************************************************
 
 // ****************************************************************
 // INICIAIS AO ABRIR A PÁGINA
