@@ -32,7 +32,9 @@ function createProductItemElement({
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-function cartItemClickListener(event) {}
+function cartItemClickListener(event) {
+  event.target.remove();
+}
 
 function getJsonFromProduct() {
   return new Promise((resolve) => {
@@ -98,3 +100,7 @@ async function jogarItens() {
 }
 
 jogarItens();
+
+window.onload = () => {
+  
+};
