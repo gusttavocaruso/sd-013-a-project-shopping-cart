@@ -1,10 +1,14 @@
-/* function createProductImageElement(imageSource) {
+// const fetch = require('node-fetch');
+
+// =======================================================================================
+function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
   return img;
 }
 
+// =======================================================================================
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -12,6 +16,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// =======================================================================================
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -40,5 +45,28 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
- */
+// =======================================================================================
+const getMblPromise = (item) => {
+  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${item}`) // retorna uma promise
+    .then((response) => {
+      response.json().then((jsonMbl) => {
+        // console.log(jsonMbl.results);
+        jsonMbl.results.forEach((result) => {
+          const teste = document.getElementsByClassName('items');
+          teste[0].appendChild(createProductItemElement(result));
+        });
+      });
+    });
+};
+
+const fetchMblPromise = async () => {
+  try {
+    await getMblPromise('computador');
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// =======================================================================================
+window.onload = () => fetchMblPromise();
+// window.onload = () => { };
