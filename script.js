@@ -32,14 +32,6 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
-
 // *********************************************
 // Requisito 01 - CHAMA OS PRODUTOS PARA A TELA
 // *********************************************
@@ -50,15 +42,15 @@ const fetchProdutos = (QUERY) => { // Conecta na API e busca o item QUERY
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${QUERY}`) // chama a API
     .then((response) => response.json())
     .then((produtos) => {
- produtos.results
-      .forEach(({ id, title, thumbnail }) => {
-        itemsSection.appendChild( // Fala que os itens abaixo serão filhos do grupo .items
-          createProductItemElement({ // Adiciona os produtos ao abrir a pagina
-            sku: id,
-            name: title,
-            image: thumbnail,
-          }),
-        );
+      produtos.results
+        .forEach(({ id, title, thumbnail }) => {
+          itemsSection.appendChild( // Fala que os itens abaixo serão filhos do grupo .items
+            createProductItemElement({ // Adiciona os produtos ao abrir a pagina
+              sku: id,
+              name: title,
+              image: thumbnail,
+            }),
+          );
       });
       loadingId.remove(); // requisito 07
     });
@@ -67,7 +59,7 @@ const fetchProdutos = (QUERY) => { // Conecta na API e busca o item QUERY
 const getProdutos = async () => { // requisito 01
   try {
     await fetchProdutos('computador'); // Conjunto de itens a procurar
-    await fetchProdutos('monitores'); // Conjunto de itens a procurar
+    // await fetchProdutos('monitores'); // Conjunto de itens a procurar
   } catch (error) {
     alert('Ocorreu um erro ao buscar o produto');
   }
@@ -111,6 +103,14 @@ function cartItemClickListener(event) { // requisito 03
   removeCarrinho(removeItemLocalStorage); // Chama a função e remove item do carrinho
   console.log(`event.target: ${event.target}`);
   elementOlCarrinho.removeChild(event.target);
+}
+
+function createCartItemElement({ sku, name, salePrice }) { // Função já vinda no Projeto
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
 }
 
 const removeCarrinho = (itemRemover) => { // requisito 03
@@ -187,6 +187,14 @@ function esvaziaCarrinho() {
 // ****************************************************************
 // Adicionado resolução dentro do requisito 01 onde automaticamente é colocado um loading dentro do index.html e é retirado na resposta do fetch da API
 // 
+
+// ****************************************************************
+// ****************************************************************
+// ****************************************************************
+
+// ****************************************************************
+// INICIAIS AO ABRIR A PÁGINA
+// ****************************************************************
 window.onload = function onload() {
   elementOlCarrinho = document.querySelector('.cart__items'); // Seleciona a OL de lista de carrinho
 
