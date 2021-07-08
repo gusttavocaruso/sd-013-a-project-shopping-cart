@@ -1,3 +1,5 @@
+const classTotalPice = 'total-price';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -27,14 +29,32 @@ function createProductItemElement({ sku, name, image }) {
 function saveStatus() {
   const cartItems = document.getElementsByClassName('cart__items')[0];
   localStorage.setItem('cartData', cartItems.innerHTML);
+
+  const totalPrice = document.getElementsByClassName(classTotalPice)[0];
+  localStorage.setItem('totalPrice', totalPrice.innerHTML);
 }
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const updatePrice = (price, operation) => {
+  const totalPriceElement = document.getElementsByClassName(classTotalPice)[0];
+  let total = 0;
+  if (operation === 'add') {
+    total = Number(totalPriceElement.innerText) + Number(price);
+  } else {
+    total = Number(totalPriceElement.innerText) - Number(price);
+  }
+  totalPriceElement.innerText = (Math.round(total * 100) / 100);
+};
+
 function cartItemClickListener(event) {
+  console.log(event.target);
+  const element = event.target;
+  const price = element.innerHTML.split('$')[1];
   event.target.remove();
+  updatePrice(Number(price), 'remove');
   saveStatus();
 }
 
@@ -50,8 +70,7 @@ const getData = async () => {
   const API_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
   const response = await fetch(API_URL);
   if (!response.ok) {
-    const message = `Erro: ${response.status}`;
-    throw new Error(message);
+    throw new Error(`Erro: ${response.status}`);
   }
   await response.json()
     .then((array) => {
@@ -72,8 +91,7 @@ const addToCart = async (element) => {
   const API_URL = `https://api.mercadolibre.com/items/${id}`;
   const response = await fetch(API_URL);
   if (!response.ok) {
-    const message = `Erro: ${response.status}`;
-    throw new Error(message);
+    throw new Error(`Erro: ${response.status}`);
   }
   await response.json()
     .then((item) => {
@@ -84,6 +102,7 @@ const addToCart = async (element) => {
       };
       const cartItem = createCartItemElement(object);
       document.getElementsByClassName('cart__items')[0].appendChild(cartItem);
+      updatePrice(object.salePrice, 'add');
       saveStatus();
     });
 };
@@ -95,6 +114,13 @@ function loadCart() {
   Array.prototype.forEach.call(cartArray, function (item) {
     item.addEventListener('click', cartItemClickListener);
   });
+
+  const totalPrice = document.getElementsByClassName(classTotalPice)[0];
+  if (localStorage.getItem('totalPrice')) {
+    totalPrice.innerHTML = localStorage.getItem('totalPrice');
+  } else {
+    totalPrice.innerHTML = 0;
+  }
 }
 
 window.onload = async () => {
