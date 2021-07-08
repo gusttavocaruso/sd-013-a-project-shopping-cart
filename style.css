@@ -68,7 +68,7 @@
   flex-basis: 30%;
   flex-flow: column wrap;
   border: 2px solid blue;
-  padding: 5px;
+  padding: 5px 5px 0px 5px;
   height: fit-content;
 }
 
