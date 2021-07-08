@@ -5,12 +5,12 @@
   return img;
 } */
 
-/* function createCustomElement(element, className, innerText) {
+function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
   return e;
-} */
+}
 
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
@@ -32,13 +32,13 @@ function createProductItemElement({ sku, name, image }) {
   // coloque seu código aqui
 } */
 
-/* function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
-} */
+}
 
 // fonte: https://www.youtube.com/watch?v=m3K8DP4kVXQ
 function productList() {
