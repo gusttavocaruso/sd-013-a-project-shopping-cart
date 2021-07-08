@@ -28,6 +28,20 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function saveCartToLocalStorage() {
+  const cartItems = document.querySelector('.cart__items');
+  localStorage.setItem('cart', cartItems.innerHTML);
+}
+
+function getCartFromLocalStorage() {
+  const localStorageItems = localStorage.getItem('cart');
+  const cart = document.querySelector('ol.cart__items');
+  
+  if (localStorageItems) {
+    cart.innerHTML = localStorageItems;
+  }
+}
+
 function sumProductsPrices(salePrice, type) {
   const totalPrice = document.querySelector('.total-price');
   let total = Number(totalPrice.innerHTML);
@@ -42,6 +56,7 @@ function cartItemClickListener(event) {
   const [,, priceText] = event.target.innerText.split('|');
   const price = priceText.replace('PRICE: $', '');
   sumProductsPrices(Number(price), 'remove');
+  saveCartToLocalStorage();
   event.target.remove();
 }
 
@@ -51,20 +66,6 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
-}
-
-function saveCartToLocalStorage() {
-  const cartItems = document.querySelector('.cart__items');
-  localStorage.setItem('cart', cartItems.innerHTML);
-}
-
-function getCartFromLocalStorage() {
-  const localStorageItems = localStorage.getItem('cart');
-  const cart = document.querySelector('ol.cart__items');
-  
-  if (localStorageItems) {
-    cart.innerHTML = localStorageItems;
-  }
 }
 
 async function getCurrentProductInfo(id) {
@@ -123,7 +124,20 @@ async function createProductsList() {
   });
 }
 
+function emptyCart() {
+  const cart = document.querySelector('ol.cart__items');
+  const button = document.querySelector('.empty-cart');
+  const totalPrice = document.querySelector('.total-price');
+
+  button.addEventListener('click', () => { 
+    cart.innerHTML = '';
+    totalPrice.innerHTML = 0;
+    saveCartToLocalStorage();
+  });
+}
+
 window.onload = () => {
   createProductsList();
   getCartFromLocalStorage();
+  emptyCart();
 };
