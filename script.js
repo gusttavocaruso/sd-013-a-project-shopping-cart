@@ -107,6 +107,15 @@ const addToCart = async (element) => {
     });
 };
 
+function resetCart() {
+  const totalPriceElement = document.getElementsByClassName(classTotalPice)[0];
+  totalPriceElement.innerHTML = 0;
+
+  const cartItems = document.getElementsByClassName('cart__items')[0];
+  cartItems.innerHTML = '';
+  saveStatus();
+}
+
 function loadCart() {
   const cartItems = document.getElementsByClassName('cart__items')[0];
   cartItems.innerHTML = localStorage.getItem('cartData');
@@ -130,4 +139,6 @@ window.onload = async () => {
   Array.prototype.forEach.call(elements, function (el) {
     el.addEventListener('click', addToCart);
   });
+
+  document.getElementsByClassName('empty-cart')[0].addEventListener('click', resetCart);
 };
