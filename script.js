@@ -93,10 +93,20 @@ function addToTheCart(productElement) {
 }
 
 async function getProducts(search) {
-  const { results } = await 
-  (await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`))
-  .json();
-  // console.log(results);
+  const items = document.querySelector('.items');
+  const loading = document.createElement('div');
+  loading.className = 'loading';
+  loading.innerHTML = 'loading...';
+
+  const { results } = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`)
+  .then((data) => {
+    items.appendChild(loading);
+    return data;
+  })
+  .then((response) => response.json());
+
+  items.removeChild(loading);
+
   return results;
 }
 
