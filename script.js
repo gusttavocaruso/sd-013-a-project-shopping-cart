@@ -12,7 +12,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -40,4 +40,22 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+const compiuters = (compiuters) => {
+  const sectionItems = document.querySelector('.items');
+  const { id, title, thumbnail } = computer;
+  console.log(computer)
+}
+
+const getMercadoLivrePromise = (item) => {
+  return new Promise((resolve, reject) => {
+    
+  fetch("https://api.mercadolibre.com/sites/MLB/search?q=computador")
+    .then((response) => response.json())
+    .then((computers) => console.log((computers)))
+    resolve()
+  });
+}
+
+window.onload = () => {
+  getMercadoLivrePromise()
+};
