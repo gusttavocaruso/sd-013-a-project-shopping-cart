@@ -55,4 +55,3 @@ const createProductList = async () => {
 window.onload = () => {
   createProductList();
 };
-
