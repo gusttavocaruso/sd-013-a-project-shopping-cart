@@ -95,7 +95,7 @@ const requisicaoAddItem = (evento) => {
       localStorage.setItem(objeto.id, JSON.stringify(item)); // requisito 04 - stringify transforma em string para colocar chave/valor no localstorage
       elementOlCarrinho.appendChild(createCartItemElement(item)); // Adiciona o item
       arrayDeRetorno.push({ sku: objeto.id, salePrice: objeto.price });
-      // somaCarrinho(); // Requisito 5
+      somaCarrinho(); // Requisito 5
     })
     .catch((error) => {
       window.alert(error);
@@ -116,7 +116,7 @@ const removeCarrinho = (itemRemover) => { // requisito 03
         localStorage.removeItem(itemRemover); // Remove item do LocalStorage
       }
     });
-  // return somaCarrinho(); // Requisito 5 - atualiza somatória com a remoção do item
+  return somaCarrinho(); // Requisito 5 - atualiza somatória com a remoção do item
 };
 
 function cartItemClickListener(event) { // requisito 03
@@ -142,8 +142,27 @@ const pegaValoresLS = () => {
         const elemento = JSON.parse(item); // constroi o elemento com dados do JSON
         elementOlCarrinho.appendChild(createCartItemElement(elemento));
         arrayDeRetorno.push({ sku: elemento.sku, salePrice: elemento.salePrice });
-        // somaCarrinho(); // Puxa a soma do carrinho
+        somaCarrinho(); // Puxa a soma do carrinho
       });
+  }
+};
+
+// *******************************************************
+// Requisito 05 - SOME O VALOR TOTAL DOS ITENS DO CARRINHO
+// *******************************************************
+// total-price
+const somaCarrinho = () => {
+  const total = document.querySelector('.total-price'); // Pega a classe onde vai jogar o total
+  let resultado;
+  let soma = 0;
+  if (elementOlCarrinho.childNodes.length >= 1) { // ChildNodes retorna o HTML Collection com todos os nós filhos
+    for (let index = 0; index < arrayDeRetorno.length; index += 1) {
+      soma += arrayDeRetorno[index].salePrice;
+    }
+    resultado = Math.round(soma * 100) / 100; // Math.round retorna o valor de um número arredondado para o inteiro mais proximo
+    total.innerHTML = resultado.toFixed(2); // mostra resultado final, com duas casas decimais
+  } else {
+    total.innerHTML = 0.00.toFixed(2); // mostra 0 se o carrinho estiver vazio
   }
 };
 
@@ -156,4 +175,5 @@ window.onload = function onload() {
   getProdutos(); // requisito 01
   addItemNoCarrinho(); // requisito 02
   pegaValoresLS(); // requisito 04
+  somaCarrinho(); // requisito 05
 };
