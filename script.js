@@ -12,6 +12,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// Cria componentes HTML referentes a um produto
 function createProductItemElement({ sku, name, image }) {
   const section = document.createElement('section');
   section.className = 'item';
