@@ -12,7 +12,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ sku: id, name: title, image: thumbnail }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -40,4 +40,23 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+const fetchML = (query) => {
+  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
+    .then((response) => {
+      response.json().then((data) => {
+        const addItensToSection = data.results;
+      }) 
+    })
+}
+
+const addItensToSection = (items) => {
+  items.forEach((item) => {
+    const itemElement = createProductItemElement(item);
+    const section = document.querySelector('.items');
+    section.appendChild(itemElement);
+  });
+}
+
+window.onload = () => { 
+  fetchML('computador');
+};
