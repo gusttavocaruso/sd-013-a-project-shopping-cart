@@ -32,7 +32,7 @@ const fetchURL = async () => {
   const data = await response.json();
   const arrayResults = data.results;
   arrayResults.forEach((product) => {
-    document.querySelector('.items').appendChild(createProductItemElement(product))
+    document.querySelector('.items').appendChild(createProductItemElement(product));
   });
 };
 
