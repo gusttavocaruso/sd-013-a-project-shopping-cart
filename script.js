@@ -40,6 +40,19 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+const saveLocalStorage = () => {
+  const cartItemsOl = document.getElementsByClassName('cart__items')[0];
+  localStorage.setItem('cartList', cartItemsOl.innerHTML);
+}
+
+const loadLocalStorage = () => new Promise((resolve) => {
+  if (localStorage.getItem('cartList')) {
+    const cartItemsOl = document.getElementsByClassName('cart__items')[0];
+    cartItemsOl.innerHTML = localStorage.getItem('cartList');
+    resolve();
+  }
+});
+
 const fetchMeLiAPI = (product) => new Promise((resolve) => {
   const apiUrl = `https://api.mercadolibre.com/sites/MLB/search?q=${product}`;
   fetch(apiUrl)
@@ -63,16 +76,18 @@ const fetchItem = () => new Promise((resolve) => {
         .then((jsonProduct) => {
           const cartItemsOl = document.getElementsByClassName('cart__items')[0];
           cartItemsOl.appendChild(createCartItemElement(jsonProduct));
-          resolve();
+          saveLocalStorage();
         }));
     });
   });
+  resolve();
 });
 
 const fetchPromise = async () => {
   try {
     await fetchMeLiAPI('computador');
     await fetchItem();
+    await loadLocalStorage();
   } catch (error) {
     console.log(error);
   }
