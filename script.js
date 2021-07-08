@@ -1,4 +1,4 @@
-function createProductImageElement(imageSource) {
+/* function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
@@ -41,3 +41,4 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 window.onload = () => { };
+ */
