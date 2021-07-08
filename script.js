@@ -58,30 +58,12 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-const getId = (string, startingPosition) => {
-  let startingIndex = 0;
-  let id = '';
-  for (let i = 13; i > 0; i -= 1) {
-    id += string[startingPosition + startingIndex];
-    startingIndex += 1;
-  }
-  return id;
-};
-
-async function getProductPrice(id) {
-  let price = await fetch(`https://api.mercadolibre.com/items/${id}`);
-  price = await price.json();
-  price = await price.price;
-  price *= -1;
-  return price;
-}
-
 async function cartItemClickListener(event) {
-  let idStart = event.target.innerHTML.search('SKU: ');
-  idStart += 5;
-  const stringProduct = event.target.innerHTML;
-  const price = await getProductPrice(getId(stringProduct, idStart));
-  addTotalPrice(price);
+  const idStart = event.target.innerHTML.split('PRICE: $');
+  let itemPrice = idStart[1];
+  itemPrice *= -1;
+  addTotalPrice(itemPrice);
+  console.log(itemPrice);
   event.target.remove();
   saveLocalStorage();
 }
@@ -141,6 +123,10 @@ window.onload = function onload() {
   loadLocalStorage();
   const selectedProducts = document.querySelectorAll('.cart__item');
   selectedProducts.forEach((product) => product.addEventListener('click', (event) => {
+    const idStart = event.target.innerHTML.split('PRICE: $');
+    let itemPrice = idStart[1];
+    itemPrice *= -1;
+    addTotalPrice(itemPrice);
     event.target.remove();
     saveLocalStorage();
   }));
