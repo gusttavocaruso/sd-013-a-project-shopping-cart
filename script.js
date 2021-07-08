@@ -77,6 +77,35 @@ const getProdutos = async () => { // requisito 01
   }
 };
 
+// *********************************************************
+// Requisito 02 - POSSIBILITA ADICIONAR PRODUTOS NO CARRINHO
+// *********************************************************
+const addItemNoCarrinho = () => { // Identifica que está sendo clicado no 'Adicionar ao carrinho'
+  const botaoAddItemNoCarrinho = document.querySelector('.items');
+  botaoAddItemNoCarrinho.addEventListener('click', (evento) => {
+    if (evento.target.className === 'item__add') {
+      requisicaoAddItem(evento);
+    }
+  });
+};
+
+const requisicaoAddItem = (evento) => {
+  const buscaClasseItem = evento.target.parentElement.querySelector('span.item__sku'); // busca a classe que tem o item dentro através do parentElement que retorna o elemento pai
+  const idItem = buscaClasseItem.innerText; // mostra o texto da classe encontrada
+  fetch(`https://api.mercadolibre.com/items/${idItem}`)
+    .then((response) => response.json())
+    .then((objeto) => {
+      const item = { sku: objeto.id, name: objeto.title, salePrice: objeto.price };
+      localStorage.setItem(objeto.id, JSON.stringify(item)); // requisito 04 - stringify transforma em string para colocar chave/valor no localstorage
+      elementOlCarrinho.appendChild(createCartItemElement(item)); // Adiciona o item
+      arrayDeRetorno.push({ sku: objeto.id, salePrice: objeto.price });
+      // somaCarrinho(); // Requisito 5
+    })
+    .catch((error) => {
+      window.alert(error);
+    });
+};
+
 window.onload = function onload() {
   elementOlCarrinho = document.querySelector('.cart__items'); // Seleciona a OL de lista de carrinho
 
