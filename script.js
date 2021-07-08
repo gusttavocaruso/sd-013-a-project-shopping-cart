@@ -1,20 +1,5 @@
 // const fetch = require('node-fetch');
 
-const getProductList = (url) => new Promise((resolve, reject) => {
-  if (url !== 'https://api.mercadolibre.com/sites/MLB/search?q=computador') {
-    reject(new Error('Endereço inválido'));
-  } else {
-    fetch(url)
-    .then((response) => {
-      response.json().then((obj) => console.log(obj.results));
-      resolve();
-    });
-  }
-  });
-
-const computer = getProductList('https://api.mercadolibre.com/sites/MLB/search?q=computador');
-console.log(computer);
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -29,13 +14,13 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ id, title, thumbnail }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
-  section.appendChild(createCustomElement('span', 'item__id', id));
-  section.appendChild(createCustomElement('span', 'item__title', title));
-  section.appendChild(createProductImageElement(thumbnail));
+  section.appendChild(createCustomElement('span', 'item__sku', sku));
+  section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   return section;
@@ -57,5 +42,23 @@ function createProductItemElement({ id, title, thumbnail }) {
 //   return li;
 // }
 
+const getProductList = (url) => new Promise((resolve, reject) => {
+  if (url !== 'https://api.mercadolibre.com/sites/MLB/search?q=computador') {
+    reject(new Error('Endereço inválido'));
+  } else {
+    fetch(url)
+    .then((response) => {
+      response.json().then((obj) => obj.results.forEach((product) => {
+        const items = document.querySelector('.items');
+        const item = createProductItemElement(product);
+        items.appendChild(item);
+      }));
+      resolve();
+    });
+  }
+});
+
 // window.onload = () => { };
-// window.onload = () => computer;
+window.onload = () => {
+  getProductList('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+}; 
