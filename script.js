@@ -1,4 +1,6 @@
-window.onload = function onload() { };
+// INFORMAÇÕES INICIAIS
+const arrayDeRetorno = []; // Variável que guarda arrays de retorno - onde é guardado o carrinho como array
+let elementOlCarrinho;
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -41,3 +43,42 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+// *********************************************
+// Requisito 01 - CHAMA OS PRODUTOS PARA A TELA
+// *********************************************
+const fetchProdutos = (QUERY) => { // Conecta na API e busca o item QUERY
+  // Posiciona o elemento dentro do .items (que é o noome do grupo onde vai estar todos itens)
+  const loadingId = document.querySelector('#loading');
+  const itemsSection = document.querySelector('.items');
+  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${QUERY}`) // chama a API
+    .then((response) => response.json())
+    .then((produtos) => {
+      produtos.results
+        .forEach(({ id, title, thumbnail }) => {
+          itemsSection.appendChild( // Fala que os itens abaixo serão filhos do grupo .items
+            createProductItemElement({ // Adiciona os produtos ao abrir a pagina
+              sku: id,
+              name: title,
+              image: thumbnail,
+            }),
+          );
+      });
+      loadingId.remove(); // requisito 07
+    });
+};
+
+const getProdutos = async () => { // requisito 01
+  try {
+    await fetchProdutos('computador'); // Conjunto de itens a procurar
+    await fetchProdutos('monitores'); // Conjunto de itens a procurar
+  } catch (error) {
+    alert('Ocorreu um erro ao buscar o produto');
+  }
+};
+
+window.onload = function onload() {
+  elementOlCarrinho = document.querySelector('.cart__items'); // Seleciona a OL de lista de carrinho
+
+  getProdutos(); // requisito 01
+};
