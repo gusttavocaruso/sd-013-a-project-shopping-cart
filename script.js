@@ -41,9 +41,22 @@ const loadLocalStorage = () => new Promise((resolve) => {
   resolve();
 });
 
+const sumItems = () => new Promise((resolve) => {
+  const cartItems = document.querySelectorAll('.cart__item');
+  const totalSpan = document.querySelector('.total-price');
+  let total = 0;
+  cartItems.forEach((cartItem) => {
+    const itemPrice = parseFloat(cartItem.innerText.split('$')[1]);
+    total += itemPrice;
+  });
+  totalSpan.innerText = Math.round(total * 100) / 100;
+  resolve();
+});
+
 function cartItemClickListener(event) {
   event.target.remove();
   saveLocalStorage();
+  sumItems();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -82,6 +95,7 @@ const fetchItem = () => new Promise((resolve) => {
         .then((jsonProduct) => {
           cartItemsOl().appendChild(createCartItemElement(jsonProduct));
           saveLocalStorage();
+          sumItems();
         }));
     });
   });
@@ -93,6 +107,7 @@ const emptyCart = () => new Promise((resolve) => {
   emptyBtn.addEventListener('click', () => {
     cartItemsOl().innerHTML = '';
     saveLocalStorage();
+    sumItems();
   });
   resolve();
 });
@@ -104,6 +119,7 @@ const fetchPromise = async () => {
     await deleteLoading();
     await loadLocalStorage();
     await emptyCart();
+    await sumItems();
   } catch (error) {
     console.log(error);
   }
