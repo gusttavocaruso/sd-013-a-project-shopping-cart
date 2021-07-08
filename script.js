@@ -32,10 +32,6 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
-
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -105,6 +101,32 @@ const requisicaoAddItem = (evento) => {
       window.alert(error);
     });
 };
+
+// ******************************************************************
+// Requisito 03 - REMOVE O ITEM DO CARRINHO DE COMPRAS AO CLICAR NELE
+// ******************************************************************
+const removeCarrinho = (itemRemover) => { // requisito 03
+  const excluir = arrayDeRetorno
+    .find((elemento) => elemento.sku === itemRemover);
+  console.log(`arrayDeRetorno: ${arrayDeRetorno}`);
+  arrayDeRetorno // Percorre o arrayDeRetorno
+    .forEach((elemento, index) => {
+      if (elemento === excluir) {
+        arrayDeRetorno.splice(index, 1); // Splice altera conteudos de uma lista
+        localStorage.removeItem(itemRemover); // Remove item do LocalStorage
+      }
+    });
+  // return somaCarrinho(); // Requisito 5 - atualiza somatória com a remoção do item
+};
+
+function cartItemClickListener(event) { // requisito 03
+  const removeItemLocalStorage = event.target.innerText.substring(5, 18);
+  console.log(`removeItemLocalStorage: ${removeItemLocalStorage}`);
+  removeCarrinho(removeItemLocalStorage); // Chama a função e remove item do carrinho
+  console.log(`event.target: ${event.target}`);
+  elementOlCarrinho.removeChild(event.target);
+}
+
 
 window.onload = function onload() {
   elementOlCarrinho = document.querySelector('.cart__items'); // Seleciona a OL de lista de carrinho
