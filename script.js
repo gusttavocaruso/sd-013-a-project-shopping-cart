@@ -12,7 +12,11 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
+function createProductItemElement({
+  id: sku,
+  title: name,
+  thumbnail: image,
+}) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -28,8 +32,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-// function cartItemClickListener(event) {
-// }
+function cartItemClickListener(event) {}
 
 function getJsonFromProduct() {
   return new Promise((resolve) => {
@@ -44,30 +47,54 @@ function getJsonFromProduct() {
   });
 }
 
+function chamarFetchId(id) {
+  return new Promise((resolve) => {
+    fetch(`https://api.mercadolibre.com/items/${id}`)
+      .then((resposta) => {
+        resposta.json()
+          .then((respostajson) => {
+            const resultado = respostajson;
+            resolve(resultado);
+          });
+      });
+  });
+}
+
+function createCartItemElement({
+  id: sku,
+  title: name,
+  price: salePrice,
+}) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+function enviarItem() {
+  const botoes = document.querySelectorAll('.item__add');
+  for (let index = 0; index < botoes.length; index += 1) {
+    botoes[index].addEventListener('click', function () {
+      const botaoAtual = botoes[index].parentNode.firstElementChild.innerHTML;
+      chamarFetchId(botaoAtual).then((value) => {
+        document.querySelector('.cart__items')
+          .appendChild(createCartItemElement((value)));
+      });
+    });
+  }
+}
+
 async function jogarItens() {
   try {
     const itens = await getJsonFromProduct();
     itens.forEach((cadaItem) => {
-      // console.log(createProductItemElement(cadaItem));
       document.querySelector('.items').appendChild(createProductItemElement(cadaItem));
     });
+    enviarItem();
   } catch (err) {
     console.log(err);
   }
-} 
+}
 
-// function createCartItemElement({
-//   sku,
-//   name,
-//   salePrice,
-// }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
-
-window.onload = () => {
-  jogarItens();
-};
+jogarItens();
