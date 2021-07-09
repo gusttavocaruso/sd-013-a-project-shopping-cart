@@ -117,7 +117,8 @@ function limparCart() {
 }
 
 window.onload = () => {
-  requestML();
+  requestML()
+    .then(() => document.querySelector('.loading').remove());
   computadoresNoCarrinho();
 
   const emptyCart = document.querySelector('.empty-cart');
