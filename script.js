@@ -12,15 +12,17 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  // Agradecimentos ao Matheus Duarte que me mostrou e explicou essa forma de usar o botão.
+  section.lastElementChild.addEventListener('click', (event) => {
+    getItem(event.target.parentElement.firstElementChild.innerText);
+  })
   return section;
 }
 
@@ -29,15 +31,40 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.remove();
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  document.querySelector('.cart__items').appendChild(li);
   return li;
 }
 
-window.onload = () => { };
+const getAPI = async (item) => {
+  try {
+    const linkAPI = `https://api.mercadolibre.com/sites/MLB/search?q=${item}`;
+    const retorno = ((await (await fetch(linkAPI))
+      .json()).results).forEach((item) => {document
+        .querySelector('.items')
+          .appendChild(createProductItemElement(item))});
+  } catch (error) {
+    alert('Um erro ae');
+  };
+}
+
+const getItem = async (item) => {
+  try {
+    const linkItem = `https://api.mercadolibre.com/items/${item}`;
+    const retorno = await (await fetch(linkItem)).json();
+    createCartItemElement(retorno);
+  } catch (error) {
+    alert('Outro erro ae');
+  };
+}
+
+window.onload = () => {
+  getAPI('computador');
+}
