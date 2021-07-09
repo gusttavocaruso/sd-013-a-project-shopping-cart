@@ -1,3 +1,5 @@
+const cartItems = '.cart__items';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -46,8 +48,8 @@ const getComputer = async (id) => {
 };
 
 function cartItemClickListener(event) {
-  event.target.remove();
-} 
+  event.target.remove(); 
+}
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -57,6 +59,24 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+const addLocalStorage = () => {
+  const list = document.querySelector(cartItems);
+  const textList = list.innerHTML;
+  localStorage.setItem('cartList', '');
+  localStorage.setItem('cartList', JSON.stringify(textList));
+};
+
+const getLocalStorage = () => {
+  const getStorage = JSON.parse(localStorage.getItem('cartList'));
+  const list = document.querySelector(cartItems);
+  list.innerHTML = getStorage;
+  list.addEventListener('click', (event) => {
+    if (event.target.className === 'cart__item') {
+      cartItemClickListener(event);
+    }
+  });
+};
+
 const buttonEvent = () => {
   const computerList = document.querySelector('.items');
   computerList.addEventListener('click', async (event) => {
@@ -64,8 +84,9 @@ const buttonEvent = () => {
       const btnParent = event.target.parentElement;
       const id = getSkuFromProductItem(btnParent);
       const computer = await getComputer(id);
-      return document.querySelector('.cart__items')
-        .appendChild(createCartItemElement(computer));        
+      document.querySelector(cartItems)
+        .appendChild(createCartItemElement(computer));
+      addLocalStorage();
     }
   });
 };
@@ -73,4 +94,5 @@ const buttonEvent = () => {
 window.onload = () => {
   getJson();
   buttonEvent();
-};  
+  getLocalStorage();
+};
