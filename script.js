@@ -22,13 +22,13 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   // Agradecimentos ao Matheus Duarte que me mostrou e explicou essa forma de usar o botão.
   section.lastElementChild.addEventListener('click', (event) => {
     getItem(event.target.parentElement.firstElementChild.innerText);
-  })
+  });
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 function cartItemClickListener(event) {
   event.target.remove();
@@ -47,11 +47,12 @@ const getAPI = async (item) => {
   try {
     const linkAPI = `https://api.mercadolibre.com/sites/MLB/search?q=${item}`;
     const retorno = ((await (await fetch(linkAPI))
-      .json()).results).forEach((item) => {document
-        .querySelector('.items')
-          .appendChild(createProductItemElement(item))});
+      .json()).results).forEach((item2) => {
+        document.querySelector('.items')
+          .appendChild(createProductItemElement(item2));
+      });
   } catch (error) {
-    alert('Um erro ae');
+    alert('Um erro ae')
   };
 }
 
@@ -63,8 +64,8 @@ const getItem = async (item) => {
   } catch (error) {
     alert('Outro erro ae');
   };
-}
+};
 
 window.onload = () => {
   getAPI('computador');
-}
+};
