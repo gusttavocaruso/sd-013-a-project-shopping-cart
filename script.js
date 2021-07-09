@@ -56,18 +56,22 @@ const appendItem = (itemLiHTML) => {
   olItem.appendChild(itemLiHTML);
 };
 
-const fetchItemSelected = (item) => {
-  fetch(`https://api.mercadolibre.com/items/${item}`)
+const fetchItemSelected = (item) => fetch(`https://api.mercadolibre.com/items/${item}`)
   .then((response) => response.json())
   .then((data) => createCartItemElement(data))
   .then((element) => appendItem(element));
-};
 
-fetchItemSelected('MLB1341706310');
+// fetchItemSelected('MLB1341706310');
 
 function addEvtListenerClickToAllProds() {
-  const allBtnsForAddToCart = document.querySelectorAll('.item-add');
-  allBtnsForAddToCart.addEventListener('click', fetchItemSelected);
+  const allBtnsForAddToCart = document.querySelectorAll('.item__add');
+  allBtnsForAddToCart.forEach((btn) => {
+    const IdItem = btn.parentElement.firstElementChild.innerText;
+    btn.addEventListener('click', (event) => {
+      event.preventDefault();
+      fetchItemSelected(IdItem);
+    });
+  });
 }
 
 window.onload = async () => {
