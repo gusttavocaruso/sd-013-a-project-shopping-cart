@@ -1,22 +1,36 @@
+const cartItems = () => document.querySelector('.cart__items');
+
 const objectFetch = {
   method: 'GET',
   headers: { Accept: 'application/json' },
 };
 
+const updateStorage = () => {
+  localStorage.clear();
+  localStorage.setItem('cart', cartItems().innerHTML);
+};
+
 function cartItemClickListener({ target }) {
-  // coloque seu código aqui
-  const cartItems = document.querySelector('.cart__items');
-  cartItems.removeChild(target);
+  cartItems().removeChild(target);
+  updateStorage();
 }
+
+const verifyStorage = () => {
+  if (localStorage.getItem('cart')) {
+    cartItems().innerHTML = localStorage.getItem('cart');
+    const arrayItems = document.querySelectorAll(('.cart__item'));
+    arrayItems.forEach((item) => item.addEventListener('click', cartItemClickListener));
+  }
+};
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
-  const cartItems = document.querySelector('.cart__items');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   
-  cartItems.appendChild(li);
+  cartItems().appendChild(li);
+  updateStorage();
 }
 
 const fetchItem = ({ target }) => {
@@ -70,4 +84,5 @@ function getSkuFromProductItem(item) {
 */
 window.onload = () => {
   fetchProduct('computador');
+  verifyStorage();
 };
