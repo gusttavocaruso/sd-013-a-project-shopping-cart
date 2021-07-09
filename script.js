@@ -32,7 +32,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// Função que resgata os elementos do JSON e enviá-los para o html dinamicamente [Requisito 1]
+// Objetivo: Resgatar os elementos do JSON e enviá-los para o html dinamicamente
 
 const getJsonOnLink = async (query) => {
   const api = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=$${query}`);
@@ -46,18 +46,66 @@ const getJsonOnLink = async (query) => {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
+// ==============================================
 
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+// Requisito 3
+
+// ==============================================
+
+function cartItemClickListener(event) {
+  event.target.remove(); // como já temos a função createCartItemElement() que cria as lis, aqui apenas removemos o evento criado
+}
+
+// ==============================================
+
+// Requisito 2
+
+// ==============================================
+
+// Função já existente no projeto
+// Objetivo: criar o elemento li dentro da ol no formato id, name, price
+
+function createCartItemElement({ id: sku, title: name, price: salePrice }) { // desestruturando para fazer o link dos parâmetros com o que está escrito na API
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+// Função criada (PASSO 1)
+// Objetivo: Acessar cada link único de cada computador da API
+
+const getCartComputer = async (id) => {
+  const api = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const apiJson = await api.json();
+  return apiJson;
+};
+
+// Função já existente no projeto
+// Objetivo: 
+
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
+// Função criada (PASSO 2)
+// Objetivo: selecionar o botão do 'Adicionar ao carrinho' e criar um evento de click que cria uma lista
+
+const buttonAddCart = () => {
+  const parent = document.querySelector('.items');
+  parent.addEventListener('click', async (event) => {
+    if (event.target.className === 'item__add') {
+      const buttonParent = event.target.parentElement;
+      const buttonId = getSkuFromProductItem(buttonParent);
+      const buttonData = await getCartComputer(buttonId);
+      const createComputer = createCartItemElement(buttonData);
+      document.querySelector('.cart__items').appendChild(createComputer);
+    }
+  });
+};
 
 window.onload = () => { 
   getJsonOnLink('computador');
+  buttonAddCart();
 };
