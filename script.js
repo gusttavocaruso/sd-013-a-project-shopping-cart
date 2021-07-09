@@ -30,10 +30,16 @@ const listaComputadorPorId = async (id) => {
 
 function computadoresNoCarrinho() {
   constantes().pcs.innerHTML = localStorage.getItem('pc');
-  constantes().totalPrices.innerHTML = `Preço Total $${localStorage.getItem('total')}`;
+  constantes().totalPrices.innerHTML = (localStorage.getItem('total') === null ? 0
+    : localStorage.getItem('total'));
 }
 
 function cartItemClickListener(event) {
+  const valor = event.target.innerHTML.split('$')[1];
+  const lStorageTotal = localStorage.getItem('total');
+  const total = Number(lStorageTotal) - valor;
+  localStorage.setItem('total', Math.round(total));
+  constantes().totalPrices.innerHTML = Math.round(total);
   event.target.remove();
 }
 
@@ -45,15 +51,11 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const somarPreco = async (price) => {
+const somarPreco = (price) => {
   const lStorageTotal = localStorage.getItem('total');
-  return new Promise((resolve) => {
-    localStorage.setItem('total',
-    (lStorageTotal === null ? price : parseFloat(lStorageTotal) + price));
-    constantes().totalPrices.innerHTML = `Preço Total $${
-      (lStorageTotal === null ? price : parseFloat(lStorageTotal) + price)}`;
-    resolve();
-  });
+  const total = (lStorageTotal === null ? price : Number(lStorageTotal) + price);
+  localStorage.setItem('total', Math.round(total * 100) / 100);
+  constantes().totalPrices.innerHTML = Math.round(total * 100) / 100;
 };
 
 function addCart() {
