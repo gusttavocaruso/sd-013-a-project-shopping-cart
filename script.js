@@ -4,6 +4,8 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   event.preventDefault();
+  const itemShopList = document.querySelector('.cart__item');
+  itemShopList.remove();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
