@@ -92,6 +92,7 @@ function getProducts(query) {
   return fetch(api)
   .then((result) => result.json())
   .then((data) => {
+    document.getElementById('items').removeChild(document.getElementById('loading'));
     data.results.forEach((i) => createProductItemElement(i)); // Chama função passando o results como paramento
     getItemSeleted(); // seleciona o id do produto selecionado
   });
