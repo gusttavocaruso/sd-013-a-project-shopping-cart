@@ -17,6 +17,23 @@ function createCustomElement(element, className, innerText) {
 
 // ==============================================
 
+// Requisito 5
+
+// ==============================================
+
+function totalPrice() {
+  const getTotalPrice = document.querySelector('.total-price');
+  let price = 0;
+  const AllLi = document.querySelectorAll('li');
+  AllLi.forEach((item) => {
+  const computer = item.innerText.split('$');
+  price += Number(computer[1]);
+  });
+  getTotalPrice.innerHTML = `${(Math.round((price * 100)) / 100)}`;
+  }
+
+// ==============================================
+
 // Requisito 1
 
 // ==============================================
@@ -71,6 +88,7 @@ const setItemsLocalStorage = () => {
 function cartItemClickListener(event) {
   event.target.remove();
   setItemsLocalStorage(); // chamando a função do requisito 4
+  totalPrice(); // chamando a função do requisito 5
 }
 
 // ==============================================
@@ -136,18 +154,14 @@ const buttonAddCart = () => {
       const createComputer = createCartItemElement(buttonData); // cria no formato id, nome e preço as lis de acordo com os dados do json que foram específicados na função createCartItemElement
       document.querySelector(cartItems).appendChild(createComputer); // tornamos o retorno no formato especificado na createCartItemElement um filho de onde devem aparecer essas lis
       setItemsLocalStorage(); // chamando a função do requisito 4
+      totalPrice();
     }
   });
 };
-
-// ==============================================
-
-// Requisito 5
-
-// ==============================================
 
 window.onload = () => {
   getJsonOnLink('computador');
   buttonAddCart();
   getItemsLocalStorage();
+  totalPrice();
 };
