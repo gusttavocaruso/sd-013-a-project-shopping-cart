@@ -18,7 +18,7 @@ function createCustomElement(element, className, innerText) {
 const setItemsLocalStorage = () => {
   const ol = document.querySelector(cartItems);
   const text = ol.innerHTML;
-  localStorage.setItem('cartList' ,'');
+  localStorage.setItem('cartList', '');
   localStorage.setItem('cartList', JSON.stringify(text));
 };
 
