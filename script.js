@@ -42,7 +42,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-// Aux
+// Aux create product list
 const createItems = (results) => {
   results.forEach((product) => {
     const items = document.querySelector('.items');
@@ -51,18 +51,31 @@ const createItems = (results) => {
   });
 };
 
+// Aux create localStorage for cart items
+const setItemsToLocalStorage = (cartItems) => {
+  // const cartItemsLi = document.querySelector('.cart__items').innerHTML;
+  localStorage.setItem('cartItems', cartItems);
+};
+
+// Aux get cart items from localStorage
+const getItemsFromLocalStorage = () => {
+  const cartItems = document.querySelector('.cart__items');
+  cartItems.innerHTML = localStorage.getItem('cartItems');
+};
+
+// Aux create addEventListener to buttons and saves to localStorage
 const buttonEventListener = () => {
   const buttons = document.querySelectorAll('.item__add');
   buttons.forEach((element) => {
     element.addEventListener(('click'), (event) => {
       const itemId = event.target.parentNode.firstChild.innerText;
-      // console.log(itemId);
       fetch(`https://api.mercadolibre.com/items/${itemId}`)
         .then((response) => response.json()
           .then((data) => {
             const cartItems = document.querySelector('.cart__items');
             const cartItem = createCartItemElement(data);
             cartItems.appendChild(cartItem);
+            setItemsToLocalStorage(cartItems.innerHTML);
           }));
     });
   });
@@ -73,19 +86,9 @@ const getProductList = () => fetch('https://api.mercadolibre.com/sites/MLB/searc
   .then((data) => data.results)
   .catch((error) => console.log(error));
 
-// window.onload = () => { };
-
-// window.onload = () => {
-//   getProductList()
-//     .then((results) => {
-//       createItems(results);
-//       buttonEventListener();
-//     });
-// };
-
 window.onload = async () => {
   const results = await getProductList();
   createItems(results);
+  getItemsFromLocalStorage();
   buttonEventListener();
-  console.log('Bianca');
 };
