@@ -40,7 +40,7 @@ const fetchProduct = (query) => fetch(`https://api.mercadolibre.com/sites/MLB/se
 // }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.remove();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
