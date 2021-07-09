@@ -36,10 +36,9 @@ function computadoresNoCarrinho() {
 
 function cartItemClickListener(event) {
   const valor = event.target.innerHTML.split('$')[1];
-  const lStorageTotal = localStorage.getItem('total');
-  const total = Number(lStorageTotal) - valor;
-  localStorage.setItem('total', Math.round(total));
-  constantes().totalPrices.innerHTML = Math.round(total);
+  const total = Number(constantes().totalPrices.innerHTML) - valor;
+  localStorage.setItem('total', total);
+  constantes().totalPrices.innerHTML = total;
   event.target.remove();
 }
 
@@ -52,9 +51,8 @@ function createCartItemElement({ sku, name, salePrice }) {
 }
 
 const somarPreco = (price) => {
-  const lStorageTotal = localStorage.getItem('total');
-  const total = (lStorageTotal === null ? price : Number(lStorageTotal) + price);
-  localStorage.setItem('total', Math.round(total * 100) / 100);
+  const total = Number(constantes().totalPrices.innerHTML) + price;
+  localStorage.setItem('total', Math.round(total));
   constantes().totalPrices.innerHTML = Math.round(total * 100) / 100;
 };
 
