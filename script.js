@@ -1,4 +1,5 @@
 // const fetch = require('node-fetch');
+const classNameOl = '.cart__items';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -36,12 +37,22 @@ const fetchComputers = async () => {
     document.querySelector('.items').appendChild(createProductItemElement(element));
   });
 };
+// ===========================================================================================
+// Requisito 4
+// ===========================================================================================
+const salveLocalStorage = () => {
+  const recoverOl = document.querySelector(classNameOl);
+  const OlText = recoverOl.innerHTML;
+  localStorage.setItem('products', '');
+  localStorage.setItem('products', JSON.stringify(OlText));
+};
 
 // ===========================================================================================
 // Requsito 3
 // ===========================================================================================
 function cartItemClickListener(event) { // a função já recebe o evento como parâmetro, então a partir do event.target (onde foi clicado), usa o método remove();
   event.target.remove();
+  salveLocalStorage();
 }
 
 // ===========================================================================================
@@ -74,12 +85,22 @@ const buttonEvent = () => {
       const btnId = getSkuFromProductItem(btnFather); // função que recupera o ID
       const getJsonApi = await apiMl(btnId); // função que recupera o JSON do API do Mercado Livre. 
       const createLiProduct = createCartItemElement(getJsonApi); // a função createCartItemElement cria uma Li a partir dos dados do Json e adiciona um evento a cada uma delas. 
-      document.querySelector('.cart__items').appendChild(createLiProduct); // adiciona o li criado anteriormente como filho do elemento <ol class="cart__items">.
+      document.querySelector(classNameOl).appendChild(createLiProduct); // adiciona o li criado anteriormente como filho do elemento <ol class="cart__items">.
+      salveLocalStorage();
     }
   });
 };
 
+// ===========================================================================================
+// window.onload
+// ===========================================================================================
+
 window.onload = () => {
   fetchComputers();
   buttonEvent();
+  const recoverLocalStorage = JSON.parse(localStorage.getItem('products'));
+  if (recoverLocalStorage !== null) {
+    const recoverOl = document.querySelector(classNameOl);
+    recoverOl.innerHTML = recoverLocalStorage;
+  }
 };
