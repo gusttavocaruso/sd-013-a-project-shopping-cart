@@ -49,22 +49,25 @@ const getProducts = (query) => fetch(`https://api.mercadolibre.com/sites/MLB/sea
     items.appendChild(card);
   })));
 
-const getProduct = (query) => fetch(`https://api.mercadolibre.com/items/${query}
-`)
+const getProduct = (element) => {
+  const idd = element.target.parentElement.querySelector('span.item__sku').innerText;
+  fetch(`https://api.mercadolibre.com/items/${idd}`)
   .then((response) => response.json()
-  .then((data) => console.log(data)));
+  .then(({ id, title, price }) => {
+    const cart = document.querySelector('.cart__items');
+    cart.appendChild(createCartItemElement({ sku: id, name: title, salePrice: price }));
+  }));
+};
 
 const itemAdd = async () => {
   try {
     await getProducts('computador');
-    const product = document.querySelectorAll('.items');
+    const product = document.querySelector('.items');
     console.log(product);
-    product.forEach((button, index) => {
-      button.addEventListener('click', () => {
-        const sections = document.querySelectorAll('.item');
-        const idSection = sections[index].firstChild.innerText;
-        console.log(getProduct(idSection));
-      });
+    product.addEventListener('click', (element) => {
+      if (element.target.className === 'item__add') {
+        getProduct(element);
+      }
     });
   } catch (error) {
     alert(`Erro ao adicionar produto ao carrinho: ${error}`);
