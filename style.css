@@ -64,7 +64,6 @@ nav:hover {
 main {
   display: flex;
   flex-flow: row nowrap;
-  height: 92vh;
 }
 
 .top-bar {
@@ -91,7 +90,6 @@ main {
   display: flex;
   justify-content: space-around;
   width: 100%;
-  height: 92vh;
 }
 
 .items {
@@ -99,6 +97,7 @@ main {
   flex-basis: 70%;
   flex-wrap: wrap;
   justify-content: center;
+  margin-bottom: 50px;
 }
 
 .items_head {
@@ -121,10 +120,11 @@ main {
 .hr-big {
   background-color: #888;
   width: 300px;
+  margin-bottom: 50px;
 }
 
 .item {
-  border: 2px solid blue;
+  border: 2px solid #555;
   border-radius: 5px;
   box-sizing: border-box;
   display: flex;
@@ -132,6 +132,10 @@ main {
   height: auto;
   margin: 5px;
   width: 200px;
+}
+
+.item:hover {
+  box-shadow: 3px 3px 3px #d0d0ff, -3px -3px 3px #d0d0ff;
 }
 
 .item .item__sku {
@@ -149,28 +153,26 @@ main {
 }
 
 .item .item__add {
-  background-color: green;
+  background-color: forestgreen;
   border: 0;
   cursor: pointer;
   margin: 0;
   padding: 5px;
+  opacity: 90%;
+}
+
+.item .item__add:hover {
+  opacity: 100%;
 }
 
 .cart {
   background-color: #ddd;
   display: flex;
-  flex-basis: 30%;
   flex-flow: column nowrap;
-}
-
-.cart_head, .cart_list, .cart_options {
-  display: flex;
   flex-basis: 30%;
-  flex-flow: column wrap;
 }
 
 .cart__title {
-  flex-basis: 1;
   text-align: center;
   color: #333;
   font-size: 26px;
