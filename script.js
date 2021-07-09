@@ -1,5 +1,4 @@
 const carrinho = document.querySelector('.cart__items');
-const precoTotal = document.querySelector('.total-price');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
