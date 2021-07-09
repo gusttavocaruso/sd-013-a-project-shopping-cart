@@ -1,6 +1,7 @@
 window.onload = async () => {
   await fetchProducts("https://api.mercadolibre.com/sites/MLB/search?q=computador");
    addButtonListener();
+   cartItemClickListener();
 };
 
 // const fetch = require('node-fetch');
@@ -9,7 +10,6 @@ const fetchProducts = async (url) => {
   const response = await fetch(url);
   const data = await response.json();
   const results = data.results;
-  console.log(data.results)
   results.forEach((element) => (createProductItemElement({
     sku: element.id,
     name: element.title,
@@ -29,7 +29,6 @@ const addButtonListener = () => {
   const items = document.querySelector('.items');
   for (let i = 0; i < items.children.length; i += 1) {
     const element = items.children[i];
-    console.log(element);
     const id = getSkuFromProductItem(element);
     const button = element.getElementsByClassName('item__add')[0]
     button.addEventListener('click', async () => {
@@ -73,12 +72,11 @@ function createProductItemElement({ sku, name, image }) {
 }
 
 function getSkuFromProductItem(item) {
-  console.log( item.querySelector('span.item__sku').innerText);
   return item.querySelector('span.item__sku').innerText;
 }
 
 function cartItemClickListener(event) {
-
+  event.target.remove();
 }
 
 function createCartItemElement({sku,name,salePrice }) {
