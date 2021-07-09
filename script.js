@@ -28,8 +28,23 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
+const saveLocalStorage = () => {
+  const cartItems = document.querySelector('.cartItems');
+  localStorage.setItem('cartItems', cartItems.innerHTML);
+};
+
+const getItemLocalStorage = () => {
+  const cartItems = document.querySelector('.cart__items');
+  cartItems.innerHTML = localStorage.getItem('cartItems');
+  cartItems.addEventListener('click', (event) => {
+    event.target.remove();
+    saveLocalStorage();
+  });
+};
+
 function cartItemClickListener(event) {
   event.target.remove();
+  saveLocalStorage();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -52,18 +67,6 @@ const fetchAPI = async (product) => {
     });
  };
 
-const saveLocalStorage = (item) => {
-  localStorage.setItem('cartItems', item);
-};
-
-const getItemLocalStorage = () => {
-  const cartItems = document.querySelector('.cart__items');
-  cartItems.innerHTML = localStorage.getItem('cartItems');
-  cartItems.addEventListener('click', (event) => {
-    event.target.remove();
-  });
-};
-
 const fetchItems = () => {
   const getButtons = document.querySelectorAll('.item__add');
   getButtons.forEach((button) => {
@@ -75,9 +78,18 @@ const fetchItems = () => {
       .then((data) => {
         const cartItems = document.querySelector('.cart__items');
         cartItems.appendChild(createCartItemElement(data));
-        saveLocalStorage(cartItems.innerHTML);
+        saveLocalStorage();
       }));
     });
+  });
+};
+
+const emptyCart = () => {
+  const emptyButton = document.querySelector('.empty-cart');
+  emptyButton.addEventListener('click', () => {
+    const cartItems = document.querySelector('.cartItems');
+    cartItems.innerHTML = '';
+    localStorage.removeItem('cartItems');
   });
 };
 
@@ -85,4 +97,5 @@ window.onload = async () => {
   await fetchAPI('computador');
   fetchItems();
   getItemLocalStorage();
+  emptyCart();
 };
