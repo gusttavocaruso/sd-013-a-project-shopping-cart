@@ -38,7 +38,7 @@ function cartItemClickListener(event) {
   const valor = event.target.innerHTML.split('$')[1];
   const total = Number(constantes().totalPrices.innerHTML) - valor;
   localStorage.setItem('total', total);
-  constantes().totalPrices.innerHTML = total;
+  constantes().totalPrices.innerHTML = Math.round(total * 100) / 100;
   event.target.remove();
 }
 
