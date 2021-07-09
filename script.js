@@ -1,4 +1,5 @@
 // const fetch = require('node-fetch');
+const cartItems = '.cart__items';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -48,6 +49,19 @@ const getJsonOnLink = async (query) => {
 
 // ==============================================
 
+// Requisito 4 - PARTE 1
+
+// ==============================================
+
+const setItemsLocalStorage = () => {
+  const ol = document.querySelector(cartItems);
+  const text = ol.innerHTML;
+  localStorage.setItem('cartList', ''); // limpando o que tinha antes
+  localStorage.setItem('cartList', JSON.stringify(text)); // pegar todo o texto de dentro da variável e transforma no formato JSON
+};
+
+// ==============================================
+
 // Requisito 3
 
 // ==============================================
@@ -56,7 +70,25 @@ const getJsonOnLink = async (query) => {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  setItemsLocalStorage(); // chamando a função do requisito 4
 }
+
+// ==============================================
+
+// Requisito 4 - PARTE 2
+
+// ==============================================
+
+const getItemsLocalStorage = () => {
+  const getLocalStorage = JSON.parse(localStorage.getItem('cartList')); // recupera o item criado no requisito 4
+  const ol = document.querySelector(cartItems); // pegar onde tem os itens
+  ol.innerHTML = getLocalStorage; // e colocar os itens que já tinham sido salvos
+  ol.addEventListener('click', (event) => {
+    if (event.target.className === 'cart__item') {
+      cartItemClickListener(event);
+    }
+  });
+};
 
 // ==============================================
 
@@ -95,19 +127,27 @@ function getSkuFromProductItem(item) {
 // Objetivo: selecionar o botão do 'Adicionar ao carrinho' e criar um evento de click que cria uma lista
 
 const buttonAddCart = () => {
-  const parent = document.querySelector('.items');
+  const parent = document.querySelector('.items'); // acessamos a classe que possui os 50 computadores
   parent.addEventListener('click', async (event) => {
-    if (event.target.className === 'item__add') {
-      const buttonParent = event.target.parentElement;
+    if (event.target.className === 'item__add') { // se o click no botão do Add carrinho for feito
+      const buttonParent = event.target.parentElement; // acessando o pai do botão pq temos uma função que pega o ID do computador
       const buttonId = getSkuFromProductItem(buttonParent);
-      const buttonData = await getCartComputer(buttonId);
-      const createComputer = createCartItemElement(buttonData);
-      document.querySelector('.cart__items').appendChild(createComputer);
+      const buttonData = await getCartComputer(buttonId); // acessa o link de cada computador
+      const createComputer = createCartItemElement(buttonData); // cria no formato id, nome e preço as lis de acordo com os dados do json que foram específicados na função createCartItemElement
+      document.querySelector(cartItems).appendChild(createComputer); // tornamos o retorno no formato especificado na createCartItemElement um filho de onde devem aparecer essas lis
+      setItemsLocalStorage(); // chamando a função do requisito 4
     }
   });
 };
 
+// ==============================================
+
+// Requisito 5
+
+// ==============================================
+
 window.onload = () => {
   getJsonOnLink('computador');
   buttonAddCart();
+  getItemsLocalStorage();
 };
