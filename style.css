@@ -1,20 +1,31 @@
-.top-bar {
-  align-items: center;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: rgb(245, 255, 255);
+}
+
+header {
+  background-color: rgb(205, 248, 244);
   display: flex;
-  height: 100px;
-  justify-content: space-around;
-  margin-bottom: 10px;
+  height: 50px;
   width: 100%;
+  padding: 5px 10px;
+  gap: 30px;
+  align-items: center;
+  margin-bottom: 30px;
 }
 
-.top-bar .input-name-group {
-  align-items: flex-start;
-  display: flex;
+header img {
+  height: 30px;
 }
 
-.top-bar .input-terms-group {
-  align-items: flex-start;
-  display: flex;
+header p {
+  display: inline-block;
+  font-size: 1.5em;
 }
 
 .container {
@@ -31,14 +42,24 @@
 }
 
 .item {
-  border: 2px solid blue;
-  border-radius: 5px;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.25), 0 2px 2px rgba(0, 0, 0, 0.22);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   height: auto;
   margin: 5px;
   width: 200px;
+  align-items: center;
+}
+
+.item , .cart {
+  background-color: white;
+}
+
+.item:hover {
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.25), 0 5px 5px rgba(0, 0, 0, 0.22);
 }
 
 .item .item__sku {
@@ -49,28 +70,70 @@
   flex-grow: 1;
   padding: 10px;
   text-align: center;
+  margin-top: 10px;
+}
+
+.item .item__title:after {
+  content: '';
+  display: block;
+  height: 1px;
+  background-color: black;
+  margin-top: 10px;
 }
 
 .item .item__image {
-  width: 100%;
+  height: 150px;
+  margin: 15px 0;
 }
 
 .item .item__add {
-  background-color: green;
+  background-color: rgb(193, 251, 255);
   border: 0;
   cursor: pointer;
-  margin: 0;
+  margin: 10px;
   padding: 5px;
+  border-radius: 10px;
+  width: calc(100% - 15px);
 }
 
 .cart {
   display: flex;
-  flex-basis: 30%;
+  flex-basis: 25%;
   flex-flow: column wrap;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.25), 0 2px 2px rgba(0, 0, 0, 0.22);
+  border-radius: 20px;
+  align-items: center;
 }
 
 .cart .cart__title {
   flex-basis: 1;
-  font-size: 16pt;
+  font-size: 1.5em;
+  text-align: center;
+  margin: 15px 0;
+}
+
+.cart button {
+  width: calc(100% - 15px);
+  border: none;
+  background-color: rgb(193, 251, 255);
+  cursor: pointer;
+  margin: 10px;
+  padding: 5px;
+  border-radius: 10px;
+  font-size: 1em;
+}
+
+.cart li {
+  margin-left: 20px;
+  padding: 10px 0;
+}
+
+.cart p {
+  width: calc(100% - 15px);
+  border: none;
+  background-color: rgb(193, 251, 255);
+  margin: 10px;
+  padding: 5px;
+  border-radius: 10px;
   text-align: center;
 }
