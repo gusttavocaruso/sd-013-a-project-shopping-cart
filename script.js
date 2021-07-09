@@ -1,5 +1,6 @@
 // const fetch = require('node-fetch');
 const classNameOl = '.cart__items';
+const classNameTotalPrice = '.total-price';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -53,7 +54,7 @@ const salveLocalStorage = () => {
 // Requisito 5 - Função que salva dados no LocalStorage
 // ===========================================================================================
 const salveSumLocalStorage = () => {
-  const recoverSpanPrice = document.querySelector('.price');
+  const recoverSpanPrice = document.querySelector(classNameTotalPrice);
   const spanText = recoverSpanPrice.innerHTML;
   localStorage.setItem('totalPrice', '');
   localStorage.setItem('totalPrice', JSON.stringify(spanText));
@@ -64,17 +65,18 @@ const salveSumLocalStorage = () => {
 // Requisito feito em grupo com as meninas da tribo A
 // ===========================================================================================
 // Toda vez que essa função for chamada, ela vai buscar os Lis, transformar no array e somar.
-const totalPrice = () => {
-  const getSectionFather = document.querySelector('.price'); // recupera span filho, onde vai ser colocado o texto
+
+function totalPrice() {
+  const getSpan = document.querySelector(classNameTotalPrice);
   let price = 0;
-  const getAllLis = document.querySelectorAll('li');
-  getAllLis.forEach((item) => {
+  const arrayPrices = document.querySelectorAll('li');
+  arrayPrices.forEach((item) => {
   const computerItem = item.innerText.split('$');
   price += Number(computerItem[1]);
   });
-  getSectionFather.innerHTML = `$${(Math.round((price * 100)) / 100)}`;
+  getSpan.innerHTML = `${(Math.round((price * 100)) / 100)}`;
   salveSumLocalStorage();
-};
+  } 
 
 // ===========================================================================================
 // Requsito 6 - Função que remove tudo do carrinho de compras.
@@ -155,7 +157,7 @@ window.onload = () => {
     recoverOl.innerHTML = recoverLocalStorage;
   }
   if (recoverSumLocalStorage !== null) {
-    const recoverSpan = document.querySelector('.price');
+    const recoverSpan = document.querySelector(classNameTotalPrice);
     recoverSpan.innerHTML = recoverSumLocalStorage;
   }
 };
