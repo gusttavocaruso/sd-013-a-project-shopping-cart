@@ -41,6 +41,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+// ====================== Aux functions ==========================================
 
 // Aux create product list
 const createItems = (results) => {
@@ -52,15 +53,34 @@ const createItems = (results) => {
 };
 
 // Aux create localStorage for cart items
-const setItemsToLocalStorage = (cartItems) => {
+const setItemsToLocalStorage = (items) => {
   // const cartItemsLi = document.querySelector('.cart__items').innerHTML;
-  localStorage.setItem('cartItems', cartItems);
+  localStorage.setItem('cartItems', items);
 };
 
 // Aux get cart items from localStorage
 const getItemsFromLocalStorage = () => {
-  const cartItems = document.querySelector('.cart__items');
+  const cartItems = document.getElementsByTagName('ol')[0];
   cartItems.innerHTML = localStorage.getItem('cartItems');
+};
+
+// Aux empty cart
+const emptyCart = () => {
+  const emptyButton = document.querySelector('.empty-cart');
+  emptyButton.addEventListener('click', () => {
+    const cartItems = document.querySelector('.cart__items');
+    cartItems.innerHTML = '';
+    localStorage.removeItem('cartItems');
+  });
+};
+
+// Aux get total price from cart items
+const totalPrice = () => {
+  const cart = document.querySelector('.cart');
+  const total = document.createElement('section');
+  total.className = 'total-price';
+  total.innerHTML = 'Total = ';
+  cart.appendChild(total);
 };
 
 // Aux create addEventListener to buttons and saves to localStorage
@@ -91,4 +111,6 @@ window.onload = async () => {
   createItems(results);
   getItemsFromLocalStorage();
   buttonEventListener();
+  totalPrice();
+  emptyCart();
 };
