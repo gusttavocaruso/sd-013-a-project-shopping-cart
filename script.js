@@ -159,9 +159,28 @@ const buttonAddCart = () => {
   });
 };
 
+// ==============================================
+
+// Requisito 6
+
+// ==============================================
+
+const buttonRemoveAll = () => {
+  const getButtonRemoveAll = document.querySelector('.empty-cart');
+  getButtonRemoveAll.addEventListener('click', () => {
+    const ol = document.querySelector(cartItems);
+    while (ol.firstChild) {
+      ol.removeChild(ol.firstChild);
+      totalPrice();
+      setItemsLocalStorage();
+    }
+  });
+};
+
 window.onload = () => {
   getJsonOnLink('computador');
   buttonAddCart();
   getItemsLocalStorage();
   totalPrice();
+  buttonRemoveAll();
 };
