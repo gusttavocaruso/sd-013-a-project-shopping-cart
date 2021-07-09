@@ -52,8 +52,10 @@ const getJsonOnLink = async (query) => {
 
 // ==============================================
 
+// como já temos a função createCartItemElement() que cria as lis, aqui apenas removemos o evento criado
+
 function cartItemClickListener(event) {
-  event.target.remove(); // como já temos a função createCartItemElement() que cria as lis, aqui apenas removemos o evento criado
+  event.target.remove();
 }
 
 // ==============================================
@@ -65,7 +67,7 @@ function cartItemClickListener(event) {
 // Função já existente no projeto
 // Objetivo: criar o elemento li dentro da ol no formato id, name, price
 
-function createCartItemElement({ id: sku, title: name, price: salePrice }) { // desestruturando para fazer o link dos parâmetros com o que está escrito na API
+function createCartItemElement({ id: sku, title: name, price: salePrice }) { // desestruturando
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -83,7 +85,7 @@ const getCartComputer = async (id) => {
 };
 
 // Função já existente no projeto
-// Objetivo: 
+// Objetivo:
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
@@ -105,7 +107,7 @@ const buttonAddCart = () => {
   });
 };
 
-window.onload = () => { 
+window.onload = () => {
   getJsonOnLink('computador');
   buttonAddCart();
 };
