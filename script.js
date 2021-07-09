@@ -1,3 +1,13 @@
+function saveList() {
+  localStorage.setItem('save', document.getElementById('cart__items').innerHTML);
+}
+
+function loadList() {
+  if (localStorage.getItem('save')) {
+    document.getElementById('cart__items').innerHTML = localStorage.getItem('save');
+  }
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -28,6 +38,7 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   document.getElementById('cart__items').removeChild(event.target);
+  saveList();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -36,6 +47,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   document.getElementById('cart__items').appendChild(li);
+  saveList();
 }
 
 function getCarItem(sku) {
@@ -45,17 +57,30 @@ function getCarItem(sku) {
   .then((data) => createCartItemElement(data));
 }
 
-function getProducts(filter) {
-  const api = `https://api.mercadolibre.com/sites/MLB/search?q=${filter}`;
-  return fetch(api)
-  .then((result) => result.json())
-  .then((data) => data.results.forEach((i) => {
-    createProductItemElement(i);
-  }))
-  .then(() => document.querySelectorAll('.item__add').forEach((i) => 
-    i.addEventListener('click', function () {
-      getCarItem(i.parentElement.firstChild.innerText);
-  })));
+function getItemSeleted() {
+  document.querySelectorAll('.item__add').forEach((item) => 
+    item.addEventListener('click', function () {
+      getCarItem(getSkuFromProductItem(item.parentElement));
+  }));
 }
 
-window.onload = () => getProducts('computador');
+function getProducts(query) {
+  const api = `https://api.mercadolibre.com/sites/MLB/search?q=${query}`;
+  return fetch(api)
+  .then((result) => result.json())
+  .then((data) => {
+    data.results.forEach((i) => createProductItemElement(i)); // Chama função passando o results como paramento
+    getItemSeleted(); // seleciona o id do produto selecionado
+  });
+}
+
+function addEventListenItemsSaved() {
+  document.querySelectorAll('.cart__item').forEach((i) => // cria addEventListen para os
+  i.addEventListener('click', cartItemClickListener));
+}
+
+window.onload = () => {
+  getProducts('computador');
+  loadList();
+  addEventListenItemsSaved();
+};
