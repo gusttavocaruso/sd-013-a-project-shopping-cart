@@ -69,18 +69,17 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+const carrinho = () => document.getElementsByClassName('cart__items')[0];
 
 const local = () => {
-  const carrinho = document.getElementsByClassName('cart__items')[0];
-  localStorage.setItem('items', carrinho.innerHTML);
+  localStorage.setItem('items', carrinho().innerHTML);
 };
 
   const carregar = () => new Promise((resolve) => {
     if (localStorage.getItem('items')) {
-      const carrinho = document.getElementsByClassName('cart__items')[0];
-      carrinho.innerHTML = localStorage.getItem('items');
-      resolve();
+      carrinho().innerHTML = localStorage.getItem('items');
     }
+    resolve();
   });
 
 const getIds = () => new Promise((resolve) => {
@@ -93,12 +92,21 @@ const getIds = () => new Promise((resolve) => {
       fetch(itemUrl)
         .then((response) => response.json()
         .then((produto) => {
-          const produtoNoCarrinho = document.getElementsByClassName('cart__items')[0];
-          produtoNoCarrinho.appendChild(createCartItemElement(produto));
+          carrinho().appendChild(createCartItemElement(produto));
           local();
           Soma();
         }));
     });
+  });
+  resolve();
+});
+
+const esvaziar = () => new Promise((resolve) => {
+  const butaum = document.getElementsByClassName('empty-cart')[0];
+  butaum.addEventListener('click', () => {
+    carrinho().innerHTML = '';
+    local();
+    Soma();
   });
   resolve();
 });
@@ -109,6 +117,7 @@ const fetchPromise = async () => {
     await getIds();
     await carregar();
     await Soma();
+    await esvaziar();
   } catch (error) {
     console.log(error);
   }
