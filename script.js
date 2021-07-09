@@ -7,6 +7,17 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+function totalPrice() {
+  const sumPrice = document.querySelector('.total-price');
+  let price = 0;
+  const listPrices = document.querySelectorAll('li');
+  listPrices.forEach((item) => {
+  const computer = item.innerText.split('$');
+  price += Number(computer[1]);
+  });
+  sumPrice.innerHTML = `${(Math.round((price * 100)) / 100)}`;
+  } 
+
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -47,24 +58,18 @@ const getComputer = async (id) => {
   return computerJson;    
 };
 
-function cartItemClickListener(event) {
-  event.target.remove(); 
-}
-
-function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
-
 const addLocalStorage = () => {
   const list = document.querySelector(cartItems);
   const textList = list.innerHTML;
   localStorage.setItem('cartList', '');
   localStorage.setItem('cartList', JSON.stringify(textList));
 };
+
+function cartItemClickListener(event) {
+  event.target.remove();
+  totalPrice();
+  addLocalStorage();
+}
 
 const getLocalStorage = () => {
   const getStorage = JSON.parse(localStorage.getItem('cartList'));
@@ -77,6 +82,14 @@ const getLocalStorage = () => {
   });
 };
 
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
 const buttonEvent = () => {
   const computerList = document.querySelector('.items');
   computerList.addEventListener('click', async (event) => {
@@ -87,6 +100,18 @@ const buttonEvent = () => {
       document.querySelector(cartItems)
         .appendChild(createCartItemElement(computer));
       addLocalStorage();
+      totalPrice();
+    }
+  });
+};
+
+const buttonRemove = () => {
+  const listComputers = document.querySelector('.cart__items');
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', () => {
+    while (listComputers.firstChild) {
+      listComputers.removeChild(listComputers.firstChild);
+      totalPrice();
     }
   });
 };
@@ -95,4 +120,6 @@ window.onload = () => {
   getJson();
   buttonEvent();
   getLocalStorage();
+  totalPrice();
+  buttonRemove();
 };
