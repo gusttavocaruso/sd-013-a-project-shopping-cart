@@ -45,10 +45,6 @@ const getJsonOnLink = async (query) => {
     .appendChild(createProductItemElement(product)));
 };
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 function cartItemClickListener(event) {
   event.target.remove();
 }
