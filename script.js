@@ -54,7 +54,6 @@ const fetchML = (query) => {
       response.json().then((data) => {
         addItenstoSection(data.results);
       });
-      console.log(fetchML);
     });
 };
 
