@@ -70,7 +70,15 @@ const getProducts = async () => {
   });
 };
 
+const clearButton = () => {
+  const emptyCart = document.querySelector('.empty-cart');
+  emptyCart.addEventListener('click', () => {
+    document.querySelector('.cart__items').innerHTML = '';
+  });
+};
+
 window.onload = async function onload() {
   await getProducts();
   clickEvent();
+  clearButton();
 };
