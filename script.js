@@ -2,6 +2,8 @@
 const items = document.querySelector('.items');
 const carrinho = document.querySelector('.cart__items');
 
+// let precoTotal = 0;
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -23,11 +25,11 @@ const salvaCarrinho = () => {
 
 // Rogério P. Silva e Josué Lobo me ajudaram a pensar nesta estratégia
 function cartItemClickListener(event) {
+  if (event.target.className === 'cart__item') {
     event.target.remove();
+  }
   salvaCarrinho();
 }
-
-document.querySelector('.cart__items').addEventListener('click', (cartItemClickListener));
 
 const recuperaCarrinho = () => {
   const storedCart = localStorage.getItem('carrinhoSalvo');
@@ -48,7 +50,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 const addProdutoNoCarrinho = async (ID) => {
   try {
     const infosProduto = await (await fetch(`https://api.mercadolibre.com/items/${ID}`)).json();
-    const itemDoCarrinho = createCartItemElement(infosProduto);
+    createCartItemElement(infosProduto);
     salvaCarrinho();
   } catch (error) {
     alert(error);
@@ -59,7 +61,7 @@ const addProdutoNoCarrinho = async (ID) => {
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
+  
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
@@ -67,7 +69,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.lastElementChild.addEventListener('click', (event) => {
     addProdutoNoCarrinho(event.target.parentElement.firstElementChild.innerText);
   });
-
+  
   items.appendChild(section);
 }
 
@@ -80,13 +82,15 @@ const pegaProdutos = async (produto) => {
   }
 };
 
+carrinho.addEventListener('click', (cartItemClickListener));
+
 // const addProdutoCarrinho = async (botao) => {
-//   try {
-//     const produtoID = pegaIDdoProduto(botao.target.)
+  //   try {
+    //     const produtoID = pegaIDdoProduto(botao.target.)
 //   }
 // }
 
 window.onload = () => {
   pegaProdutos('computador');
   recuperaCarrinho();
- };
+};
