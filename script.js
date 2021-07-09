@@ -14,6 +14,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// desafio 4 feito com ajuda do Matheus Duarte
 const savedCart = () => {
   const carStore = cart.innerHTML;
   localStorage.setItem('car', carStore);
