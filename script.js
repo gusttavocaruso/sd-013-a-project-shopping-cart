@@ -5,28 +5,9 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-function createCustomElement(element, className, innerText) {
-  const e = document.createElement(element);
-  e.className = className;
-  e.innerText = innerText;
-  return e;
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
 }
-
-function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
-  const section = document.createElement('section');
-  section.className = 'item';
-
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
-  return section;
-}
-
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
 
 function cartItemClickListener(event) {
   event.target.remove();
@@ -40,17 +21,34 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-function funcionalidadeAddCartToButton() {
-  const listaBotoes = document.querySelectorAll('.item__add');
-  return listaBotoes.forEach((botao) => botao.addEventListener('click', () => {
-    const idvalue = botao.parentElement.querySelector('.item__sku').innerText;
-    fetch(`https://api.mercadolibre.com/items/${idvalue}`)
-    .then((response) => response.json())
-    .then((data) => {
-      const cartList = document.querySelector('.cart__items');
-      cartList.appendChild(createCartItemElement(data));
+function cliqueDeAdicionaNoCarrinho(section) {
+  section.querySelector('button').addEventListener('click', (event) => {
+    const item = event.target.parentNode;
+      fetch(`https://api.mercadolibre.com/items/${getSkuFromProductItem(item)}`)
+      .then((response) => response.json())
+      .then((data) => {
+        const cartList = document.querySelector('.cart__items');
+        cartList.appendChild(createCartItemElement(data));
+      });
     });
-  }));
+}
+
+function createCustomElement(element, className, innerText) {
+  const e = document.createElement(element);
+  e.className = className;
+  e.innerText = innerText;
+  return e;
+}
+
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
+  const section = document.createElement('section');
+  section.className = 'item';
+  section.appendChild(createCustomElement('span', 'item__sku', sku));
+  section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createProductImageElement(image));
+  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  cliqueDeAdicionaNoCarrinho(section);
+  return section;
 }
 
 function fetchElement(query) {
@@ -58,7 +56,7 @@ function fetchElement(query) {
     .then((response) => response.json());
 }
 
-window.onload = function onload() {
+function criaItemNoCarrinho() {
   fetchElement('computador')
   .then((data) => {
     data.results
@@ -67,5 +65,7 @@ window.onload = function onload() {
       sessão.appendChild((createProductItemElement(element)));
     });
   });
-  setTimeout(funcionalidadeAddCartToButton, 1000);
+}
+window.onload = function onload() {
+  criaItemNoCarrinho();
 };
