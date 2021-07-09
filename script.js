@@ -1,8 +1,14 @@
 // Rafael com coAutoria de Josué me ajudaram a definir esta constante global.
 const items = document.querySelector('.items');
 const carrinho = document.querySelector('.cart__items');
+// const emptyCart = document.querySelector('.empty-cart');
+// const carrinhoMontado = emptyCart.nextElementSibling.querySelectorAll('.cart__item');
+const precoTotal = document.querySelector('.total-price');
+// const precoCarrinho = document.querySelector('#total-price');
 
-// let precoTotal = 0;
+// emptyCart.addEventListener('click', (event) => {
+//   event.target.nextElementSibling.querySelectorAll('.cart__item').remove();
+// });
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -11,40 +17,58 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-function createCustomElement(element, className, innerText) {
-  const e = document.createElement(element);
-  e.className = className;
-  e.innerText = innerText;
-  return e;
-}
-
 const salvaCarrinho = () => {
-  const htmlDoCarrinho = document.querySelector('.cart__items').innerHTML; // pq colocar 2 underline?
-  localStorage.setItem('carrinhoSalvo', htmlDoCarrinho);
+  localStorage.setItem('carrinhoSalvo', carrinho.innerHTML);
+  localStorage.setItem('precoSalvo', precoTotal.innerHTML);
+};
+
+const limpaCarrinho = () => {
+  const botao = document.querySelector('.empty-cart');
+  botao.addEventListener('click', () => {
+    const carrinhoCheio = document.querySelectorAll('.cart__item');
+    carrinhoCheio.forEach((item) => item.parentNode.removeChild(item));
+    precoTotal.innerHTML.clear();
+    salvaCarrinho();
+  });
+};
+
+// Resolvi em conjunto com Matheus Camilo T13-A
+const calculaPrecoTotal = async (valor, operador) => {
+  try {
+    const secaoPreco = precoTotal;
+    let precoAtual = Number(secaoPreco.innerHTML);
+    if (operador === '+') precoAtual += valor; 
+    if (operador === '-') precoAtual -= valor;
+    secaoPreco.innerHTML = Math.round(precoAtual * 100) / 100;
+    salvaCarrinho();
+  } catch (error) {
+    alert(error);
+  }
+};
+
+const recuperaCarrinho = () => {
+  carrinho.innerHTML = localStorage.getItem('carrinhoSalvo');
+  precoTotal.innerHTML = localStorage.getItem('precoSalvo'); 
 };
 
 // Rogério P. Silva e Josué Lobo me ajudaram a pensar nesta estratégia
 function cartItemClickListener(event) {
   if (event.target.className === 'cart__item') {
     event.target.remove();
+    const precoDoProduto = event.target.querySelector('span').innerText;
+    calculaPrecoTotal(precoDoProduto, '-');
+    salvaCarrinho();
   }
-  salvaCarrinho();
 }
-
-const recuperaCarrinho = () => {
-  const storedCart = localStorage.getItem('carrinhoSalvo');
-  if (storedCart !== null) {
-    carrinho.innerHTML = storedCart;
-  }
-};
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  // Rogerio P. Silva bolou essa estratégia de tornar o salePrice interagível colocando-o como um spam.
+  li.innerHTML = `SKU: ${sku} | NAME: ${name} | PRICE: $<span>${salePrice}</span>`;
   carrinho.appendChild(li);
-  return li;
+  calculaPrecoTotal(salePrice, '+');
+  // return li;
 }
 
 const addProdutoNoCarrinho = async (ID) => {
@@ -57,6 +81,13 @@ const addProdutoNoCarrinho = async (ID) => {
   }
 };
 
+function createCustomElement(element, className, innerText) {
+  const e = document.createElement(element);
+  e.className = className;
+  e.innerText = innerText;
+  return e;
+}
+
 // Rogerio P. Silva recomendou criar a escuta do botao dentro de onde ele é criado.
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
@@ -67,13 +98,14 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   section.lastElementChild.addEventListener('click', (event) => {
-    addProdutoNoCarrinho(event.target.parentElement.firstElementChild.innerText);
+    const productID = event.target.parentElement.firstElementChild.innerText;
+    addProdutoNoCarrinho(productID);
   });
   
   items.appendChild(section);
 }
 
-const pegaProdutos = async (produto) => {
+const pegaProdutos = async (produto = 'computador') => {
   try {
     ((await (await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${produto}`))
     .json()).results).forEach((computador) => createProductItemElement(computador));
@@ -84,13 +116,8 @@ const pegaProdutos = async (produto) => {
 
 carrinho.addEventListener('click', (cartItemClickListener));
 
-// const addProdutoCarrinho = async (botao) => {
-  //   try {
-    //     const produtoID = pegaIDdoProduto(botao.target.)
-//   }
-// }
-
 window.onload = () => {
-  pegaProdutos('computador');
+  pegaProdutos();
   recuperaCarrinho();
+  limpaCarrinho();
 };
