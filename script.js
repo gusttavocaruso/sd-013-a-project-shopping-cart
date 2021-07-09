@@ -51,7 +51,7 @@ function createCartItemElement({ id, title, price }) {
   return li;
 }
 
-function fillCart() {
+function fillCart(event) {
   const item = event.target.parentElement;
   const itemID = getSkuFromProductItem(item);
   const url = `https://api.mercadolibre.com/items/${itemID}`;
