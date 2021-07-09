@@ -1,28 +1,28 @@
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family:  sans-serif;
-  background-color: #778899;
+  font-family: sans-serif;
+  background-color: lightslategray;
   overflow-x: hidden;
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #778899	;
+  background-color: lightslategray;
 }
 
 ::-webkit-scrollbar {
   width: 6px;
-  background: rgb(51 , 51 , 51);
+  background: rgb(51, 51, 51);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(51 , 51 , 51 , 0.8);
+  background: rgba(51, 51, 51, 0.8);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(192 , 190 , 190);
+  background: rgb(192, 190, 190);
 }
 
 .top-bar {
@@ -72,7 +72,6 @@
 
 .item .item__sku {
   display: none;
-  
 }
 
 .item .item__title {
@@ -92,12 +91,12 @@
   background-color: rgb(168, 228, 168);
   border: 0;
   cursor: pointer;
-  margin: 0;
   padding: 5px;
   border-radius: 20px;
   width: 80%;
-  margin: 10px auto 10px;
+  margin: 10px auto;
 }
+
 .item .item__add:hover {
   transform: scale(1.1);
 }
@@ -113,30 +112,30 @@
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
-  
 }
 
 .total-price {
-  background-color:white
+  background-color: white;
 }
+
 p {
   margin-top: 20px;
   text-align: center;
   background-color: white;
   border-radius: 10px;
-  margin-right:10px;
+  margin-right: 10px;
 
 }
 
 .empty-cart {
   background-color: rgb(168, 228, 168);
-  border-radius:10px;
+  border-radius: 10px;
   cursor: pointer;
-  margin-right:10px;
+  margin-right: 10px;
 }
 
 .empty-cart:hover {
-  transform: scale(1.1)
+  transform: scale(1.1);
 }
 
 li {
