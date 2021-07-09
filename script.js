@@ -12,6 +12,28 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+
+}
+
+function createCartItemElement(result) {
+  fetch(`https://api.mercadolibre.com/items/${result}`)
+      .then((response) => response.json())
+      .then((ObjResult) => {
+        console.log(ObjResult);
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${ObjResult.id} | NAME: ${ObjResult.title} | PRICE: $${ObjResult.price}`;
+  // acesso a ol, que é pai das li
+  const cart = document.querySelector('.cart__items');
+  // adciono a li criada a Ol
+  cart.appendChild(li);
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+});
+}
+
 function createProductItemElement({ id, title, thumbnail }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -19,27 +41,18 @@ function createProductItemElement({ id, title, thumbnail }) {
   section.appendChild(createCustomElement('span', 'item__sku', id));
   section.appendChild(createCustomElement('span', 'item__title', title));
   section.appendChild(createProductImageElement(thumbnail));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+const b = section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  b.addEventListener('click', function (event) {
+    const itemAdd = event.target.parentNode.firstChild.innerText;
+    createCartItemElement(itemAdd);
+  });
 const sectionCriada = document.querySelector('.items');
 sectionCriada.appendChild(section);
   return section;
-}
+  }
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}
-
-function cartItemClickListener(event) {
-    // coloque seu código aqui
-}
-
-function createCartItemElement({ id, title, thumbnail }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${thumbnail}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
 }
 
 function promessa(event) {
@@ -63,3 +76,10 @@ function promessa(event) {
 window.onload = () => {
   promessa('computador');
  };
+
+/*  window.addEventListener('load', function () {
+  const paiButton = document.querySelector('.items');
+  paiButton.addEventListener('click', function(event) { 
+  console.log('eai');
+  });
+}); */
