@@ -1,14 +1,8 @@
-// Rafael com coAutoria de Josué me ajudaram a definir esta constante global.
+// Em conjunto com Rafael e Josué a definir esta constante global (items).
 const items = document.querySelector('.items');
 const carrinho = document.querySelector('.cart__items');
-// const emptyCart = document.querySelector('.empty-cart');
-// const carrinhoMontado = emptyCart.nextElementSibling.querySelectorAll('.cart__item');
 const precoTotal = document.querySelector('.total-price');
-// const precoCarrinho = document.querySelector('#total-price');
-
-// emptyCart.addEventListener('click', (event) => {
-//   event.target.nextElementSibling.querySelectorAll('.cart__item').remove();
-// });
+const botao = document.querySelector('.empty-cart');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -22,24 +16,21 @@ const salvaCarrinho = () => {
   localStorage.setItem('precoSalvo', precoTotal.innerHTML);
 };
 
-const limpaCarrinho = () => {
-  const botao = document.querySelector('.empty-cart');
   botao.addEventListener('click', () => {
     const carrinhoCheio = document.querySelectorAll('.cart__item');
     carrinhoCheio.forEach((item) => item.parentNode.removeChild(item));
-    precoTotal.innerHTML.clear();
+    precoTotal.innerHTML = 0;
     salvaCarrinho();
   });
-};
 
 // Resolvi em conjunto com Matheus Camilo T13-A
 const calculaPrecoTotal = async (valor, operador) => {
   try {
-    const secaoPreco = precoTotal;
-    let precoAtual = Number(secaoPreco.innerHTML);
+    // const secaoPreco = precoTotal;
+    let precoAtual = Number(precoTotal.innerHTML);
     if (operador === '+') precoAtual += valor; 
     if (operador === '-') precoAtual -= valor;
-    secaoPreco.innerHTML = Math.round(precoAtual * 100) / 100;
+    precoTotal.innerHTML = Math.round(precoAtual * 100) / 100;
     salvaCarrinho();
   } catch (error) {
     alert(error);
@@ -119,5 +110,4 @@ carrinho.addEventListener('click', (cartItemClickListener));
 window.onload = () => {
   pegaProdutos();
   recuperaCarrinho();
-  limpaCarrinho();
 };
