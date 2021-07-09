@@ -41,7 +41,8 @@
   width: 200px;
 }
 
-.item .item__sku {
+.item .item__sku,
+.item .item__price {
   display: none;
 }
 
@@ -73,4 +74,14 @@
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+}
+
+.cart__item {
+  cursor: pointer;
+}
+
+.total {
+  display: flex;
+  align-content: center;
+  align-items: center;
 }
