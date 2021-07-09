@@ -1,12 +1,10 @@
-const cart = document.getElementsByClassName('.cart__items');
-
-function saveItens() {
+/* function saveItens() {
   localStorage.setItem('cart', cart.innerHTML);
-}
+} */
 
-function getSavedItens() {
+/* function getSavedItens() {
   cart.innerHTML = localStorage.getItem('cart');
-}
+} */
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -19,6 +17,11 @@ function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
+
+  if (element === 'button'){
+    e.addEventListener('click', fillCart);
+  }
+
   return e;
 }
 
@@ -39,8 +42,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  event.target.remove();
-  saveItens();
+  console.log('aaa');
 }
 
 function createCartItemElement({ id, title, price }) {
@@ -48,6 +50,8 @@ function createCartItemElement({ id, title, price }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
   li.addEventListener('click', cartItemClickListener);
+
+  console.log(li);
   return li;
 }
 
@@ -59,9 +63,8 @@ function fillCart(event) {
   return fetch(url)
     .then((response) => response.json())
     .then((object) => {
-      object.forEach((obj) => {
-        cart.appendChild(createCartItemElement(obj));
-      });
+      const cart = document.querySelector('.cart__items');
+      cart.appendChild(createCartItemElement(object));
     });
 }
 
@@ -74,14 +77,24 @@ function productList() {
     .then((object) => {
       object.results.forEach((item) => {
         const pcs = document.getElementsByClassName('items')[0];
-        console.log(item);
+        // console.log(item);
         pcs.appendChild(createProductItemElement(item));
       });
     });
 }
 
+/* function addCart() {
+  return new Promice(resolve => {
+    setTimeout(() => {
+      const bnt = document.querySelector('.item__add');
+      bnt.forEach((item) => {
+      item.addEventListener('click', fillCart)
+    }, 5000);
+  };
+} */
+
 window.onload = () => { 
   productList();
-  getSavedItens();
-  document.getElementsByClassName('item__add').addEventListener('click', fillCart);
+  // addCart();
+  // getSavedItens();
 };
