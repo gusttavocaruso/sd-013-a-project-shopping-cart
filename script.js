@@ -32,6 +32,9 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   const cartItems = document.getElementsByTagName('ol')[0];
+  const totalPrice = Number(document.querySelector('section p').innerHTML);
+  const subPrice = Number(event.target.innerText.split('$')[1]);
+  document.querySelector('section p').innerHTML = (totalPrice - subPrice).toFixed(1);
   event.target.remove();
   localStorage.setItem('cartItems', cartItems.innerHTML);
 }
@@ -86,13 +89,11 @@ const emptyCart = () => {
 };
 
 // Aux get total price from cart items
-// const getTotalPrice = ({ price }) => {
-//   const totalChild = document.querySelector('.total-price').firstElementChild;
-//   const auxPrice = { totalPrice: 0 };
+const getTotalPrice = ({ price }) => {
+  const totalPrice = document.querySelector('.total-price').firstElementChild;
 
-//   // auxPrice.push(price);
-//   totalChild.innerText = a;
-// };
+  totalPrice.innerHTML = (Number(totalPrice.innerHTML) + price);
+};
 
 const setTotalPrice = () => {
   const cart = document.querySelector('.cart');
@@ -100,7 +101,7 @@ const setTotalPrice = () => {
   const totalPrice = document.createElement('p');
 
   total.className = 'total-price';
-  total.innerHTML = 'Total';
+  totalPrice.innerHTML = 0;
 
   total.appendChild(totalPrice);
   cart.appendChild(total);
@@ -119,7 +120,7 @@ const buttonEventListener = () => {
             const cartItems = document.querySelector('.cart__items');
             const cartItem = createCartItemElement(data);
             cartItems.appendChild(cartItem);
-            // getTotalPrice(data);
+            getTotalPrice(data);
             setItemsToLocalStorage(cartItems.innerHTML);
           }));
     });
