@@ -1,4 +1,5 @@
 // const fetch = require('node-fetch');
+// let listItensCart = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -32,6 +33,8 @@ function createProductItemElement({ sku, name, image }) {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  const listItens = document.querySelector('.cart__items');
+  localStorage.setItem('shop_cart', listItens.innerHTML);
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -67,6 +70,7 @@ const getProduct = (query) => {
       const itemSelectAdd = { sku: data.id, name: data.title, salePrice: data.price };
       const listItensCart = document.querySelector('.cart__items');
       listItensCart.appendChild(createCartItemElement(itemSelectAdd));
+      localStorage.setItem('shop_cart', listItensCart.innerHTML);
     }));
 };
 
@@ -79,28 +83,19 @@ const itemAdd = async () => {
         getProduct(button);
       }
     });
-    // product.forEach((button) => {
-    //   button.addEventListener('click', (b) => getProduct(b));
-    // });
   } catch (error) {
     alert(`Erro ao adicionar produto> ${error}`);
   }
 };
 
-// const itemAdd = async () => {
-//   try {
-//     await fetchMeli('computador');
-//     await getProduct('MLB1607748387');
-//     const product = document.querySelectorAll('.item__add');
-//     console.log(product);
-//     product.forEach((button) => {
-//       button.addEventListener('click', (b) => console.log(b));
-//     });
-//   } catch (error) {
-//     alert(`Erro ao adicionar produto> ${error}`);
-//   }
-// };
-
 window.onload = () => {
+  const listItensCart = document.querySelector('.cart__items');
+  const localCart = localStorage.getItem('shop_cart');
+  listItensCart.addEventListener('click', (e) => {
+    if (e.target.className === 'cart__item') {
+      cartItemClickListener(e);
+    }
+  });
+  listItensCart.innerHTML = localCart;
   itemAdd();
 };
