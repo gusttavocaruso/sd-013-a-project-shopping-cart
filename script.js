@@ -43,7 +43,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 const addItemsToSection = (items) => {
   items.forEach((item) => {
     const itemElement = createProductItemElement(item);
-    const section = document.querySelector(".items");
+    const section = document.querySelector('.items');
     section.appendChild(itemElement);
   });
 };
@@ -54,7 +54,7 @@ const fetchML = (query) => {
       response.json().then((data) => {
         addItemsToSection(data.results);
       });
-    })
+    });
 };
 
 window.onload = () => {
