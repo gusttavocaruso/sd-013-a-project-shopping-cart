@@ -3,8 +3,10 @@ const objectFetch = {
   headers: { Accept: 'application/json' },
 };
 
-function cartItemClickListener() {
-  // coloque seu código aqui -- VOLTAR EVENT COMO PARAMETRO
+function cartItemClickListener({ target }) {
+  // coloque seu código aqui
+  const cartItems = document.querySelector('.cart__items');
+  cartItems.removeChild(target);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
