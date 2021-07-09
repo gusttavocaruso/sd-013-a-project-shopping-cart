@@ -39,7 +39,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   document.getElementById('items').appendChild(section);
 }
 
-function createTotalPayment(value) {
+function createTotalPayment(value = 0) {
   total += value;
   total = Math.round(total * 100) / 100;
   if (total > 1) {
@@ -102,4 +102,10 @@ window.onload = () => {
   loadList();
   document.querySelectorAll('.cart__item').forEach((i) => // cria addEventListen para os
     i.addEventListener('click', cartItemClickListener));
+  document.getElementById('empty-cart').addEventListener('click', function () {
+    document.querySelectorAll('.cart__item').forEach((a) => a.parentElement.removeChild(a));
+    total = 0;
+    createTotalPayment();
+    saveList();
+  });
 };
