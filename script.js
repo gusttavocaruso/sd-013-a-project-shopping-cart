@@ -26,9 +26,9 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
@@ -58,16 +58,48 @@ const fetchMeli = (query) => fetch(`https://api.mercadolibre.com/sites/MLB/searc
   });
 });
 
+const getProduct = (query) => {
+  const getClassItem = query.target.parentElement.querySelector('span.item__sku');
+  const idItem = getClassItem.innerText;
+  fetch(`https://api.mercadolibre.com/items/${idItem}`)
+    .then((response) => response.json()
+    .then((data) => {
+      const itemSelectAdd = { sku: data.id, name: data.title, salePrice: data.price };
+      const listItensCart = document.querySelector('.cart__items');
+      listItensCart.appendChild(createCartItemElement(itemSelectAdd));
+    }));
+};
+
 const itemAdd = async () => {
   try {
-    await getProducts('computador');
-    await getProduct('MLB1607748387');
-      const product = document.querySelectAll('.item__add');
-      console.log(product);
-  }catch (error) {
+    await fetchMeli('computador');
+    const containerItens = document.querySelector('.items');
+    containerItens.addEventListener('click', (button) => {
+      if (button.target.className === 'item__add') {
+        getProduct(button);
+      }
+    });
+    // product.forEach((button) => {
+    //   button.addEventListener('click', (b) => getProduct(b));
+    // });
+  } catch (error) {
     alert(`Erro ao adicionar produto> ${error}`);
   }
 };
+
+// const itemAdd = async () => {
+//   try {
+//     await fetchMeli('computador');
+//     await getProduct('MLB1607748387');
+//     const product = document.querySelectorAll('.item__add');
+//     console.log(product);
+//     product.forEach((button) => {
+//       button.addEventListener('click', (b) => console.log(b));
+//     });
+//   } catch (error) {
+//     alert(`Erro ao adicionar produto> ${error}`);
+//   }
+// };
 
 window.onload = () => {
   itemAdd();
