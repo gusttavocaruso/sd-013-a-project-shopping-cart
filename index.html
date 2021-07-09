@@ -6,17 +6,52 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
     <script src="script.js"></script>
   </head>
 
   <body>
-    <section class="container">
-      <section class="items"></section>
-      <section class="cart">
-        <span class="cart__title">Carrinho de compras</span>
-        <button class="empty-cart">Esvaziar carrinho</button>
-        <ol class="cart__items"></ol>
+
+    <header>
+      <div class="header">
+        <i class="material-icons" id="shopping-cart">shopping_cart</i>
+        <h1 id="title">Shopping Cart</h1>
+      </div>
+      <nav>
+        <i class="material-icons" id="menu">
+          menu
+        </i>
+      </nav>
+    </header>
+
+    <main>
+      <section class="container">
+        <section class="items">
+          <div class="items_head">
+            <h2 class="items_title">Produtos</h2>
+            <hr class="hr-big">
+          </div>
+        </section>
+        <section class="cart">
+          <div class="cart_head">
+            <h2 class="cart__title">Carrinho de compras</h2>
+            <hr class="hr-small">
+          </div>
+          <div class="cart_list">
+            <ol class="cart__items"></ol>
+          </div>
+          <div class="cart_options">
+            <button class="button empty-cart">Esvaziar carrinho</button>
+          </div>
+        </section>
       </section>
-    </section>
+    </main>
+
+    <footer><p>Pedro Trasfereti, 2021.</p></footer>
+
   </body>
+
 </html>
