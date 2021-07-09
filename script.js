@@ -1,3 +1,6 @@
+const QUERY = 'computador';
+const DOMAIN = 'https://api.mercadolibre.com/';
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -12,7 +15,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -24,20 +27,41 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
+// function cartItemClickListener(event) {
+//   // coloque seu código aqui
+// }
 
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
+// function createCartItemElement({ sku, name, salePrice }) {
+//   const li = document.createElement('li');
+//   li.className = 'cart__item';
+//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+//   li.addEventListener('click', cartItemClickListener);
+//   return li;
+// }
 
-window.onload = () => { };
+const parseProducts = (products) => {
+  const itemsSection = document.querySelector('.items');
+  products.forEach((product) => {
+    const productElement = createProductItemElement(product);
+    itemsSection.appendChild(productElement);
+  });
+};
+
+const searchProducts = (query) => {
+  const ENDPOINT = `${DOMAIN}sites/MLB/search?q=${query}`;
+  fetch(ENDPOINT, {
+    headers: { 'Content-Type': 'application/json' },
+  })
+  .then((response) => response.json())
+  .then((data) => data.results)
+  .then((products) => parseProducts(products))
+  .catch((error) => console.log(`Error ${error}`));
+};
+
+window.onload = () => {
+  searchProducts(QUERY);
+};
