@@ -1,13 +1,34 @@
 const cartItems = () => document.querySelector('.cart__items');
+const arrayItems = () => document.querySelectorAll(('.cart__item'));
 
 const objectFetch = {
   method: 'GET',
   headers: { Accept: 'application/json' },
 };
 
+const fetchItemAPI = async (id) => {
+  const API_URL_ITEM = `https://api.mercadolibre.com/items/${id}`;
+  return fetch(API_URL_ITEM, objectFetch)
+    .then((response) => response.json());
+};
+
+const totalPrice = () => {
+  let totalPrices = 0;
+  arrayItems().forEach((item) => {
+    const getId = item.querySelector('span').id;
+    fetchItemAPI(getId)
+      .then((data) => {
+        totalPrices += data.price;
+        const priceField = document.querySelector('.total-price');
+        priceField.innerHTML = Math.round(totalPrices * 100) / 100;
+      });
+  });
+};
+
 const updateStorage = () => {
   localStorage.clear();
   localStorage.setItem('cart', cartItems().innerHTML);
+  totalPrice();
 };
 
 function cartItemClickListener({ target }) {
@@ -18,15 +39,15 @@ function cartItemClickListener({ target }) {
 const verifyStorage = () => {
   if (localStorage.getItem('cart')) {
     cartItems().innerHTML = localStorage.getItem('cart');
-    const arrayItems = document.querySelectorAll(('.cart__item'));
-    arrayItems.forEach((item) => item.addEventListener('click', cartItemClickListener));
+    arrayItems().forEach((item) => item.addEventListener('click', cartItemClickListener));
   }
+  totalPrice();
 };
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerHTML = `SKU: <span id="${sku}">${sku}</span> | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   
   cartItems().appendChild(li);
@@ -34,9 +55,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 }
 
 const fetchItem = ({ target }) => {
-  const API_URL_ITEM = `https://api.mercadolibre.com/items/${target.id}`;
-  fetch(API_URL_ITEM, objectFetch)
-    .then((response) => response.json())
+  fetchItemAPI(target.id)
     .then((data) => createCartItemElement(data));
 };
 
