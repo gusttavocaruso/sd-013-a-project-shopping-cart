@@ -1,4 +1,5 @@
 const cart = document.querySelector('.cart__items');
+const totalPrice = document.querySelector('.total-price');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -16,20 +17,44 @@ function createCustomElement(element, className, innerText) {
 
 // desafio 4 feito com ajuda do Matheus Duarte
 const savedCart = () => {
-  const carStore = cart.innerHTML;
-  localStorage.setItem('car', carStore);
+  localStorage.setItem('car', cart.innerHTML);
+  localStorage.setItem('price', totalPrice.innerHTML);
 };
 
 const getCartStored = () => {
-  // const carStore = localStorage.getItem('car');
-  if (cart.innerHTML !== null) {
-    cart.innerHTML = localStorage.getItem('car');
+  cart.innerHTML = localStorage.getItem('car');
+  totalPrice.innerHTML = localStorage.getItem('price');
+};
+
+// Josue me ajudou com esse desafio.
+const clearCart = () => {
+  const botao = document.querySelector('.empty-cart');
+  botao.addEventListener('click', () => {
+    const list = document.querySelectorAll('.cart__item');
+    list.forEach((item) => item.parentNode.removeChild(item));
+    savedCart();
+  });
+};
+
+// Resolvido em conjunto com o Matheus Duarte. Deu trabalho.
+const getTotalPrice = async (value, operator) => {
+  try {
+  const sectionPrice = totalPrice;
+  let actualPrice = Number(totalPrice.innerHTML);
+  if (operator === '+') actualPrice += value;
+  if (operator === '-') actualPrice -= value;
+  sectionPrice.innerHTML = Math.round(actualPrice * 100) / 100;
+  savedCart();
+  } catch (error) {
+    alert(error);
   }
 };
 
 function cartItemClickListener(event) {
   if (event.target.className === 'cart__item') {
   event.target.remove();
+  const productPrice = event.target.querySelector('span').innerText;
+  getTotalPrice(productPrice, '-');
   savedCart();
   }
 }
@@ -37,9 +62,9 @@ function cartItemClickListener(event) {
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  // li.addEventListener('click', cartItemClickListener);
+  li.innerHTML = `SKU: ${sku} | NAME: ${name} | PRICE: $<span>${salePrice}</span>`;
   cart.appendChild(li);
+  getTotalPrice(salePrice, '+');
   return li;
 }
 
@@ -48,12 +73,10 @@ const addItemCartShopp = async (id) => {
   try {
     const promiseId = await fetch(`https://api.mercadolibre.com/items/${id}`);
     const dataId = await promiseId.json();
-    // console.log(dataId);
-    // const resultId = dataId.results;
     createCartItemElement(dataId);
     savedCart();
   } catch (error) {
-    console.log(error);
+    alert(error);
   }
 };
 
@@ -68,7 +91,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.lastElementChild.addEventListener('click', (event) => {
     addItemCartShopp(event.target.parentElement.firstElementChild.innerText);
   });
-  // cart.appendChild(section);
   return section;
 }
 
@@ -85,13 +107,12 @@ const addItems = (items) => {
 };
 
 // refatorado com ajuda do Rogério.
-const getProductPromise = async (product) => {
+const getProductPromise = async (product = 'computador') => {
   try {
   const promise = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${product}`);
   const data = await promise.json();
   const result = data.results;
   addItems(result);
-  // console.log(result);
   } catch (erro) {
   alert(erro);
   }
@@ -100,6 +121,7 @@ const getProductPromise = async (product) => {
 cart.addEventListener('click', cartItemClickListener);
 
 window.onload = () => {
-  getProductPromise('computador');
+  getProductPromise();
   getCartStored();
+  clearCart();
 };
