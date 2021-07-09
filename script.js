@@ -57,6 +57,19 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+const local = () => {
+  const carrinho = document.getElementsByClassName('cart__items')[0];
+  localStorage.setItem('items', carrinho.innerHTML);
+};
+
+  const carregar = () => new Promise((resolve) => {
+    if (localStorage.getItem('items')) {
+      const carrinho = document.getElementsByClassName('cart__items')[0];
+      carrinho.innerHTML = localStorage.getItem('items');
+      resolve();
+    }
+  });
+
 const getIds = () => new Promise((resolve) => {
   const itemsSectionArray = document.getElementsByClassName('item');
   const produtos = Array.from(itemsSectionArray);
@@ -69,13 +82,23 @@ const getIds = () => new Promise((resolve) => {
         .then((produto) => {
           const produtoNoCarrinho = document.getElementsByClassName('cart__items')[0];
           produtoNoCarrinho.appendChild(createCartItemElement(produto));
-          resolve();
+          local();
         }));
     });
   });
+  resolve();
 });
 
+const fetchPromise = async () => {
+  try {
+    await fetlivre();
+    await getIds();
+    await carregar();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 window.onload = () => {
-  fetlivre()
-  .then(getIds);
+  fetchPromise();
 };
