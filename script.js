@@ -127,13 +127,29 @@ const buttonEventListener = () => {
   });
 };
 
+// Aux create 'loading...' text
+const createLoading = () => {
+  const mainSection = document.querySelector('.container');
+  const loadingText = document.createElement('h1');
+  loadingText.innerHTML = 'loading...';
+  loadingText.className = 'loading';
+  mainSection.appendChild(loadingText);
+};
+
+const removeLoading = () => {
+  const loadingText = document.querySelector('.loading');
+  loadingText.remove();
+};
+
 const getProductList = () => fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
   .then((response) => response.json())
   .then((data) => data.results)
   .catch((error) => console.log(error));
 
 window.onload = async () => {
+  createLoading();
   const results = await getProductList();
+  removeLoading();
   createItems(results);
   getItemsFromLocalStorage();
   buttonEventListener();
