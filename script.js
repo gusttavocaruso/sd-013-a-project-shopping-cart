@@ -76,7 +76,7 @@ const getItem = (e) => {
 // Req 1
 const createProductList = (arr) => {
   const sectionItems = document.querySelector('.items');
-  document.querySelector('.items').innerHTML = null;
+  sectionItems.innerHTML = null;
   arr.forEach((i) => {
     const newObj = { sku: i.id, name: i.title, image: i.thumbnail };
     sectionItems.appendChild(createProductItemElement(newObj));
