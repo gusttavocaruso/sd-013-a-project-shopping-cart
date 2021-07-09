@@ -18,10 +18,9 @@ function createCustomElement(element, className, innerText) {
 const setItemsLocalStorage = () => {
   const ol = document.querySelector(cartItems);
   const text = ol.innerHTML;
-  localStorage.setItem('cartList' , '');
-  localStorage.setItem('cartList', JSON.stringify(text))
-}
-
+  localStorage.setItem('cartList' ,'');
+  localStorage.setItem('cartList', JSON.stringify(text));
+};
 
 // feito com a ajuda do aluno Thalles (renomear os parametros da desestruturacao)
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
@@ -90,13 +89,12 @@ const buttonAddCart = () => {
   });
 };
  
-
 window.onload = () => {
   getJsonOnLink('computador');
   buttonAddCart();
   const getLocalStorage = JSON.parse(localStorage.getItem('.cart__items')); // o parse pega a string que transformei la em cima (armazenada) e retorna os dados no formato correto
   if (getLocalStorage !== null) {
     const ol = document.querySelector(cartItems);
-    ol.innerHTML = getLocalStorage;  // pega o ol e joga todos os dados aqui
+    ol.innerHTML = getLocalStorage;
   }
 };
