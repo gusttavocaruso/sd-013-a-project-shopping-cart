@@ -81,4 +81,5 @@ window.onload = async function onload() {
   await getProducts();
   clickEvent();
   clearButton();
+  document.querySelector('.loading').remove();
 };
