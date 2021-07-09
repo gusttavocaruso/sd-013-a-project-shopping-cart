@@ -1,10 +1,17 @@
+let total = 0;
+
 function saveList() {
-  localStorage.setItem('save', document.getElementById('cart__items').innerHTML);
+  localStorage.setItem('item-cart', document.getElementById('cart__items').innerHTML);
+  localStorage.setItem('total-cart', document.getElementById('totalPayment').innerHTML);
 }
 
 function loadList() {
-  if (localStorage.getItem('save')) {
-    document.getElementById('cart__items').innerHTML = localStorage.getItem('save');
+  if (localStorage.getItem('item-cart')) {
+    document.getElementById('cart__items').innerHTML = localStorage.getItem('item-cart');
+  }
+  if (localStorage.getItem('total-cart')) {
+    document.getElementById('totalPayment').innerHTML = localStorage.getItem('total-cart');
+    total = parseFloat(localStorage.getItem('total-cart'));
   }
 }
 
@@ -32,12 +39,24 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   document.getElementById('items').appendChild(section);
 }
 
+function createTotalPayment(value) {
+  total += value;
+  total = Math.round(total * 100) / 100;
+  if (total > 1) {
+    document.getElementById('totalPayment').innerText = total;
+  } else {
+    document.getElementById('totalPayment').innerText = '';
+  }
+  saveList();
+}
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
 function cartItemClickListener(event) {
   document.getElementById('cart__items').removeChild(event.target);
+  createTotalPayment(-parseFloat(event.target.innerText.slice(-10).split('$')[1]));
   saveList();
 }
 
@@ -54,7 +73,10 @@ function getCarItem(sku) {
   const api = `https://api.mercadolibre.com/items/${sku}`;
   return fetch(api)
   .then((result) => result.json())
-  .then((data) => createCartItemElement(data));
+  .then((data) => {
+    createCartItemElement(data);
+    createTotalPayment(data.price);
+  });
 }
 
 function getItemSeleted() {
@@ -66,6 +88,7 @@ function getItemSeleted() {
 
 function getProducts(query) {
   const api = `https://api.mercadolibre.com/sites/MLB/search?q=${query}`;
+  // const result = await 
   return fetch(api)
   .then((result) => result.json())
   .then((data) => {
@@ -74,13 +97,9 @@ function getProducts(query) {
   });
 }
 
-function addEventListenItemsSaved() {
-  document.querySelectorAll('.cart__item').forEach((i) => // cria addEventListen para os
-  i.addEventListener('click', cartItemClickListener));
-}
-
 window.onload = () => {
   getProducts('computador');
   loadList();
-  addEventListenItemsSaved();
+  document.querySelectorAll('.cart__item').forEach((i) => // cria addEventListen para os
+    i.addEventListener('click', cartItemClickListener));
 };
