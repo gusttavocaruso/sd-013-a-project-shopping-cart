@@ -1,5 +1,5 @@
-const curPrice = '.total-price';
 const cartContainer = document.querySelector('.carrinho');
+const cartVal = () => document.querySelector('.total-price');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -30,9 +30,8 @@ function createProductItemElement({ sku, name, image }) {
 function cartItemClickListener(event) {
   const item = event.target.innerHTML.split(' ');
   const value = item[item.length - 1].replace('$', '');
-  const cartVal = document.querySelector(curPrice);
-  const newVal = parseFloat(cartVal.innerHTML) - parseFloat(value);
-  cartVal.innerHTML = Math.round(newVal * 100) / 100;
+  const newVal = parseFloat(cartVal().innerHTML) - parseFloat(value);
+  cartVal().innerHTML = Math.round(newVal * 100) / 100;
   event.target.remove();
   localStorage.cart = cartContainer.innerHTML;
 }
@@ -48,8 +47,7 @@ function createCartItemElement({ sku, name, salePrice }) {
 // Req 6
 const cleanCart = () => {
   document.querySelector('.cart__items').innerHTML = null;
-  const cartVal = document.querySelector(curPrice);
-  cartVal.innerHTML = '0';
+  cartVal().innerHTML = '0';
   localStorage.cart = cartContainer.innerHTML;
 };
 
@@ -64,9 +62,8 @@ const addToCart = (item) => {
   const newObj = { sku: item.id, name: item.title, salePrice: item.price };
   const cart = document.querySelector('.cart__items');
   cart.appendChild(createCartItemElement(newObj));
-  const cartVal = document.querySelector(curPrice);
-  const newVal = parseFloat(cartVal.innerHTML) + parseFloat(item.price);
-  cartVal.innerHTML = Math.round(newVal * 100) / 100;
+  const newVal = parseFloat(cartVal().innerHTML) + parseFloat(item.price);
+  cartVal().innerHTML = Math.round(newVal * 100) / 100;
   localStorage.cart = cartContainer.innerHTML;
 };
 
@@ -88,10 +85,19 @@ const createProductList = (arr) => {
   addButtons.forEach((i) => i.addEventListener('click', getItem));
 };
 
-const SEARCH_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-const fetchML = () => fetch(SEARCH_URL)
-  .then((r) => r.json())
-  .then((r) => createProductList(r.results));
+// Código usando async/await:
+const fetchML = async () => {
+  const SEARCH_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+  const apiReturn = await fetch(SEARCH_URL);
+  const json = await apiReturn.json();
+  createProductList(json.results);
+};
+
+// Código usando .then:
+// const SEARCH_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+// const fetchML = () => fetch(SEARCH_URL)
+//   .then((r) => r.json())
+//   .then((r) => createProductList(r.results));
 
 // Executores
 fetchML();
