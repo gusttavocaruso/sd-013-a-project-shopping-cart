@@ -1,4 +1,20 @@
 const liElemnto = document.querySelector('.cart__items');
+// dica Matheus Duarte, Matheus Camillo, Josue, Rafael.
+const valotTotal = document.querySelector('#totalPreco');
+
+const soma = (valor) => {
+  let total = Number(valotTotal.innerText);
+   total += valor;
+   valotTotal.innerText = total;
+  console.log(total);
+};
+
+const sub = (valor) => {
+  const total = Number(valotTotal.innerText);
+  const valorreal = total - Number(valor.querySelector('#p').innerText);
+  valotTotal.innerText = Math.round(valorreal * 100) / 100;
+   console.log(valorreal);
+};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -32,27 +48,32 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
+// Salva os produtos no local Storage.
 const salveCart = () => {
   localStorage.setItem('product', liElemnto.innerHTML);
 };
 
+// Add o evento de remove nos produtos da lista
+function cartItemClickListener(eventt) {
+  eventt.target.remove();
+  sub(eventt.target);
+  salveCart();
+}
+
+// Carrega os produtos salvos no local Storage e add evento de remove.
 const loadCart = () => {
   liElemnto.innerHTML = localStorage.getItem('product');
   document.querySelectorAll('.cart__item').forEach((el) => el.addEventListener('click', (event) => {
     event.target.remove();
+    sub(event.target);
     salveCart();
   }));
   };
 
-function cartItemClickListener(event) {
-  event.target.remove();
-  salveCart();
-}
-
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerHTML = `SKU: ${sku} | NAME: ${name} | PRICE: $<span id='p'>${salePrice}<span>`;
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
@@ -60,10 +81,12 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 const addItemToCart = async (id) => {
   const productDate = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const product = await productDate.json();
+  soma(product.price);
   liElemnto.appendChild(createCartItemElement(product));
   salveCart();
 };
 
+// Add o evento ao elemento e add o mesmo no carrinho.
 const addItemCart = (elemnto) => {
   elemnto.querySelector('.item__add').addEventListener('click', (event) => {
     const idProduct = event.target.parentElement.querySelector('.item__sku').innerText;
@@ -72,6 +95,7 @@ const addItemCart = (elemnto) => {
   return elemnto;
 };
 
+// Faz requisiçao no mercadolivre e add o elemento ao html.
 const getApi = async (query = 'computador') => {
   try {
     const request = await fetch(
