@@ -15,6 +15,8 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// Requisito 4 - PARTE 1
+
 const setItemsLocalStorage = () => {
   const ol = document.querySelector(cartItems);
   const text = ol.innerHTML;
@@ -22,6 +24,7 @@ const setItemsLocalStorage = () => {
   localStorage.setItem('cartList', JSON.stringify(text));
 };
 
+// Requisito 1
 // feito com a ajuda do aluno Thalles (renomear os parametros da desestruturacao)
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
@@ -38,15 +41,22 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // requisito 5
 
 function totalPrice() {
-  const getTotalPrice = document.querySelector('.total-price');
+  const sumPrice = document.querySelector('.total-price');
   let price = 0;
-  const AllLi = document.querySelectorAll('li');
-  AllLi.forEach((item) => {
+  const listPrices = document.querySelectorAll('li');
+  listPrices.forEach((item) => {
   const computer = item.innerText.split('$');
   price += Number(computer[1]);
   });
-  getTotalPrice.innerHTML = `${(Math.round((price * 100)) / 100)}`;
-  }
+  sumPrice.innerHTML = `${(Math.round((price * 100)) / 100)}`;
+  } 
+
+function createCustomElement(element, className, innerText) {
+  const e = document.createElement(element);
+  e.className = className;
+  e.innerText = innerText;
+  return e;
+}
 
 // 1 
 const getJsonOnLink = async (query) => {
@@ -57,11 +67,15 @@ const getJsonOnLink = async (query) => {
     .appendChild(createProductItemElement(product)));
 };
 
+// Requisito 3
+
 function cartItemClickListener(event) {
   event.target.remove();
   setItemsLocalStorage(); // chamando a função do requisito 4
   totalPrice();
 }
+
+// Requisito 2
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) { // desestruturando
   const li = document.createElement('li');
@@ -71,6 +85,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) { // 
   return li;
 }
 
+// Feito com a ajuda das alunas Julia Baptista, Lanai Conceicao, Caroline Boaventura
 // Função criada (PASSO 1)
 // Objetivo: Acessar cada link único de cada computador da API
 
@@ -80,14 +95,12 @@ const getCartComputer = async (id) => {
   return apiJson;
 };
 
-// Função já existente no projeto
-// Objetivo:
-
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 // Função criada (PASSO 2)
 // Objetivo: selecionar o botão do 'Adicionar ao carrinho' e criar um evento de click que cria uma lista
+// Feito com a ajuda das alunas Julia Baptista, Lanai Conceicao, Caroline Boaventura
 
 const buttonAddCart = () => {
   const parent = document.querySelector('.items'); // acessamos a classe que possui os 50 computadores
@@ -104,6 +117,8 @@ const buttonAddCart = () => {
   });
 };
 
+// Requisito 4 - PARTE 2
+
 const getItemsLocalStorage = () => {
   const getLocalStorage = JSON.parse(localStorage.getItem('cartList')); // recupera o item criado no requisito 4
   const ol = document.querySelector(cartItems); // pegar onde tem os itens
@@ -114,6 +129,21 @@ const getItemsLocalStorage = () => {
     }
   });
 };
+
+// Requisito 6
+
+const buttonRemoveAll = () => {
+  const getButtonRemoveAll = document.querySelector('.empty-cart');
+  getButtonRemoveAll.addEventListener('click', () => {
+    const ol = document.querySelector(cartItems);
+    while (ol.firstChild) {
+      ol.removeChild(ol.firstChild);
+      totalPrice();
+      setItemsLocalStorage();
+    }
+  });
+};
+
 
 window.onload = () => {
   getJsonOnLink('computador');
