@@ -1,5 +1,6 @@
 const cartItems = () => document.querySelector('.cart__items');
 const arrayItems = () => document.querySelectorAll(('.cart__item'));
+const clearButton = () => document.querySelector('.empty-cart');
 
 const objectFetch = {
   method: 'GET',
@@ -14,12 +15,13 @@ const fetchItemAPI = async (id) => {
 
 const totalPrice = () => {
   let totalPrices = 0;
+  const priceField = document.querySelector('.total-price');
+  priceField.innerHTML = 0;
   arrayItems().forEach((item) => {
     const getId = item.querySelector('span').id;
     fetchItemAPI(getId)
       .then((data) => {
         totalPrices += data.price;
-        const priceField = document.querySelector('.total-price');
         priceField.innerHTML = Math.round(totalPrices * 100) / 100;
       });
   });
@@ -29,6 +31,11 @@ const updateStorage = () => {
   localStorage.clear();
   localStorage.setItem('cart', cartItems().innerHTML);
   totalPrice();
+};
+
+const clearCart = () => {
+  cartItems().innerHTML = '';
+  updateStorage();
 };
 
 function cartItemClickListener({ target }) {
@@ -104,4 +111,5 @@ function getSkuFromProductItem(item) {
 window.onload = () => {
   fetchProduct('computador');
   verifyStorage();
+  clearButton().addEventListener('click', clearCart);
 };
