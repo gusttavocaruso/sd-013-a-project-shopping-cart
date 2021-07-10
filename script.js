@@ -41,6 +41,9 @@ const fetchProduct = (query) => fetch(`https://api.mercadolibre.com/sites/MLB/se
 
 function cartItemClickListener(event) {
   event.target.remove();
+  const skuToRemove = event.target.innerText.substring(5, 18);
+  // console.log(skuToRemove);
+  localStorage.removeItem(skuToRemove, JSON.stringify(skuToRemove));
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -51,17 +54,25 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-const appendItem = (itemLiHTML) => {
+function updateLocalStorage(sku) {
+  localStorage.setItem(sku, JSON.stringify(sku)); // inseri o id do produto (necessário converter em string 'strongify')
+}
+
+// localStorage.clear();
+
+const appendItem = (itemLiHTML) => { // Para apendar os elementos li no carrinho de compras
   const olItem = document.querySelector('.cart__items');
   olItem.appendChild(itemLiHTML);
 };
 
 const fetchItemSelected = (item) => fetch(`https://api.mercadolibre.com/items/${item}`)
   .then((response) => response.json())
-  .then((data) => createCartItemElement(data))
-  .then((element) => appendItem(element));
-
-// fetchItemSelected('MLB1341706310');
+  .then((data) => {
+    const { id } = data; // Destructuring para inserir no localStorage
+    // console.log(id);
+    updateLocalStorage(id); // função para inserir o id no localStorage
+    appendItem(createCartItemElement(data));
+  });
 
 function addEvtListenerClickToAllProds() {
   const allBtnsForAddToCart = document.querySelectorAll('.item__add');
@@ -74,7 +85,19 @@ function addEvtListenerClickToAllProds() {
   });
 }
 
+function chargePreviousCart() {
+  const cartInLocalStorage = Object.keys(localStorage); // Dá para fazer com Object.values
+  console.log(cartInLocalStorage);
+  cartInLocalStorage.forEach((id) => {
+    // const idClean = JSON.parse(id); // Se utilizar Object.values é necessário trabalhar a string
+    console.log(id);
+    // console.log(idClean);
+    fetchItemSelected(id);
+  });
+}
+
 window.onload = async () => {
    await fetchProduct('computador');
    await addEvtListenerClickToAllProds();
+   await chargePreviousCart();
 };
