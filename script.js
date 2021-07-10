@@ -1,4 +1,12 @@
 const carrinho = document.querySelector('.cart__items');
+const precoTotal = document.querySelector('.total-price');
+const botaoEsvazia = document.querySelector('.empty-cart');
+
+botaoEsvazia.addEventListener('click', () => {
+  carrinho.innerHTML = '';
+  precoTotal.innerHTML = 0;
+  salvo();
+})
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -16,18 +24,28 @@ function createCustomElement(element, className, innerText) {
 
 const salvo = () => {
   localStorage.setItem('carrinhoSalvo', carrinho.innerHTML);
+  localStorage.setItem('precoSalvo', precoTotal.innerHTML); 
+};
+
+// Agradecimentos a Matheus Duarte e Matheus Camillo que mostraram e explicaram como calcular os valores somando e subtraindo
+
+const calculaPrecoTotal = (valor, operador) => {
+  let precoAtual = Number(precoTotal.innerText);
+  operador === '+' ? precoAtual += valor : precoAtual -= valor;
+  precoTotal.innerText = Math.round(precoAtual * 100) / 100;
+  salvo();
 };
 
 const recuperado = () => {
-  const localCarrinhoStorage = localStorage.getItem('carrinhoSalvo');
-  if (localCarrinhoStorage !== null) {
-    carrinho.innerHTML = localCarrinhoStorage;
-  }
+  precoTotal.innerHTML = localStorage.getItem('precoSalvo');
+  carrinho.innerHTML = localStorage.getItem('carrinhoSalvo');
 };
 
 function cartItemClickListener(event) {
   if (event.target.className === 'cart__item') {
     event.target.remove();
+    calculaPrecoTotal(event.target
+      .querySelector('span').innerText, '-');
     salvo();
   }
 }
@@ -35,8 +53,9 @@ function cartItemClickListener(event) {
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerHTML = `SKU: ${sku} | NAME: ${name} | PRICE: $<span>${salePrice}</span>`;
   carrinho.appendChild(li);
+  calculaPrecoTotal(salePrice, '+');
   return li;
 }
 
