@@ -1,4 +1,4 @@
-  const cartElement = document.getElementsByClassName('cart');
+  // const cartElement = document.getElementsByClassName('cart');
   const shoppingCart = document.getElementsByClassName('cart__items')[0];
 
 // const createloadingElement = () => {
