@@ -31,7 +31,7 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -39,20 +39,36 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-const aPromiseML = () => {
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-    .then((data) => {
-      if (!data.ok) {
-        throw new Error(data.status);
-      }
-      return data.json();
-    })
-      .then((subResults) => subResults.results
-      .forEach((item) => {
-        const itemList = document.querySelector('.items');
-        itemList.appendChild(createProductItemElement(item));
-      }))
-      .catch((error) => console.log(error));
+const pegarObj = (id) => {
+  return fetch(`https://api.mercadolibre.com/items/${id}`)
+    .then((result) => result.json())
+    .then((data) => data);
 };
 
-window.onload = () => aPromiseML();
+const aPromiseML = (pesquisa) => {
+  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${pesquisa}`)
+    .then((data) => data.json())
+    .then((subResults) => subResults.results
+    .forEach((item) => {
+      const itemList = document.querySelector('.items');
+      itemList.appendChild(createProductItemElement(item));
+    }));
+};
+
+const buttonAdd = () => {
+  const section = document.querySelector('.items');
+  section.addEventListener('click', async (event) => {
+    if (event.target.className === 'item__add') {
+      const elementPai = event.target.parentElement;
+      const pegarId = getSkuFromProductItem(elementPai);
+      const requisitarObj = await pegarObj(pegarId);
+      const addLi = createCartItemElement(requisitarObj);
+      document.querySelector('.cart__items').appendChild(addLi);
+    }
+  });
+};
+
+window.onload = () => {
+  aPromiseML('computador');
+  buttonAdd();
+};
