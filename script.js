@@ -40,10 +40,12 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) { 
 }
 
 // Função que pega os 50 pcs da API Requisito 1
-const ComputersonApi = async () => {
+const computersonApi = async () => {
+  const load = document.querySelector('.loading');
   const api = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
   const Obj = await api.json();
   const arrayResult = Obj.results;
+  load.remove();
   arrayResult.forEach((computer) => document.querySelector('.items')
   .appendChild(createProductItemElement(computer)));
 }; 
@@ -119,7 +121,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) { // 
 //   });
 // }; 
 
-function EraseAll() { // Usei o mesmo código que usei no projeto lista de tarefas, refatorei ele usando um forEach, no lugar do for.
+function eraseAll() { // Usei o mesmo código que usei no projeto lista de tarefas, refatorei ele usando um forEach, no lugar do for.
   const List = document.querySelector(cart); // seria a ol
   const getButtonRemoveAll = document.querySelector('.empty-cart'); // botão esvaziar carrinho
   getButtonRemoveAll.addEventListener('click', () => {
@@ -133,9 +135,9 @@ function EraseAll() { // Usei o mesmo código que usei no projeto lista de taref
 }
 
 window.onload = () => {
-ComputersonApi();
+computersonApi();
 buttonAddCart();
 getLocalStorage();
 totalPrice();
-EraseAll();
+eraseAll();
 };
