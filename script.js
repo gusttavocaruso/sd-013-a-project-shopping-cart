@@ -1,16 +1,33 @@
 const cartItems = () => document.querySelector('.cart__items');
 const arrayItems = () => document.querySelectorAll(('.cart__item'));
 const clearButton = () => document.querySelector('.empty-cart');
+const itemsField = () => document.querySelector('.items');
+const loadingItem = () => document.querySelector('.loading');
 
 const objectFetch = {
   method: 'GET',
   headers: { Accept: 'application/json' },
 };
 
+const nowLoading = () => {
+  const createDiv = document.createElement('div');
+  createDiv.classList.add('loading');
+  createDiv.innerHTML = 'loading...';
+  itemsField().appendChild(createDiv); 
+};
+
+const removeLoading = () => {
+  itemsField().removeChild(loadingItem());
+};
+
 const fetchItemAPI = async (id) => {
+  nowLoading();
   const API_URL_ITEM = `https://api.mercadolibre.com/items/${id}`;
   return fetch(API_URL_ITEM, objectFetch)
-    .then((response) => response.json());
+    .then((response) => {
+      removeLoading();
+      return response.json();    
+    });
 };
 
 const totalPrice = () => {
@@ -97,11 +114,13 @@ function createProductItemElement({ id, title, thumbnail }) {
 }
 
 const fetchProduct = (query) => {
+  nowLoading();
   const API_URL = `https://api.mercadolibre.com/sites/MLB/search?q=${query}`;
   fetch(API_URL, objectFetch)
     .then((response) => response.json()
     .then((data) => data.results
-      .forEach((item) => createProductItemElement(item))));
+      .forEach((item) => createProductItemElement(item))))
+      .then(() => removeLoading());
 };
 /*
 function getSkuFromProductItem(item) {
