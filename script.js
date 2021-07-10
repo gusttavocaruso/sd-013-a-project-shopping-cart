@@ -2,6 +2,7 @@
 
 const valorTotal = document.querySelector('.total-price');
 const listOlFull = document.querySelector('.cart__items');
+const btnClearCart = document.querySelector('.empty-cart');
 
 // FEITO COM AJUDA DO ZEZÉ NO PLANTÃO
 function onLoadCardNumbers() {
@@ -119,6 +120,11 @@ function createProductItemElement({ id, title, thumbnail }) {
       createProductItemElement(element);
     }));
   };
+function clearList() {
+  listOlFull.innerText = '';
+  valorTotal.innerText = 0;
+}
+  btnClearCart.addEventListener('click', clearList);
 
   window.onload = () => { 
     getComputer('https://api.mercadolibre.com/sites/MLB/search?q=computador');
