@@ -1,12 +1,18 @@
 const carrinho = document.querySelector('.cart__items');
 const precoTotal = document.querySelector('.total-price');
 const botaoEsvazia = document.querySelector('.empty-cart');
+const load = document.querySelector('.loading');
+
+const salvo = () => {
+  localStorage.setItem('carrinhoSalvo', carrinho.innerHTML);
+  localStorage.setItem('precoSalvo', precoTotal.innerHTML); 
+};
 
 botaoEsvazia.addEventListener('click', () => {
   carrinho.innerHTML = '';
   precoTotal.innerHTML = 0;
   salvo();
-})
+});
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -21,11 +27,6 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
-
-const salvo = () => {
-  localStorage.setItem('carrinhoSalvo', carrinho.innerHTML);
-  localStorage.setItem('precoSalvo', precoTotal.innerHTML); 
-};
 
 // Agradecimentos a Matheus Duarte e Matheus Camillo que mostraram e explicaram como calcular os valores somando e subtraindo
 
@@ -96,6 +97,7 @@ const getAPI = async (item) => {
         document.querySelector('.items')
           .appendChild(createProductItemElement(item2));
       });
+      load.remove();
   } catch (error) {
     alert('Um erro ae');
   }
