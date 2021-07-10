@@ -32,7 +32,8 @@ function createCustomElement(element, className, innerText) {
 
 const calculaPrecoTotal = (valor, operador) => {
   let precoAtual = Number(precoTotal.innerText);
-  operador === '+' ? precoAtual += valor : precoAtual -= valor;
+  if (operador === '+') precoAtual += valor;
+  if (operador === '-') precoAtual -= valor;
   precoTotal.innerText = Math.round(precoAtual * 100) / 100;
   salvo();
 };
