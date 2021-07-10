@@ -86,30 +86,30 @@ const getCartComputer = async (id) => {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-
 // Função criada (PASSO 2)
 // Objetivo: selecionar o botão do 'Adicionar ao carrinho' e criar um evento de click que cria uma lista
 
 const buttonAddCart = () => {
-  const parent = document.querySelector('.items');
+  const parent = document.querySelector('.items'); // acessamos a classe que possui os 50 computadores
   parent.addEventListener('click', async (event) => {
-    if (event.target.className === 'item__add') {
-      const buttonParent = event.target.parentElement;
+    if (event.target.className === 'item__add') { // se o click no botão do Add carrinho for feito
+      const buttonParent = event.target.parentElement; // acessando o pai do botão pq temos uma função que pega o ID do computador
       const buttonId = getSkuFromProductItem(buttonParent);
-      const buttonData = await getCartComputer(buttonId);
-      const createComputer = createCartItemElement(buttonData);
-      document.querySelector(cartItems).appendChild(createComputer);
-      setItemsLocalStorage();
+      const buttonData = await getCartComputer(buttonId); // acessa o link de cada computador
+      const createComputer = createCartItemElement(buttonData); // cria no formato id, nome e preço as lis de acordo com os dados do json que foram específicados na função createCartItemElement
+      document.querySelector(cartItems).appendChild(createComputer); // tornamos o retorno no formato especificado na createCartItemElement um filho de onde devem aparecer essas lis
+      setItemsLocalStorage(); // chamando a função do requisito 4
+      totalPrice();
     }
   });
 };
 
 const getItemsLocalStorage = () => {
-  const getLocalStorage = JSON.parse(localStorage.getItem('cartList')); // o parse pega a string que transformei (armazenada) e retorna os dados no formato correto
-  const ol = document.querySelector(cartItems);
-  ol.innerHTML = getLocalStorage;
+  const getLocalStorage = JSON.parse(localStorage.getItem('cartList')); // recupera o item criado no requisito 4
+  const ol = document.querySelector(cartItems); // pegar onde tem os itens
+  ol.innerHTML = getLocalStorage; // e colocar os itens que já tinham sido salvos
   ol.addEventListener('click', (event) => {
-    if (event.target.className === '.cart__item') {
+    if (event.target.className === 'cart__item') {
       cartItemClickListener(event);
     }
   });
