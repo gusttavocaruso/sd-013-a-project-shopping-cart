@@ -33,7 +33,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.remove();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -43,6 +43,8 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   const newOl = document.querySelector('.cart__items');
   newOl.appendChild(li);
+
+  return li;
 }
 
 // Requisito 1 feito com a ajuda do Jack no fechamento do dia do projeto.
@@ -69,13 +71,14 @@ const fetchComputer = () => {
   const parentElem = element.target.parentElement;
   const idSku = getSkuFromProductItem(parentElem);
   fetch(`https://api.mercadolibre.com/items/${idSku}`)
-  .then((response) => response.json()
-  .then((data) => { 
-    const addLi = createCartItemElement(data);
-    const getOl = document.querySelector('.cart__items');
-    getOl.appendChild(addLi);
-    }),
-  );
+  .then((response) => { 
+    response.json()
+    .then((data) => {
+      const addLi = createCartItemElement(data);
+      const getOl = document.querySelector('.cart__items');
+      getOl.appendChild(addLi);
+    });
+  });
 };
 
 const buttonAdd = () => {
