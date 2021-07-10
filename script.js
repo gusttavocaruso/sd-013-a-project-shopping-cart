@@ -1,5 +1,7 @@
 const cart = document.querySelector('.cart__items');
 const totalPrice = document.querySelector('.total-price');
+const button = document.querySelector('.empty-cart');
+const load = document.querySelector('.loading');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -27,14 +29,12 @@ const getCartStored = () => {
 };
 
 // Josue me ajudou com esse desafio.
-const clearCart = () => {
-  const botao = document.querySelector('.empty-cart');
-  botao.addEventListener('click', () => {
+  button.addEventListener('click', () => {
     const list = document.querySelectorAll('.cart__item');
     list.forEach((item) => item.parentNode.removeChild(item));
+    totalPrice.innerHTML = 0;
     savedCart();
   });
-};
 
 // Resolvido em conjunto com o Matheus Duarte. Deu trabalho.
 const getTotalPrice = async (value, operator) => {
@@ -104,6 +104,7 @@ const addItems = (items) => {
     const section = document.querySelector('.items');
     section.appendChild(itemHTML);
   });
+  load.remove();
 };
 
 // refatorado com ajuda do Rogério.
@@ -123,5 +124,4 @@ cart.addEventListener('click', cartItemClickListener);
 window.onload = () => {
   getProductPromise();
   getCartStored();
-  clearCart();
 };
