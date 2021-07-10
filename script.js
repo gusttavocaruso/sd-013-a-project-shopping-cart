@@ -7,25 +7,35 @@ function createProductImageElement(imageSource) {
   img.src = imageSource;
   return img;
 }
-
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
   return e;
 }
+// ==============================================
 
-// Requisito 4 - PARTE 1
+// Requisito 5
 
-const setItemsLocalStorage = () => {
-  const ol = document.querySelector(cartItems);
-  const text = ol.innerHTML;
-  localStorage.setItem('cartList', '');
-  localStorage.setItem('cartList', JSON.stringify(text));
-};
+// ==============================================
+
+function totalPrice() {
+  const getTotalPrice = document.querySelector('.total-price');
+  let price = 0;
+  const AllLi = document.querySelectorAll('li');
+  AllLi.forEach((item) => {
+  const computer = item.innerText.split('$');
+  price += Number(computer[1]);
+  });
+  getTotalPrice.innerHTML = `${(Math.round((price * 100)) / 100)}`;
+  }
+
+// ==============================================
 
 // Requisito 1
-// feito com a ajuda do aluno Thalles (renomear os parametros da desestruturacao)
+
+// ==============================================
+
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -34,31 +44,10 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
   return section;
 }
+// Objetivo: Resgatar os elementos do JSON e enviá-los para o html dinamicamente
 
-// requisito 5
-
-function totalPrice() {
-  const sumPrice = document.querySelector('.total-price');
-  let price = 0;
-  const listPrices = document.querySelectorAll('li');
-  listPrices.forEach((item) => {
-  const computer = item.innerText.split('$');
-  price += Number(computer[1]);
-  });
-  sumPrice.innerHTML = `${(Math.round((price * 100)) / 100)}`;
-  } 
-
-function createCustomElement(element, className, innerText) {
-  const e = document.createElement(element);
-  e.className = className;
-  e.innerText = innerText;
-  return e;
-}
-
-// 1 
 const getJsonOnLink = async (query) => {
   const api = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=$${query}`);
   const apiJson = await api.json();
@@ -67,15 +56,60 @@ const getJsonOnLink = async (query) => {
     .appendChild(createProductItemElement(product)));
 };
 
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
+
+// ==============================================
+
+// Requisito 4 - PARTE 1
+
+// ==============================================
+
+const setItemsLocalStorage = () => {
+  const ol = document.querySelector(cartItems);
+  const text = ol.innerHTML;
+  localStorage.setItem('cartList', ''); // limpando o que tinha antes
+  localStorage.setItem('cartList', JSON.stringify(text)); // pegar todo o texto de dentro da variável e transforma no formato JSON
+};
+
+// ==============================================
+
 // Requisito 3
 
+// ==============================================
+
+// como já temos a função createCartItemElement() que cria as lis, aqui apenas removemos o evento criado
 function cartItemClickListener(event) {
   event.target.remove();
   setItemsLocalStorage(); // chamando a função do requisito 4
-  totalPrice();
+  totalPrice(); // chamando a função do requisito 5
 }
+// ==============================================
+
+// Requisito 4 - PARTE 2
+
+// ==============================================
+
+const getItemsLocalStorage = () => {
+  const getLocalStorage = JSON.parse(localStorage.getItem('cartList')); // recupera o item criado no requisito 4
+  const ol = document.querySelector(cartItems); // pegar onde tem os itens
+  ol.innerHTML = getLocalStorage; // e colocar os itens que já tinham sido salvos
+  ol.addEventListener('click', (event) => {
+    if (event.target.className === 'cart__item') {
+      cartItemClickListener(event);
+    }
+  });
+};
+
+// ==============================================
 
 // Requisito 2
+
+// ==============================================
+
+// Função já existente no projeto
+// Objetivo: criar o elemento li dentro da ol no formato id, name, price
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) { // desestruturando
   const li = document.createElement('li');
@@ -84,8 +118,6 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) { // 
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
-// Feito com a ajuda das alunas Julia Baptista, Lanai Conceicao, Caroline Boaventura
 // Função criada (PASSO 1)
 // Objetivo: Acessar cada link único de cada computador da API
 
@@ -95,12 +127,15 @@ const getCartComputer = async (id) => {
   return apiJson;
 };
 
+// Função já existente no projeto
+// Objetivo:
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
+
 // Função criada (PASSO 2)
 // Objetivo: selecionar o botão do 'Adicionar ao carrinho' e criar um evento de click que cria uma lista
-// Feito com a ajuda das alunas Julia Baptista, Lanai Conceicao, Caroline Boaventura
 
 const buttonAddCart = () => {
   const parent = document.querySelector('.items'); // acessamos a classe que possui os 50 computadores
@@ -117,20 +152,11 @@ const buttonAddCart = () => {
   });
 };
 
-// Requisito 4 - PARTE 2
-
-const getItemsLocalStorage = () => {
-  const getLocalStorage = JSON.parse(localStorage.getItem('cartList')); // recupera o item criado no requisito 4
-  const ol = document.querySelector(cartItems); // pegar onde tem os itens
-  ol.innerHTML = getLocalStorage; // e colocar os itens que já tinham sido salvos
-  ol.addEventListener('click', (event) => {
-    if (event.target.className === 'cart__item') {
-      cartItemClickListener(event);
-    }
-  });
-};
+// ==============================================
 
 // Requisito 6
+
+// ==============================================
 
 const buttonRemoveAll = () => {
   const getButtonRemoveAll = document.querySelector('.empty-cart');
@@ -144,8 +170,10 @@ const buttonRemoveAll = () => {
   });
 };
 
-
 window.onload = () => {
   getJsonOnLink('computador');
   buttonAddCart();
+  getItemsLocalStorage();
+  totalPrice();
+  buttonRemoveAll();
 };
