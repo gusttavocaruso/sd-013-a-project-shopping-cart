@@ -80,3 +80,7 @@
   padding: 10px;
   border: 1px solid red;
 }
+
+.loading {
+  font-size: 26px;
+}

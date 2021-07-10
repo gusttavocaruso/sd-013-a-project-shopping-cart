@@ -116,16 +116,20 @@ function createProductItemElement({ id, title, thumbnail }) {
     fetch(url)
     .then((response) => response.json())
     .then((data) => (data.results))
-    .then((pc) => pc.forEach((element) => {
+    .then((pc) => {
+      pc.forEach((element) => {
       createProductItemElement(element);
-    }));
+    });
+    document.querySelector('.loading').remove()
+  });
+    
   };
-function clearList() {
-  listOlFull.innerText = '';
-  valorTotal.innerText = 0;
-}
+  function clearList() {
+    listOlFull.innerText = '';
+    valorTotal.innerText = 0;
+  }
   btnClearCart.addEventListener('click', clearList);
-
+  
   window.onload = () => { 
     getComputer('https://api.mercadolibre.com/sites/MLB/search?q=computador');
     onLoadCardNumbers();
