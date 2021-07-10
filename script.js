@@ -50,9 +50,11 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // Objetivo: Resgatar os elementos do JSON e enviá-los para o html dinamicamente
 
 const getJsonOnLink = async (query) => {
+  const loading = document.querySelector('.loading');
   const api = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=$${query}`);
   const apiJson = await api.json();
   const arrayResultsJson = apiJson.results;
+  loading.remove();
   arrayResultsJson.forEach((product) => document.querySelector('.items')
     .appendChild(createProductItemElement(product)));
 };
