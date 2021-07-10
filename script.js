@@ -53,6 +53,7 @@ const getJsonOnLink = async () => {
   const loading = document.querySelector('.loading');
   const api = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=$computador`);
   const apiJson = await api.json();
+
   const arrayResultsJson = apiJson.results;
   loading.remove();
   arrayResultsJson.forEach((product) => document.querySelector('.items')
