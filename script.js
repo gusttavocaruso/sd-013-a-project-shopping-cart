@@ -120,9 +120,8 @@ function createProductItemElement({ id, title, thumbnail }) {
       pc.forEach((element) => {
       createProductItemElement(element);
     });
-    document.querySelector('.loading').remove()
+    document.querySelector('.loading').remove();
   });
-    
   };
   function clearList() {
     listOlFull.innerText = '';
