@@ -59,6 +59,8 @@ const getJsonOnLink = async (query) => {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  setItemsLocalStorage(); // chamando a função do requisito 4
+  totalPrice();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) { // desestruturando
@@ -111,10 +113,8 @@ const getItemsLocalStorage = () => {
       cartItemClickListener(event);
     }
   });
-
 };
 
- 
 window.onload = () => {
   getJsonOnLink('computador');
   buttonAddCart();
