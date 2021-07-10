@@ -3,6 +3,7 @@ const items = document.querySelector('.items');
 const carrinho = document.querySelector('.cart__items');
 const precoTotal = document.querySelector('.total-price');
 const botao = document.querySelector('.empty-cart');
+const loading = document.querySelector('.loading');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -16,25 +17,30 @@ const salvaCarrinho = () => {
   localStorage.setItem('precoSalvo', precoTotal.innerHTML);
 };
 
-  botao.addEventListener('click', () => {
-    const carrinhoCheio = document.querySelectorAll('.cart__item');
-    carrinhoCheio.forEach((item) => item.parentNode.removeChild(item));
-    precoTotal.innerHTML = 0;
-    salvaCarrinho();
-  });
+botao.addEventListener('click', () => {
+  const carrinhoCheio = document.querySelectorAll('.cart__item');
+  carrinhoCheio.forEach((item) => item.parentNode.removeChild(item));
+  precoTotal.innerHTML = 0;
+  salvaCarrinho();
+});
+
+const soma = (valorAtual, valorOperacao) => {
+  const somaResultado = valorAtual + valorOperacao;
+  precoTotal.innerHTML = Math.round(somaResultado * 100) / 100;
+  salvaCarrinho();
+};
+
+ const subtracao = (valorAtual, valorOperacao) => {
+  const subtracaoResultado = valorAtual - valorOperacao;
+  precoTotal.innerHTML = Math.round(subtracaoResultado * 100) / 100;
+  salvaCarrinho();
+};
 
 // Resolvi em conjunto com Matheus Camilo T13-A
-const calculaPrecoTotal = async (valor, operador) => {
-  try {
-    // const secaoPreco = precoTotal;
-    let precoAtual = Number(precoTotal.innerHTML);
-    if (operador === '+') precoAtual += valor; 
-    if (operador === '-') precoAtual -= valor;
-    precoTotal.innerHTML = Math.round(precoAtual * 100) / 100;
-    salvaCarrinho();
-  } catch (error) {
-    alert(error);
-  }
+const calculaPrecoTotal = (valor, operador) => {
+    const precoAtual = Number(precoTotal.innerHTML);
+    if (operador === '+') soma(precoAtual, valor); 
+    if (operador === '-') subtracao(precoAtual, valor);
 };
 
 const recuperaCarrinho = () => {
@@ -99,7 +105,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 const pegaProdutos = async (produto = 'computador') => {
   try {
     ((await (await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${produto}`))
-    .json()).results).forEach((computador) => createProductItemElement(computador));
+    .json())
+      .results)
+        .forEach((computador) => createProductItemElement(computador), loading.remove());
   } catch (error) {
     alert(error);
   }
