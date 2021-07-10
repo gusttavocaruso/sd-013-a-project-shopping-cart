@@ -1,12 +1,13 @@
-  // const cartElement = document.getElementsByClassName('cart');
+  const cartElement = document.getElementsByClassName('cart')[0];
   const shoppingCart = document.getElementsByClassName('cart__items')[0];
 
-// const createloadingElement = () => {
-//   const loadingElement = document.createElement('div');
-//   loadingElement.classList.add('loading');
-//   loadingElement.innerText = 'loading';
-//   cartElement.appendChild(loadingElement);
-// };
+const createloadingElement = () => {
+  const loadingElement = document.createElement('div');
+  loadingElement.innerText = 'loading';
+  loadingElement.classList.add('loading');
+  cartElement.appendChild(loadingElement);
+  return loadingElement;
+};
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -34,13 +35,25 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-const fetchResults = () => fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-    .then((response) => response.json())
-    .then((data) => data.results);
+const fetchResults = () => {
+  const loadingElement = createloadingElement();
+  return fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+     .then((response) => response.json())
+     .then((data) => {
+      cartElement.removeChild(loadingElement);
+      return data.results;
+     });
+};
 
-const fetchItem = (id) => fetch(`https://api.mercadolibre.com/items/${id}`)
-    .then((response) => response.json())
-    .then((data) => data);
+const fetchItem = (id) => {
+  const loadingElement = createloadingElement();
+  return fetch(`https://api.mercadolibre.com/items/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        cartElement.removeChild(loadingElement);
+        return data;
+      });
+};
 
 const getTotalPrice = () => {
   let arrayPrices = localStorage.getItem('idList');
@@ -131,5 +144,4 @@ window.onload = async () => {
     addToCart();
     clearShoppingCart();
     await getTotalPrice();
-    // await checkCartItems();
   };
