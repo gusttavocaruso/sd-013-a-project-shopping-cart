@@ -32,13 +32,31 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   // coloque seu código aqui
 // }
 
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  // li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+function addToCart(item) {
+  const itemToAdd = createCartItemElement(item);
+  const shoppingCart = document.querySelector('.cart__items');
+  shoppingCart.appendChild(itemToAdd);
+}
+
+async function fetchId(iD) {
+  const response = await fetch(`https://api.mercadolibre.com/items/${iD}`);
+  const data = await response.json();
+  addToCart(data);
+}
+
+const getItemId = (event) => {
+  const wholeItem = event.target.parentElement;
+  const itemId = wholeItem.firstChild.innerText;
+  fetchId(itemId);
+};
 
 const addChild = (items) => {
   items.forEach((item) => {
@@ -46,14 +64,16 @@ const addChild = (items) => {
     const section = document.querySelector('.items');
     section.appendChild(newItem);
   });
+  const everyButton = document.querySelectorAll('.item__add');
+  everyButton.forEach((button) => button.addEventListener('click', getItemId));
 };
 
-const getApi = () => {
-  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-  fetch(url)
-  .then((response) => response.json())
-    .then((response) => addChild(response.results));
-};
+async function getApi() {
+  const response = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const data = await response.json();
+  addChild(data.results);
+  return data;
+}
 
 window.onload = () => { 
   getApi();
