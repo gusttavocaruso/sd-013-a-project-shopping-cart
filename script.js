@@ -1,4 +1,5 @@
 // const fetch = require('node-fetch');
+// todos os exercicios foram feitos com a ajuda das alunas Caroline Boaventura, Lanai Conceicao, Luiza Antiques, Julia e ALine
 const cartItems = '.cart__items';
 
 function createProductImageElement(imageSource) {
@@ -55,10 +56,6 @@ const getJsonOnLink = async (query) => {
   arrayResultsJson.forEach((product) => document.querySelector('.items')
     .appendChild(createProductItemElement(product)));
 };
-
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
 
 // ==============================================
 
