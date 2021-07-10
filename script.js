@@ -67,6 +67,7 @@ const fetchItemCart = (element) => {
       const getLi = createCartItemElement(data);
       const olCart = document.querySelector('.cart__items');
       olCart.appendChild(getLi);
+      localStorage.setItem('lista', olCart.innerHTML);
     });
   });
 };
@@ -83,4 +84,8 @@ const buttonItem = () => {
 window.onload = () => {
   fetchML('computador');
   buttonItem();
+  const ol = document.querySelector('.cart__items');
+  if (localStorage.lista) {
+    ol.innerHTML = localStorage.lista;
+  }
  };
