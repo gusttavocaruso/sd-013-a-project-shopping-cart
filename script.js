@@ -49,9 +49,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 }
 // Objetivo: Resgatar os elementos do JSON e enviá-los para o html dinamicamente
 
-const getJsonOnLink = async (query) => {
+const getJsonOnLink = async () => {
   const loading = document.querySelector('.loading');
-  const api = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=$${query}`);
+  const api = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=$computador`);
   const apiJson = await api.json();
   const arrayResultsJson = apiJson.results;
   loading.remove();
@@ -170,7 +170,7 @@ const buttonRemoveAll = () => {
 };
 
 window.onload = () => {
-  getJsonOnLink('computador');
+  getJsonOnLink();
   buttonAddCart();
   getItemsLocalStorage();
   totalPrice();
