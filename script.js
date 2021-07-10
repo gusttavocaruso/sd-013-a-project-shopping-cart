@@ -1,11 +1,50 @@
 // const fetch = require('node-fetch');
 
+const valorTotal = document.querySelector('.total-price');
+const listOlFull = document.querySelector('.cart__items');
+
+// FEITO COM AJUDA DO ZEZÉ NO PLANTÃO
+function onLoadCardNumbers() {
+  const productStorage = localStorage.getItem('cartNumbers');   
+  
+  if (productStorage) {
+    // document.querySelector('.cart__items').innerHTML = productStorage;
+    listOlFull.innerHTML = productStorage;
+  }  
+}  
+// FEITO COM AJUDA DO ZEZÉ NO PLANTÃO
+function cartNumbers() {
+  const productNumbers = localStorage.getItem('cartNumbers');
+     
+//  const listOl = document.querySelector('.cart__items').innerHTML;
+
+  if (productNumbers) {      
+    localStorage.setItem('cartNumbers', listOlFull.innerHTML);
+  } else {
+    localStorage.setItem('cartNumbers', listOlFull.innerHTML);
+  }
+}
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
   return img;
 }
+
+// req 2 Ajuda do Rogérinho P da Silva
+
+const somaPreco = (valorItem) => {
+  const totalCarrinho = Number(valorTotal.innerText);
+  const soma = totalCarrinho + valorItem;
+  valorTotal.innerText = soma;
+  return valorTotal;
+ };
+ // req 2 Ajuda do Rogérinho P da Silva
+ 
+ const subPreco = (valorItem) => {
+  const subAtual = Number(valorTotal.innerText) - valorItem;
+  valorTotal.innerText = Math.round(subAtual * 100) / 100;
+ };
 
 function createCustomElement(element, className, innerText) { // Cria os Elementos
   const e = document.createElement(element);
@@ -16,6 +55,8 @@ function createCustomElement(element, className, innerText) { // Cria os Element
 
 function cartItemClickListener(event) {
   event.target.remove();
+  cartNumbers();
+  subPreco(event.target.innerText.split('$')[1]);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -23,27 +64,9 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  somaPreco(salePrice);
+
   return li;  
-}
-
-function onLoadCardNumbers() {
-  const productStorage = localStorage.getItem('cartNumbers');  
-  
-  if (productStorage) {
-    document.querySelector('.cart__items').innerHTML = productStorage;
-  }  
-}  
-
-function cartNumbers() {
-  const productNumbers = localStorage.getItem('cartNumbers');
-     
- const listOl = document.querySelector('.cart__items').innerHTML;
-
-  if (productNumbers) {      
-    localStorage.setItem('cartNumbers', listOl);
-  } else {
-    localStorage.setItem('cartNumbers', listOl);
-  }
 }
 
 // req 2 Ajuda do Rogérinho P da Silva
@@ -55,8 +78,8 @@ const add = (valueID) => {
     .then((data) => {
       const returnLi = createCartItemElement(data);
       
-      const ol = document.querySelector('.cart__items');
-      ol.appendChild(returnLi);
+      // const ol = document.querySelector('.cart__items');
+      listOlFull.appendChild(returnLi);
       cartNumbers();
     });
   });
