@@ -28,10 +28,17 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return item.querySelector('span.item__sku').innerText;
 } */
 
+function cartItemClickListenerRemove(event) {
+  if (event.target.className === 'cart__item') { 
+  event.target.remove();
+  }
+}
+
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListenerRemove);
   return li;
 }
 
@@ -50,7 +57,7 @@ async function cartWithItem(id) {
   });
 }
 
-function cartItemClickListener(event) { 
+function cartItemClickListenerAdd(event) { 
   if (event.target.className === 'item__add') {
     const id = event.target.parentNode.firstChild.innerText;
     cartWithItem(id);
@@ -60,7 +67,7 @@ function cartItemClickListener(event) {
 const eventWithItem = () => {
   const allItems = document.querySelector('.items');
   allItems.addEventListener('click', (event) => {
-    cartItemClickListener(event);
+    cartItemClickListenerAdd(event);
   });
 };
 
@@ -87,3 +94,4 @@ window.onload = () => { };
 
 // Requisito 1 - Havia feito dentro de uma função só, mas ficou bem melhor quando dividi o código fazendo semelhante a forma como o tio Jack fez;
 // Requisito 2 - Fiz a função eventWithItem que um evento para os meus itens, ela chama a função cartItemClickListener que vai verificar se a classe do item target (item que estou clicando) é igual a classe já pré definida 'item__add. Se sim, é criada uma constante chamada id que recebe o texto do primeiro filho do seu elemento pai, esta função envoca a função cartWithItem com o id como parametro. Esta função é async (não havia pensado em usar, mas apareceu ... ao lado do parametro dizendo que é uma função assync), ela faz a consulta a API, retorna positivamente, extraio apenas o json dela e atribuo as especificações de cada item (sku, name, salePrice) os respectivos dados json vindos da API. 
+// Requisito 3 - Criei uma nova função chamada cartItemClickListenerRemove na linha 31 que remove o item selecionado (target). Como na função createCartItemElement eu apaguei o evento que estava nela para poder passar no lint do requisito anterior (linha 41, fiquei muito tempo para poder passar no lint no requisito 2), eu voltei a coloca-la no código, mas como segundo parametro sendo o função que criei.
