@@ -1,19 +1,18 @@
 const liElemnto = document.querySelector('.cart__items');
 // dica Matheus Duarte, Matheus Camillo, Josue, Rafael.
 const valotTotal = document.querySelector('#totalPreco');
+const bntClear = document.querySelector('.empty-cart');
 
 const soma = (valor) => {
-  let total = Number(valotTotal.innerText);
-   total += valor;
-   valotTotal.innerText = total;
+  const total = Number(valotTotal.innerText) + valor;
+  valotTotal.innerText = total;
   console.log(total);
 };
 
 const sub = (valor) => {
-  const total = Number(valotTotal.innerText);
-  const valorreal = total - Number(valor.querySelector('#p').innerText);
-  valotTotal.innerText = Math.round(valorreal * 100) / 100;
-   console.log(valorreal);
+  const total = Number(valotTotal.innerText) - Number(valor.querySelector('#p').innerText);
+  valotTotal.innerText = Math.round(total * 100) / 100;
+   console.log(total);
 };
 
 function createProductImageElement(imageSource) {
@@ -108,12 +107,18 @@ const getApi = async (query = 'computador') => {
         .querySelector('.items')
         .appendChild(addItemCart(createProductItemElement(product)));
     });
+    document.querySelector('.loading').remove();
   } catch (e) {
     const error = document.body;
     error.setAttribute('class', 'error');
     error.innerText = `Error!!! \n ${e}`;
   }
 };
+
+bntClear.addEventListener('click', () => {
+  liElemnto.innerText = '';
+  valotTotal.innerText = 0;
+});
 
 window.onload = () => {
   getApi();
