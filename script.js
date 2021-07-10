@@ -35,6 +35,19 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+// requisito 5
+
+function totalPrice() {
+  const getTotalPrice = document.querySelector('.total-price');
+  let price = 0;
+  const AllLi = document.querySelectorAll('li');
+  AllLi.forEach((item) => {
+  const computer = item.innerText.split('$');
+  price += Number(computer[1]);
+  });
+  getTotalPrice.innerHTML = `${(Math.round((price * 100)) / 100)}`;
+  }
+
 // 1 
 const getJsonOnLink = async (query) => {
   const api = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=$${query}`);
