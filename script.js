@@ -54,7 +54,27 @@ function fetchObject(query) {
   })
 }
 
+  const pegarObj = (id) => {
+    return fetch(`https://api.mercadolibre.com/items/${id}`)
+      .then((result) => result.json())
+      .then((data) => data);
+  };
+
+  const buttonAdd = () => {
+    const section = document.querySelector('.items');
+    section.addEventListener('click', async (event) => {
+      if (event.target.className === 'item__add') {
+        const elementPai = event.target.parentElement;
+        const pegarId = getSkuFromProductItem(elementPai);
+        const requisitarObj = await pegarObj(pegarId);
+        const addLi = createCartItemElement(requisitarObj);
+        document.querySelector('.cart__items').appendChild(addLi);
+      }
+    });
+  };
 
 window.onload = () => { 
   fetchObject('computador')
+  buttonAdd()
+  
 };
