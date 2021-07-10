@@ -51,7 +51,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
 const getJsonOnLink = async () => {
   const loading = document.querySelector('.loading');
-  const api = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=$computador`);
+  const api = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
   const apiJson = await api.json();
 
   const arrayResultsJson = apiJson.results;
