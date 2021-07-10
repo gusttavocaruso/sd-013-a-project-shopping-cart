@@ -1,24 +1,19 @@
-window.onload = async () => {
-  await fetchProducts('https://api.mercadolibre.com/sites/MLB/search?q=computador');
-  addButtonListener();
-  getSavedCart();
-  sumItensValue();
-  appendTotalElement();
-};
-
-// const fetch = require('node-fetch');
 // requisito 1
 const fetchProducts = async (url) => {
   const response = await fetch(url);
   const data = await response.json();
-  // const results = data.results;
-  data.results.forEach((element) => (createProductItemElement({
+  return data.results 
+} 
+
+const appendProducts = async () => {
+  const itemsSection = document.querySelector('.items');
+  const elements = await fetchProducts('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  const items = elements.forEach((element) => itemsSection.append((createProductItemElement({
     sku: element.id,
     name: element.title,
     image: element.thumbnail,
-  })));
+  }))));
 };
-
 // requisito 2
 
 const fetchItem = async (item) => {
@@ -83,8 +78,6 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__name', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-  const items = document.querySelector('.items');
-  items.appendChild(section);
   return section;
 }
 
@@ -115,9 +108,15 @@ const sumItensValue = () => {
     const contentsArray = Array.from(items); // cria uma array com os elementos HTML dos itens filhos
     console.log(contentsArray);
     const pricesArray = contentsArray.map((item) => parseInt(item.innerText.split('$')[1])); // cria um array com os valores de cada item
+    console.log(pricesArray);
     const total = pricesArray.reduce((acc, crr) => acc + crr);
+    console.log(total);
   }
-  return total;
+  const sectionCart = document.querySelector('.cart');
+  const span = document.createElement('span');
+  span.style.textAlign = 'center';
+  span.innerText = `Total: ${total}`;
+  sectionCart.appendChild(span);
 };
 
 const appendTotalElement = () => {
@@ -126,4 +125,13 @@ const appendTotalElement = () => {
   span.style.textAlign = 'center';
   span.innerText = `Total: ${sumItensValue()}`;
   sectionCart.appendChild(span);
+};
+
+window.onload = async () => {
+  await fetchProducts('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  await appendProducts();
+  addButtonListener();
+  getSavedCart();
+  sumItensValue();
+  // appendTotalElement();
 };
