@@ -29,6 +29,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // }
 
 function addLoadingMessage() {
+  // Cria um elemento de texto e coloca dentro dele o texto Carregando
   const loadingMessage = document.createElement('p');
   loadingMessage.classList.add('loading');
   loadingMessage.innerText = 'Carregando....';
@@ -37,6 +38,7 @@ function addLoadingMessage() {
 }
 
 function removeLoadingMessage() {
+  // Remove o elemento de loading
   const loadingMessage = document.querySelector('.loading');
   loadingMessage.parentNode.removeChild(loadingMessage);
 }
