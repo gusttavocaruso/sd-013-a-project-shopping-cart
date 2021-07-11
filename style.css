@@ -279,6 +279,10 @@ main {
   padding: 0 30px;
 }
 
+.total {
+  text-align: center;
+}
+
 footer {
   color: #ccc;
   font-size: 14px;

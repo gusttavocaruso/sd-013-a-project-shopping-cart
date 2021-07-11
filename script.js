@@ -1,19 +1,27 @@
 /* Elementos */
 const cartList = document.querySelector('.cart__items');
 const loading = document.querySelector('.loading');
+const totalText = document.querySelector('.total-price');
 
 /* Botões */
 const emptyCartBtn = document.querySelector('.empty-cart');
 
 // Quinto Requisito
-function calcTotal() {
-  const cartItems = document.querySelectorAll('.cart__item');
-  let acc = 0;
-  cartItems.forEach((item) => {
-    acc += item.split('$').pop();
-    alert(acc);
-  });
+function sum(accumulator, currentValue) {
+  return accumulator + currentValue;
 }
+
+function calcTotal() {
+  const prices = [];
+  Object.values(cartList.children)
+  .forEach((child) => prices.push(parseFloat(child.innerText.split('$').pop(), 2)));
+  const total = parseFloat(prices.reduce(sum, 0).toFixed(2));
+  totalText.innerText = total;
+}
+
+const config = { attributes: false, childList: true, subtree: true };
+const observer = new MutationObserver(calcTotal);
+observer.observe(cartList, config);
 
 // Quarto Requisito -- salvar carrinho
 function saveCart() {
@@ -32,7 +40,6 @@ emptyCartBtn.addEventListener('click', emptyCart);
 function cartItemClickListener(event) {
   cartList.removeChild(event.target);
   saveCart();
-  calcTotal();
 }
 
 // Quarto Requisito -- carregar carrinho
@@ -55,7 +62,6 @@ function createCartItemElement(sku, name, salePrice) {
   li.addEventListener('click', cartItemClickListener);
   cartList.appendChild(li);
   saveCart();
-  calcTotal();
 }
 
 function fetchProduct(itemID) {
