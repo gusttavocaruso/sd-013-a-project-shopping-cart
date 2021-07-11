@@ -1,18 +1,18 @@
-const liElemnto = document.querySelector('.cart__items');
+const cartItenms = document.querySelector('.cart__items');
 // dica Matheus Duarte, Matheus Camillo, Josue, Rafael.
-const valotTotal = document.querySelector('#totalPreco');
+const valorTotal = document.querySelector('#totalPreco');
 const bntClear = document.querySelector('.empty-cart');
 
+// Soma o valor passando com o valor total da compra.
 const soma = (valor) => {
-  const total = Number(valotTotal.innerText) + valor;
-  valotTotal.innerText = total;
-  console.log(total);
+  const total = Number(valorTotal.innerText) + valor;
+  valorTotal.innerText = total;
 };
 
+// Subtrair o valor passando pelo valor total da compra.
 const sub = (valor) => {
-  const total = Number(valotTotal.innerText) - Number(valor.querySelector('#p').innerText);
-  valotTotal.innerText = Math.round(total * 100) / 100;
-   console.log(total);
+  const total = Number(valorTotal.innerText) - Number(valor.querySelector('#p').innerText);
+  valorTotal.innerText = Math.round(total * 100) / 100;
 };
 
 function createProductImageElement(imageSource) {
@@ -43,13 +43,13 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
 // Salva os produtos no local Storage.
 const salveCart = () => {
-  localStorage.setItem('product', liElemnto.innerHTML);
+  localStorage.setItem('product', cartItenms.innerHTML);
 };
 
 // Add o evento de remove nos produtos da lista
@@ -61,13 +61,14 @@ function cartItemClickListener(eventt) {
 
 // Carrega os produtos salvos no local Storage e add evento de remove.
 const loadCart = () => {
-  liElemnto.innerHTML = localStorage.getItem('product');
-  document.querySelectorAll('.cart__item').forEach((el) => el.addEventListener('click', (event) => {
-    event.target.remove();
-    sub(event.target);
-    salveCart();
-  }));
-  };
+  cartItenms.innerHTML = localStorage.getItem('product');
+  document.querySelectorAll('.cart__item').forEach((el) =>
+    el.addEventListener('click', (event) => {
+      event.target.remove();
+      sub(event.target);
+      salveCart();
+    }));
+};
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -77,50 +78,56 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+// Faz a requisição de um produto pela a Id, salva e soma o valor.
 const addItemToCart = async (id) => {
   const productDate = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const product = await productDate.json();
+  cartItenms.appendChild(createCartItemElement(product));
   soma(product.price);
-  liElemnto.appendChild(createCartItemElement(product));
   salveCart();
 };
 
-// Add o evento ao elemento e add o mesmo no carrinho.
+// Add o evento ao elemento do produto de add item ao carrinho.
 const addItemCart = (elemnto) => {
-  elemnto.querySelector('.item__add').addEventListener('click', (event) => {
-    const idProduct = event.target.parentElement.querySelector('.item__sku').innerText;
-      addItemToCart(idProduct);
+  elemnto.querySelector('.item__add').addEventListener('click', () => {
+    addItemToCart(getSkuFromProductItem(elemnto));
   });
   return elemnto;
 };
 
-// Faz requisiçao no mercadolivre e add o elemento ao html.
-const getApi = async (query = 'computador') => {
+// Recebe uma lista de produtos para criar os elemento sessao da pagina.
+const listItemProductToElement = (listProduct) => {
+  listProduct.forEach((product) => {
+    document
+      .querySelector('.items')
+      .appendChild(addItemCart(createProductItemElement(product)));
+  });
+};
+
+// Faz requisiçao no mercadolivre.
+const requestApiMercadoLivre = async (query = 'computador') => {
   try {
     const request = await fetch(
       `https://api.mercadolibre.com/sites/MLB/search?q=${query}`,
     );
     const dateProduct = await request.json();
-    const objectProducts = dateProduct.results;
-    objectProducts.forEach((product) => {
-      document
-        .querySelector('.items')
-        .appendChild(addItemCart(createProductItemElement(product)));
-    });
-    document.querySelector('.loading').remove();
+    return dateProduct.results;
   } catch (e) {
     const error = document.body;
     error.setAttribute('class', 'error');
-    error.innerText = `Error!!! \n ${e}`;
+    error.innerText = 'Tente Mais Tarde.';
   }
 };
 
+// reseta a lista de items.
 bntClear.addEventListener('click', () => {
-  liElemnto.innerText = '';
-  valotTotal.innerText = 0;
+  cartItenms.innerText = '';
+  valorTotal.innerText = 0;
 });
 
-window.onload = () => {
-  getApi();
+window.onload = async () => {
+  const listProduct = await requestApiMercadoLivre();
+  listItemProductToElement(listProduct);
+  document.querySelector('.loading').remove();
   loadCart();
 };
