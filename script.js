@@ -117,13 +117,28 @@ function clearCart() {
 
 function addListenerBtnClearCart() {
   const btnClearCart = document.getElementById('btn__clear');
-  console.log(btnClearCart);
   btnClearCart.addEventListener('click', clearCart);
 }
 
+function displayLoading() {
+  const div = document.querySelector('.container');
+  const h = document.createElement('h2');
+  h.className = 'loading';
+  h.id = 'elemLoading';
+  h.innerHTML = 'Loading...';
+  div.appendChild(h);
+}
+
+function turnOffDisplayLoading() {
+  const elLoading = document.getElementById('elemLoading');
+  elLoading.remove();
+}
+
 window.onload = async () => {
-   await fetchProduct('computador');
-   await addEvtListenerClickToAllProds();
-   await chargePreviousCart();
-   addListenerBtnClearCart();
+  await displayLoading();
+  await fetchProduct('computador');
+  turnOffDisplayLoading();
+  addEvtListenerClickToAllProds();
+  await chargePreviousCart();
+  addListenerBtnClearCart();
 };
