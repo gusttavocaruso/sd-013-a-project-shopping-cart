@@ -1,5 +1,5 @@
 // const fetch = require('node-fetch');
-// let listItensCart = document.querySelector('.cart__items');
+// const listItens = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -45,24 +45,38 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+// ARROW FUNCTION QUE LISTA OS PRODUTOS NA SECTION E TRATA OS DADOS RECEBIDOS
 const addItensInSection = (items) => {
-  items.forEach((item) => {
-    const { id: sku, title: name, thumbnail: image } = item;
-    const itemElement = createProductItemElement({ sku, name, image });
-    const section = document.querySelector('.items');
-    section.appendChild(itemElement);
+  const sectionItems = document.querySelector('.items'); // INSTANCIA A sectionItems QUE LISTARÁ OS PRODUTOS
+  items.forEach((item) => { // PERCORRE O ARRAY DE OBJETOS RECEBIDO DA API - FETCHMELI
+    const { id: sku, title: name, thumbnail: image } = item; // DESESTRUTURA AS CHAVES NECESSÁRIAS DOS OBJETOS
+    const itemElement = createProductItemElement({ sku, name, image }); // CRIA O ELEMENTO A SER ADICIONADO
+    sectionItems.appendChild(itemElement); // FAZ O APPEND DO ELEMENTO NA SECTION
   });
 };
 
+// ARROW FUNCTION PARA BUSCAR OS PRODUTOS DO MERCADO LIVRE NA PÁGINA, COM BASE EM UMA BUSCA ESPECÍFICA.
 const fetchMeli = (query) => fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
-  .then((response) => {
-    response.json().then((data) => {
-      addItensInSection(data.results);
-  });
+  .then((response) => { // RECEBE UMA PROMISSE
+    response.json() // RECEBE OUTRA PROMISSE COM O ARQUIVO JSON
+  .then((data) => addItensInSection(data.results)); // ENVIA PARA A FUNCTION QUE LISTA OS PRODUTOS O ARRAY DE OBJETOS LOCALIZADO NO ARQUIVO JSON COM OS PRODUTOS DA BUSCA.
+});
+
+const calcTotalPaySum = ((price) => {
+  const totalPriceStorage = parseFloat(localStorage.getItem('total_price'));
+  if ((localStorage.getItem('total_price') === undefined)
+  || (localStorage.getItem('total_price') === null)) {
+  localStorage.setItem('total_price', price);
+  } else {
+  const sumTotalCart = totalPriceStorage + price;
+  localStorage.setItem('total_price', sumTotalCart);
+  console.log(price);
+  console.log('localstorage', sumTotalCart);
+  }
 });
 
 const getProduct = (query) => {
-  const getClassItem = query.target.parentElement.querySelector('span.item__sku');
+  const getClassItem = query.target.parentElement.querySelector('span.item__sku'); // 
   const idItem = getClassItem.innerText;
   fetch(`https://api.mercadolibre.com/items/${idItem}`)
     .then((response) => response.json()
@@ -71,16 +85,22 @@ const getProduct = (query) => {
       const listItensCart = document.querySelector('.cart__items');
       listItensCart.appendChild(createCartItemElement(itemSelectAdd));
       localStorage.setItem('shop_cart', listItensCart.innerHTML);
+     
+      const parsePriceItem = parseFloat(itemSelectAdd.salePrice).toFixed(2);
+      calcTotalPaySum(parsePriceItem);
     }));
 };
 
+// ARROW FUNCTION ASSÍNCRONA QUE ADICIONA O PRODUTO AO CARRINHO
 const itemAdd = async () => {
   try {
-    await fetchMeli('computador');
-    const containerItens = document.querySelector('.items');
-    containerItens.addEventListener('click', (button) => {
-      if (button.target.className === 'item__add') {
-        getProduct(button);
+    const sectionItems = document.querySelector('.items'); // INSTANCIA A sectionItems QUE LISTARÁ OS PRODUTOS
+    const loading = document.querySelector('.loading'); // INSTANCIA O ELEMENTO SPAN LOADING ANTES DO CARRG. DOS PRODUTOS
+    await fetchMeli('computador'); // ENVIA O PARÂMETRO PARA A FUNÇÃO FETCHMELI QUE BUSCA OS PRODUTOS
+    loading.remove(); // REMOVE LOADING APÓS O CARREGAMENTO DOS PRODUTOS
+    sectionItems.addEventListener('click', (button) => { // ADICIONA UMA ESPERA DE EVENTO EM TODA A LISTA
+      if (button.target.className === 'item__add') { // VERIFICA SE O ITEM CLICADO TEM A CLASSE ITEM_ADD
+        getProduct(button); 
       }
     });
   } catch (error) {
@@ -88,14 +108,22 @@ const itemAdd = async () => {
   }
 };
 
+// ONLOAD CARREGA AS INFORMAÇÕES ASSIM QUE A PÁGINA É CARREGADA
 window.onload = () => {
-  const listItensCart = document.querySelector('.cart__items');
-  const localCart = localStorage.getItem('shop_cart');
-  listItensCart.addEventListener('click', (e) => {
-    if (e.target.className === 'cart__item') {
-      cartItemClickListener(e);
-    }
-  });
-  listItensCart.innerHTML = localCart;
+  const listItensCart = document.querySelector('.cart__items'); // INSTANCIA O CONTAINTER "OL" DE PRODUTOS
+  const localCart = localStorage.getItem('shop_cart'); // BUSCA ITENS ADICIONADOS AO CARRINHO, SALVOS NO LOCALSTORAGE
+  listItensCart.innerHTML = localCart; // CARREGA PRODUTOS SALVOS NO LOCALSTORAGE
   itemAdd();
+
+// ESPERA O EVENTO DE CLICK PARA ADD UM PRODUTO AO CARRINHO
+  listItensCart.addEventListener('click', (e) =>
+    e.target.className === 'cart__item' && cartItemClickListener(e));
+
+// ESPERA O EVENTO DE CLICK NO BOTAO ESVAZIAR CARRINHO E LIMPA O CARRINHO
+  const buttonClear = document.querySelector('.empty-cart');
+  buttonClear.addEventListener('click', () => {
+    listItensCart.innerText = '';
+    localStorage.setItem('shop_cart', listItensCart.innerText);
+    localStorage.setItem('total_price', null);
+  });
 };
