@@ -28,15 +28,31 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-const emptyCart = () => {
+function addLoadingMessage() {
+  const loadingMessage = document.createElement('p');
+  loadingMessage.classList.add('loading');
+  loadingMessage.innerText = 'Carregando....';
+  const emptyCartButton = document.querySelector('.empty-cart');
+  emptyCartButton.parentNode.insertBefore(loadingMessage, emptyCartButton);
+}
+
+function removeLoadingMessage() {
+  const loadingMessage = document.querySelector('.loading');
+  loadingMessage.parentNode.removeChild(loadingMessage);
+}
+
+function emptyCart() {
+  // Busca o botão de esvaziar carrinho
   const emptyButton = document.querySelector('.empty-cart');
   emptyButton.addEventListener('click', () => {
+    // Busca o ol que contém todos os itens do carrinho para zerar o innerHTML
     const cartItems = document.querySelector('.cart__items');
     cartItems.innerHTML = null;
+    // Busca o valor atual para depois zerá-lo
     const currentValue = document.querySelector('.current-value');
     currentValue.innerText = '0';
   });
-};
+}
 
 function shoppingCartValue(itemPrice) {
   // Busca o elemento que tem o valor do momento através da classe
@@ -78,8 +94,10 @@ function addToCart(item) {
 async function fetchId(iD) {
   // Faz o fetch através do iD informado para a função
   const response = await fetch(`https://api.mercadolibre.com/items/${iD}`);
+  addLoadingMessage();
   // Pega o json da consulta acima
   const data = await response.json();
+  removeLoadingMessage();
   // Executa uma função que adicionar o item ao carrinho
   addToCart(data);
   // Executa uma função que adiciona o valor do item ao total
@@ -112,7 +130,9 @@ async function getApi(searchword) {
   // Recebe a promise do site do MercadoLivre
   const response = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${searchword}`);
   // Após receber o resultado da promise, pega apenas o json
+  addLoadingMessage();
   const data = await response.json();
+  removeLoadingMessage();
   // Executa a função addChild enviando as informações presentes em result do json
   addChild(data.results);
   return data;
