@@ -33,6 +33,7 @@ function createProductItemElement({ sku, name, image }) {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  // eslint-disable-next-line sonarjs/no-duplicate-string
   const listItens = document.querySelector('.cart__items');
   localStorage.setItem('shop_cart', listItens.innerHTML);
 }
