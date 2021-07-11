@@ -16,7 +16,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  // li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', cartItemClickListener); // requisito 3, evento pra remover um item criado
  
   const getOl = document.querySelector('.cart__items');
   getOl.appendChild(li);
@@ -25,7 +25,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-
+// requisito 2
 const addcart = (event) => {
   const sectionItem = event.target.parentNode;
   const id = getSkuFromProductItem(sectionItem);
@@ -37,12 +37,12 @@ const addcart = (event) => {
    });
 };
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
   
   const button = createCustomElement('button', 'item__add', 'Adicionar ao carrinho!');
-  button.addEventListener('click', addcart);
+  button.addEventListener('click', addcart); // alocado evento dentro do create product
 
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
@@ -51,10 +51,11 @@ function createProductItemElement({ sku, name, image }) {
   
   return section;
 }
-
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
+// requisito 3
+function cartItemClickListener(event) {
+  const evento = event.target
+  evento.remove();
+}
 
 const loadingId = document.querySelector('.loading');
 const itemsSection = document.querySelector('.items');
@@ -65,12 +66,8 @@ const fetchProdutos = (QUERY) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${QUERY}`) // chama a API
     .then((response) => response.json())
     .then((produtos) => {
-      produtos.results.forEach(({ id, title, thumbnail }) => {
-        itemsSection.appendChild(
-          // Fala que os itens abaixo serão filhos do grupo .items
-          createProductItemElement({
-            sku: id, name: title, image: thumbnail,
-          }),
+      produtos.results.forEach((item) => {
+        itemsSection.appendChild(createProductItemElement(item) // chamado a função que cria os elementos
         );
       });
       loadingId.remove(); // requisito 07
