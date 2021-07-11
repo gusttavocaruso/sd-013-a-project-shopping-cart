@@ -63,10 +63,11 @@ const fetchId = (event) => {
      const addLi = createCartItemElement(data);
      const lista = document.querySelector('.cart__items');
      lista.appendChild(addLi);
+     localStorage.setItem('li', lista.innerHTML);
   })
 }
 
-function escutarClick () {
+function escutarClick() {
   const itemList = document.querySelector('.items');
   itemList.addEventListener('click', (event) => {
     if(event.target.className === 'item__add') {
@@ -75,9 +76,16 @@ function escutarClick () {
   })
 }
 
+function salvarLocal() {
+  if(localStorage.li){
+    document.querySelector('.cart__items').innerHTML = localStorage.li
+  }
+}
+
 window.onload = () => {
   lista('computador');
   escutarClick();
+  salvarLocal();
  };
 
- // Função 1 e 2 feita com ajuda de Matheus Macêdo
+ // Função 1, 2 e 3 feita com ajuda de Matheus Macêdo
