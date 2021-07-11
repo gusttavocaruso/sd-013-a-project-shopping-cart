@@ -77,8 +77,6 @@ function updateLocalStorage(sku) {
   localStorage.setItem(sku, JSON.stringify(sku)); // inseri o id do produto (necessário converter em string 'strongify')
 }
 
-// localStorage.clear();
-
 const appendItem = (itemLiHTML) => { // Para apendar os elementos li no carrinho de compras
   const olItem = document.querySelector('.cart__items');
   olItem.appendChild(itemLiHTML);
@@ -88,7 +86,6 @@ const fetchItemSelected = (item) => fetch(`https://api.mercadolibre.com/items/${
   .then((response) => response.json())
   .then((data) => {
     const { id } = data; // Destructuring para inserir no localStorage
-    // console.log(id);
     updateLocalStorage(id); // função para inserir o id no localStorage
     appendItem(createCartItemElement(data));
     appendTotalPrice();
@@ -107,17 +104,26 @@ function addEvtListenerClickToAllProds() {
 
 function chargePreviousCart() {
   const cartInLocalStorage = Object.keys(localStorage); // Dá para fazer com Object.values
-  // console.log(cartInLocalStorage);
   cartInLocalStorage.forEach((id) => {
-    // const idClean = JSON.parse(id); // Se utilizar Object.values é necessário trabalhar a string
-    // console.log(id);
-    // console.log(idClean);
     fetchItemSelected(id);
   });
+}
+
+function clearCart() {
+  const cart = document.querySelectorAll('.cart__item');
+  cart.forEach((item) => item.remove());
+  appendTotalPrice();
+}
+
+function addListenerBtnClearCart() {
+  const btnClearCart = document.getElementById('btn__clear');
+  console.log(btnClearCart);
+  btnClearCart.addEventListener('click', clearCart);
 }
 
 window.onload = async () => {
    await fetchProduct('computador');
    await addEvtListenerClickToAllProds();
    await chargePreviousCart();
+   addListenerBtnClearCart();
 };
