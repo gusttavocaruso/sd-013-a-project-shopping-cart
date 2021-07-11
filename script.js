@@ -14,7 +14,7 @@ function createCustomElement(element, className, innerText) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
-
+event.remove();
 }
 
 function createCartItemElement(result) {
@@ -29,7 +29,9 @@ function createCartItemElement(result) {
   const cart = document.querySelector('.cart__items');
   // adciono a li criada a Ol
   cart.appendChild(li);
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', (event) => { 
+  cartItemClickListener(event.target);
+});
   return li;
 });
 }
@@ -51,9 +53,9 @@ sectionCriada.appendChild(section);
   return section;
   }
 
-function getSkuFromProductItem(item) {
+/* function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}
+} */
 
 function promessa(event) {
   new Promise((resolve, reject) => {
@@ -73,13 +75,15 @@ function promessa(event) {
   .catch((erro) => console.log(erro));
 }
 
+// ========== questão 06
+window.addEventListener('load', function () {
+const acessaButton = document.querySelector('.empty-cart');
+const acessaPaiCarrinho = document.querySelector('.cart__items');
+acessaButton.addEventListener('click', function () {
+  acessaPaiCarrinho.innerText = '';
+});
+});
 window.onload = () => {
   promessa('computador');
+  cartItemClickListener();
  };
-
-/*  window.addEventListener('load', function () {
-  const paiButton = document.querySelector('.items');
-  paiButton.addEventListener('click', function(event) { 
-  console.log('eai');
-  });
-}); */
