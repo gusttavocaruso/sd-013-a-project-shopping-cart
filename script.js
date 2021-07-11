@@ -56,7 +56,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
     console.log(myObj.sku);
     localStorage.removeItem(myObj.sku);
     myObj.remove();
-    priceCartUpdate();
+    totalPriceUpdate();
   }
   
   function createCartItemElement(sku, name, salePrice) {
@@ -102,16 +102,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
       });
     });  
   }
-
-  function loadStorage() {
-    for (const key in localStorage) {
-      const test = 'MLB';
-      if (key.indexOf(test) > -1) {
-        listToCartID(key);
-        // console.log(localStorage[key]);
-      }
-    }
-  }
   
   const clearCart = () => {
     localStorage.clear();
@@ -130,7 +120,10 @@ window.onload = () => {
       }
     });
 
-    loadStorage();
+    Object.keys(localStorage).forEach(function (key) {
+      listToCartID(key);
+      // console.log(localStorage.getItem(key));
+   });
 
     const emptyCart = document.querySelector('.empty-cart');
     emptyCart.addEventListener('click', clearCart);
