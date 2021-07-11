@@ -21,17 +21,18 @@ const addToCart = (index) => {
 
 const countCart = (amount) => {
   cy.get(CART_ITEMS)
-      .children()
-      .should('have.length', amount);
+    .children()
+    .should('have.length', amount);
 }
 
 const checkPrice = (results, indexes) => {
+  console.log('======>>>>> <<<<<=======')
   console.log(results)
   cy.wait(1000);
   let total = 0;
   indexes.forEach(index => total += results[index].price);
   cy.get(TOTAL_PRICE)
-      .should('have.text', total.toString());
+    .should('have.text', total.toString());
 }
 
 describe('Shopping Cart Project', () => {
@@ -49,11 +50,11 @@ describe('Shopping Cart Project', () => {
       cy.get(ITEM_SELECTOR)
         .should('exist')
         .should('have.length', results.length);
-    });    
+    });
   });
 
   describe('2 - Adicione o produto ao carrinho de compras', () => {
-    it('Adicione o produto ao carrinho de compras',() => {
+    it('Adicione o produto ao carrinho de compras', () => {
       cy.wait(1000);
       addToCart(36);
       countCart(1);
@@ -64,7 +65,7 @@ describe('Shopping Cart Project', () => {
         .should('have.text', `SKU: ${results[36].id} | NAME: ${results[36].title} | PRICE: $${results[36].price}`)
     });
   });
-  
+
   describe('3 - Remova o item do carrinho de compras ao clicar nele', () => {
     it('Remova o item do carrinho de compras ao clicar nele', () => {
       addToCart(29);
@@ -85,7 +86,7 @@ describe('Shopping Cart Project', () => {
         .eq(0)
         .click()
       countCart(0);
-  
+
     });
   });
 
@@ -105,14 +106,14 @@ describe('Shopping Cart Project', () => {
         .children()
         .first()
         .should('have.text', `SKU: ${results[first].id} | NAME: ${results[first].title} | PRICE: $${results[first].price}`)
-       
-        addToCart(last);
-        cy.wait(1000);
+
+      addToCart(last);
+      cy.wait(1000);
       cy.get(CART_ITEMS)
         .children()
         .last()
         .should('have.text', `SKU: ${results[last].id} | NAME: ${results[last].title} | PRICE: $${results[last].price}`)
-  
+
       cy.reload({
         onBeforeLoad(win) {
           win.fetch = fetchMock;

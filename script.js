@@ -1,5 +1,11 @@
 const apiMercadoLivre = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 
+const updateTotalPrice = (newComputerPrice) => {
+  const elementoTotalPrice = document.querySelector('.total-price');
+  const currentPrice = Number(elementoTotalPrice.innerHTML);
+  elementoTotalPrice.innerHTML = currentPrice + newComputerPrice;
+};
+
 function cartItemClickListener(event) {
   const element = event.target;
 
@@ -14,6 +20,10 @@ function cartItemClickListener(event) {
     'computadoresNoCarrinhoDeCompras',
     JSON.stringify(computerListUpdated),
   );
+
+  const elementPrice = Number(element.innerText.split('$')[1]);
+
+  updateTotalPrice(elementPrice * -1);
 }
 
 function createProductImageElement(imageSource) {
@@ -90,6 +100,7 @@ const buttonAddCards = () => {
       const elementoLiComputador = createCartItemElement(dadosDoComputador);
       document.querySelector('.cart__items').appendChild(elementoLiComputador);
       addLocalStorageItems(dadosDoComputador);
+      updateTotalPrice(dadosDoComputador.price);
     }
   });
 };
