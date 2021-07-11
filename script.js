@@ -39,11 +39,30 @@ const fetchProduct = (query) => fetch(`https://api.mercadolibre.com/sites/MLB/se
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
+function appendTotalPrice() {
+  // Clear the previous totalPrice
+  const totalPrice = document.querySelector('.total-price');
+  if (totalPrice) totalPrice.remove();
+  let PriceAmount = 0; // somar os valores da ol;
+  const olItens = document.querySelectorAll('.cart__item');
+  olItens.forEach((item) => {
+    const arrProduct = item.innerText.split('|').map((strItem) => strItem.trim()); // Para Obter um array onde cada item é uma string no padrão 'key: Value'
+    const price = parseFloat(arrProduct[2].split('$')[1]);
+    PriceAmount += price;
+  });
+  const spanTotalPrice = document.createElement('span');
+  spanTotalPrice.innerText = PriceAmount;
+  spanTotalPrice.className = 'total-price';
+  const ParentElement = document.querySelector('.cart');
+  ParentElement.appendChild(spanTotalPrice);
+}
+
 function cartItemClickListener(event) {
   event.target.remove();
-  const skuToRemove = event.target.innerText.substring(5, 18);
+  const skuToRemove = event.target.innerText.substring(5, 18); // string que será utilizada para remover item no localStorage
   // console.log(skuToRemove);
   localStorage.removeItem(skuToRemove, JSON.stringify(skuToRemove));
+  appendTotalPrice();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -72,6 +91,7 @@ const fetchItemSelected = (item) => fetch(`https://api.mercadolibre.com/items/${
     // console.log(id);
     updateLocalStorage(id); // função para inserir o id no localStorage
     appendItem(createCartItemElement(data));
+    appendTotalPrice();
   });
 
 function addEvtListenerClickToAllProds() {
@@ -87,10 +107,10 @@ function addEvtListenerClickToAllProds() {
 
 function chargePreviousCart() {
   const cartInLocalStorage = Object.keys(localStorage); // Dá para fazer com Object.values
-  console.log(cartInLocalStorage);
+  // console.log(cartInLocalStorage);
   cartInLocalStorage.forEach((id) => {
     // const idClean = JSON.parse(id); // Se utilizar Object.values é necessário trabalhar a string
-    console.log(id);
+    // console.log(id);
     // console.log(idClean);
     fetchItemSelected(id);
   });
