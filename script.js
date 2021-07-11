@@ -25,9 +25,7 @@ function createCartItemElement(result) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${ObjResult.id} | NAME: ${ObjResult.title} | PRICE: $${ObjResult.price}`;
-  // acesso a ol, que é pai das li
   const cart = document.querySelector('.cart__items');
-  // adciono a li criada a Ol
   cart.appendChild(li);
   li.addEventListener('click', (event) => { 
   cartItemClickListener(event.target);
@@ -85,5 +83,4 @@ acessaButton.addEventListener('click', function () {
 });
 window.onload = () => {
   promessa('computador');
-  cartItemClickListener();
  };
