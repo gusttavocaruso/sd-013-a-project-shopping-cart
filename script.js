@@ -61,24 +61,24 @@ const fetchId = (event) => {
   .then((response) => response.json())
   .then((data) => {
      const addLi = createCartItemElement(data);
-     const lista = document.querySelector('.cart__items');
-     lista.appendChild(addLi);
-     localStorage.setItem('li', lista.innerHTML);
-  })
-}
+     const list = document.querySelector('.cart__items');
+     list.appendChild(addLi);
+     localStorage.setItem('li', list.innerHTML);
+  });
+};
 
 function escutarClick() {
   const itemList = document.querySelector('.items');
   itemList.addEventListener('click', (event) => {
-    if(event.target.className === 'item__add') {
+    if (event.target.className === 'item__add') {
       fetchId(event);
     }
-  })
+  });
 }
 
 function salvarLocal() {
-  if(localStorage.li){
-    document.querySelector('.cart__items').innerHTML = localStorage.li
+  if (localStorage.li) {
+    document.querySelector('.cart__items').innerHTML = localStorage.li;
   }
 }
 
@@ -88,4 +88,5 @@ window.onload = () => {
   salvarLocal();
  };
 
- // Função 1, 2 e 3 feita com ajuda de Matheus Macêdo
+ // Questão 1, 2 e 3 feita com ajuda de Matheus Macêdo
+ // Questão 4 feita com ajuda de Felipe Neves
