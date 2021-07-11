@@ -13,7 +13,7 @@ function atualizaPreco() {
       const match = el.innerText.match(regex);
       sum += parseFloat(match[match.length - 1]);
     });
-    totalPrice.innerText = parseFloat(sum) === 0 ? '0' : parseFloat(sum).toFixed(2);
+    totalPrice.innerText = parseFloat(sum) === 0 ? '0' : parseFloat(sum);
   } else {
     totalPrice.innerText = '0';
   }
