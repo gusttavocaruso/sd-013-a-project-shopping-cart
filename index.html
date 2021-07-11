@@ -10,9 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap" rel="stylesheet">
-    <script src="script.js"></script>
   </head>
-
+  
   <body>
 
     <header>
@@ -20,13 +19,16 @@
         <i class="material-icons" id="shopping-cart">shopping_cart</i>
         <h1 id="title">Shopping Cart</h1>
       </div>
+      <div>
+        <input id="search_input" type="text" maxlength="29" placeholder="Buscar por produtos, marcas e mais...">
+      </div>
       <nav>
         <i class="material-icons" id="menu">
           menu
         </i>
       </nav>
     </header>
-
+    
     <main>
       <section class="container">
         <section class="items">
@@ -34,24 +36,31 @@
             <h2 class="items_title">Produtos</h2>
             <hr class="hr-big">
           </div>
+        <p class="loading">loading...</p>
         </section>
         <section class="cart">
-          <div class="cart_head">
-            <h2 class="cart__title">Carrinho de compras</h2>
-            <hr class="hr-small">
-          </div>
-          <div class="cart_list">
-            <ol class="cart__items"></ol>
-          </div>
-          <div class="cart_options">
-            <button class="button empty-cart">Esvaziar carrinho</button>
+          <div class="cart-container">
+            <div class="cart_head">
+              <h2 class="cart__title">Seu Carrinho</h2>
+              <hr class="hr-small">
+            </div>
+            <div class="cart_list">
+              <ol class="cart__items"></ol>
+            </div>
+            <div>
+              <p class="total"></p>
+            </div>
+            <div class="cart_options">
+              <button class="button empty-cart">Esvaziar carrinho</button>
+            </div>
           </div>
         </section>
       </section>
     </main>
-
+    
     <footer><p>Pedro Trasfereti, 2021.</p></footer>
-
   </body>
-
-</html>
+  <script src="script.js"></script>
+  
+  </html>
+  

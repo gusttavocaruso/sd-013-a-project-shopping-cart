@@ -1,3 +1,16 @@
+@keyframes smoothScroll {
+	0% {
+		transform: translateY(-30px);
+	}
+	100% {
+		transform: translateY(0px);
+	}
+}
+
+.cart-container, .items_head, .item, .loading {
+  animation: smoothScroll 1s forwards;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -10,7 +23,7 @@ body {
 
 header {
   background-color: #444;
-  height: 8vh;
+  min-height: 8vh;
   display: flex;
   align-items: center;
   flex-flow: row nowrap;
@@ -22,6 +35,24 @@ header {
   flex: 15;
   display: flex;
   align-items: center;
+  flex-flow: row nowrap;
+}
+
+#search_input {
+  background: ghostwhite url('images/search.svg') no-repeat scroll 278px 5px;
+  height: 12px;
+  width: 270px;
+  padding: 10px 30px 10px 10px;
+  margin-right: 40px;
+  border: 0;
+  border-radius: 10px;
+  vertical-align: middle;
+  font-size: 15.1px;
+}
+
+#search_input:focus {
+  outline: 0;
+  background-color: whitesmoke;
 }
 
 #title {
@@ -64,6 +95,7 @@ nav:hover {
 main {
   display: flex;
   flex-flow: row nowrap;
+  min-height: 95vh;
 }
 
 .top-bar {
@@ -86,7 +118,7 @@ main {
 }
 
 .container {
-  background-color: #eee;
+  background-color: ghostwhite;
   display: flex;
   justify-content: space-around;
   width: 100%;
@@ -105,7 +137,7 @@ main {
   height: 125px;
   display: flex;
   flex-flow: column nowrap;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
 }
 
@@ -114,16 +146,15 @@ main {
   font-size: 36px;
   font-weight: 100;
   text-align: center;
-  margin: 30px;
 }
 
 .hr-big {
   background-color: #888;
   width: 300px;
-  margin-bottom: 50px;
 }
 
 .item {
+  background-color: white;
   border: 2px solid #555;
   border-radius: 5px;
   box-sizing: border-box;
@@ -166,31 +197,12 @@ main {
 }
 
 .cart {
-  background-color: #ddd;
+  background-color: #eee;
   display: flex;
   flex-flow: column nowrap;
   flex-basis: 30%;
-}
-
-.cart__title {
-  text-align: center;
-  color: #333;
-  font-size: 26px;
-  font-weight: 500;
-}
-
-.button {
-  color: whitesmoke;
-  font-size: 16px;
-  display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  width: 140px;
-  height: 40px;
-  border: 0;
-  border-radius: 50px;
-  opacity: 70%;
-  box-shadow: 2px 3px #aaa;
 }
 
 .cart_head {
@@ -203,7 +215,19 @@ main {
 
 .cart__title {
   color: #333;
+  font-size: 26px;
   font-style: italic;
+  font-weight: 500;
+  text-align: center;
+}
+
+.cart__item {
+  list-style-type: none;
+  padding: 20px;
+}
+
+.cart__item:hover {
+  background-color: gainsboro;
 }
 
 .hr-small {
@@ -220,14 +244,39 @@ main {
   justify-content: space-evenly;
 }
 
+.button {
+  color: whitesmoke;
+  font-size: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 135px;
+  height: 35px;
+  border: 0;
+  border-radius: 50px;
+  opacity: 90%;
+  box-shadow: 2px 3px #aaa;
+}
+
 .button:hover {
   transition: 0.3s;
-  opacity: 90%;
+  opacity: 100%;
   cursor: pointer;
 }
 
 .empty-cart {
-  background-color: crimson;
+  background-color: #CE2D4F;
+}
+
+.loading {
+  color: #333;
+  font-size: 26px;
+  text-align: center;
+  text-transform: capitalize;
+  letter-spacing: 5px;
+  font-weight: 500;
+  height: 35px;
+  padding: 0 30px;
 }
 
 footer {

@@ -1,3 +1,85 @@
+/* Elementos */
+const cartList = document.querySelector('.cart__items');
+const loading = document.querySelector('.loading');
+
+/* Botões */
+const emptyCartBtn = document.querySelector('.empty-cart');
+
+// Quinto Requisito
+function calcTotal() {
+  const cartItems = document.querySelectorAll('.cart__item');
+  let acc = 0;
+  cartItems.forEach((item) => {
+    acc += item.split('$').pop();
+    alert(acc);
+  });
+}
+
+// Quarto Requisito -- salvar carrinho
+function saveCart() {
+  const cartData = cartList.innerHTML;
+  localStorage.setItem('lastSave', cartData);
+}
+
+// Sexto Requisito -- limpar carrinho
+function emptyCart() {
+  cartList.innerHTML = '';
+  saveCart();
+}
+emptyCartBtn.addEventListener('click', emptyCart);
+
+// Terceiro Requisito -- remover item do carrinho
+function cartItemClickListener(event) {
+  cartList.removeChild(event.target);
+  saveCart();
+  calcTotal();
+}
+
+// Quarto Requisito -- carregar carrinho
+function loadCart() {
+  const lastSave = localStorage.getItem('lastSave');
+  if (lastSave) {
+    cartList.innerHTML = lastSave;
+    const cartItems = document.querySelectorAll('.cart__item');
+    cartItems.forEach((item) => {
+      item.addEventListener('click', cartItemClickListener);
+    });
+  }
+}
+
+// Segundo Requisito -- adicionar item ao carrinho
+function createCartItemElement(sku, name, salePrice) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  cartList.appendChild(li);
+  saveCart();
+  calcTotal();
+}
+
+function fetchProduct(itemID) {
+  fetch(`https://api.mercadolibre.com/items/${itemID}`)
+    .then((response) => {
+      response.json().then((data) => {
+        createCartItemElement(data.id, data.title, data.price);
+      });
+    });
+}
+
+function getSkuFromProductItem(item) {
+  const sku = item.target.previousElementSibling.previousElementSibling
+    .previousElementSibling.innerText;
+  fetchProduct(sku);
+}
+
+function productItemClickListener() {
+  const products = document.querySelectorAll('.item');
+  products.forEach((product) => product.querySelector('button.item__add')
+    .addEventListener('click', getSkuFromProductItem));
+}
+
+// Primeiro Requisito -- carregar produtos através do API
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -12,33 +94,17 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
+  
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  
   return section;
 }
-
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
-
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
-
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
 
 const addItemsToSection = (items) => {
   items.forEach((item) => {
@@ -48,15 +114,35 @@ const addItemsToSection = (items) => {
   });
 };
 
+// Sétimo Requisito -- loading screen
 const fetchML = (query) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => {
       response.json().then((data) => {
         addItemsToSection(data.results);
+        loading.remove();
+        productItemClickListener();
       });
     });
 };
 
+// Funções adicionais
+const searchInput = document.querySelector('#search_input');
+
+const search = (event) => {
+  if (event.keyCode === 13) {
+    const items = document.querySelectorAll('.item');
+    const itemContainer = document.querySelector('.items');
+    items.forEach((item) => itemContainer.removeChild(item));
+    fetchML(searchInput.value);
+    searchInput.value = '';
+  }
+  return 0;
+};
+searchInput.addEventListener('keyup', search);
+
+// Carregamento da página
 window.onload = () => {
   fetchML('computador');
+  loadCart();
 };
