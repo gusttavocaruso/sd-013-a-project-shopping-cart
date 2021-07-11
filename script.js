@@ -1,4 +1,5 @@
 const apiMercadoLivre = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+const cartsItems = document.querySelector('.cart__items');
 
 const updateTotalPrice = (newComputerPrice) => {
   const elementoTotalPrice = document.querySelector('.total-price');
@@ -93,10 +94,9 @@ const getCartComputer = async (id) => {
 const buttonDeleteAllCards = () => {
   const button = document.querySelector('.empty-cart');
   button.addEventListener('click', () => {
-    const lista = document.querySelector('.cart__items');
-    lista.innerHTML = '';
+    cartsItems.innerHTML = '';
   });
-}
+};
 
 const buttonAddCards = () => {
   const classSection = document.querySelector('.items');
@@ -106,7 +106,7 @@ const buttonAddCards = () => {
       const idDoComputador = getSkuFromProductItem(buttonDeAdicionar);
       const dadosDoComputador = await getCartComputer(idDoComputador);
       const elementoLiComputador = createCartItemElement(dadosDoComputador);
-      document.querySelector('.cart__items').appendChild(elementoLiComputador);
+      cartsItems.appendChild(elementoLiComputador);
       addLocalStorageItems(dadosDoComputador);
       updateTotalPrice(dadosDoComputador.price);
     }
@@ -135,7 +135,7 @@ const getComputersFromLocalStorage = () => {
 
   computerList.forEach((computer) => {
     const elementoLiComputador = createCartItemElement(computer);
-    document.querySelector('.cart__items').appendChild(elementoLiComputador);
+    cartsItems.appendChild(elementoLiComputador);
   });
 };
 
