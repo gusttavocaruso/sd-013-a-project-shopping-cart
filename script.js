@@ -27,8 +27,9 @@ const getCartStored = () => {
   cart.innerHTML = localStorage.getItem('car');
   totalPrice.innerHTML = localStorage.getItem('price');
 };
+// fim do desafio 4
 
-// Josue me ajudou com esse desafio.
+// Josue me ajudou com esse desafio 6.
   button.addEventListener('click', () => {
     const list = document.querySelectorAll('.cart__item');
     list.forEach((item) => item.parentNode.removeChild(item));
@@ -37,6 +38,7 @@ const getCartStored = () => {
   });
 
 // Resolvido em conjunto com o Matheus Duarte. Deu trabalho.
+// desafio 5.
 const getTotalPrice = async (value, operator) => {
   try {
   const sectionPrice = totalPrice;
@@ -50,20 +52,24 @@ const getTotalPrice = async (value, operator) => {
   }
 };
 
+// desafio 3.
 function cartItemClickListener(event) {
   if (event.target.className === 'cart__item') {
   event.target.remove();
+  // codigo do desafio 5.
   const productPrice = event.target.querySelector('span').innerText;
   getTotalPrice(productPrice, '-');
   savedCart();
   }
 }
+// fim do desafio 3.
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerHTML = `SKU: ${sku} | NAME: ${name} | PRICE: $<span>${salePrice}</span>`;
   cart.appendChild(li);
+  // codigo do desafio 5.
   getTotalPrice(salePrice, '+');
   return li;
 }
@@ -80,6 +86,7 @@ const addItemCartShopp = async (id) => {
   }
 };
 
+// contem codigo do desafio 2
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -98,13 +105,14 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
+// desafio 1
 const addItems = (items) => {
   items.forEach((item) => {
     const itemHTML = createProductItemElement(item);
     const section = document.querySelector('.items');
     section.appendChild(itemHTML);
   });
-  load.remove();
+  load.remove(alert('mensagem apagada'));
 };
 
 // refatorado com ajuda do Rogério.
@@ -118,6 +126,7 @@ const getProductPromise = async (product = 'computador') => {
   alert(erro);
   }
 };
+// fim do desafio 1
 
 cart.addEventListener('click', cartItemClickListener);
 
