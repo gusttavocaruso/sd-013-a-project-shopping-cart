@@ -28,11 +28,34 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
+const emptyCart = () => {
+  const emptyButton = document.querySelector('.empty-cart');
+  emptyButton.addEventListener('click', () => {
+    const cartItems = document.querySelector('.cart__items');
+    cartItems.innerHTML = null;
+    const currentValue = document.querySelector('.current-value');
+    currentValue.innerText = '0';
+  });
+};
+
+function shoppingCartValue(itemPrice) {
+  // Busca o elemento que tem o valor do momento através da classe
+  const currentValue = document.querySelector('.current-value');
+  // Transforma o número extraído em uma Float
+  const floatCurrentAmount = parseFloat(currentValue.innerText);
+  // Soma os valores e arredonda
+  const totalAmount = Math.round((itemPrice + floatCurrentAmount) * 100) / 100;
+  // Coloca o valor somado como novo texto
+  currentValue.innerText = totalAmount;
+}
+
 function cartItemClickListener(event) {
   // Pega o elemento pai do elemento clicado
   const father = event.target.parentNode;
   // Remove o filho clicado do elemento pai, que foi buscado acima
   father.removeChild(event.target);
+  // Inova a função de valor do carrinho de compras para remover valor do produto
+  shoppingCartValue(-100);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -59,6 +82,8 @@ async function fetchId(iD) {
   const data = await response.json();
   // Executa uma função que adicionar o item ao carrinho
   addToCart(data);
+  // Executa uma função que adiciona o valor do item ao total
+  shoppingCartValue(data.base_price);
 }
 
 const getItemId = (event) => {
@@ -95,4 +120,5 @@ async function getApi(searchword) {
 
 window.onload = () => { 
   getApi('computador');
+  emptyCart();
 };
