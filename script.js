@@ -1,5 +1,5 @@
 const apiMercadoLivre = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-const cartsItems = document.querySelector('.cart__items');
+const cartItemsClass = '.cart__items';
 
 const updateTotalPrice = (newComputerPrice) => {
   const elementoTotalPrice = document.querySelector('.total-price');
@@ -94,7 +94,8 @@ const getCartComputer = async (id) => {
 const buttonDeleteAllCards = () => {
   const button = document.querySelector('.empty-cart');
   button.addEventListener('click', () => {
-    cartsItems.innerHTML = '';
+    const lista = document.querySelector(cartItemsClass);
+    lista.innerHTML = '';
   });
 };
 
@@ -106,7 +107,7 @@ const buttonAddCards = () => {
       const idDoComputador = getSkuFromProductItem(buttonDeAdicionar);
       const dadosDoComputador = await getCartComputer(idDoComputador);
       const elementoLiComputador = createCartItemElement(dadosDoComputador);
-      cartsItems.appendChild(elementoLiComputador);
+      document.querySelector(cartItemsClass).appendChild(elementoLiComputador);
       addLocalStorageItems(dadosDoComputador);
       updateTotalPrice(dadosDoComputador.price);
     }
@@ -135,7 +136,7 @@ const getComputersFromLocalStorage = () => {
 
   computerList.forEach((computer) => {
     const elementoLiComputador = createCartItemElement(computer);
-    cartsItems.appendChild(elementoLiComputador);
+    document.querySelector(cartItemsClass).appendChild(elementoLiComputador);
   });
 };
 
