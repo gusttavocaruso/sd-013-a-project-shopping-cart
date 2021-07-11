@@ -1,6 +1,8 @@
 // const cartItems = document.querySelector('.cart__items');
 // const clearCartBtn = document.querySelector('.empty-cart');
 // const addToCartBtn = document.querySelector('.item__add');
+// eslint-disable-next-line sonarjs/no-duplicate-string
+const newOl = document.querySelector('.cart__items');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -41,7 +43,6 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  const newOl = document.querySelector('.cart__items');
   newOl.appendChild(li);
 
   return li;
@@ -75,8 +76,8 @@ const fetchComputer = () => {
     response.json()
     .then((data) => {
       const addLi = createCartItemElement(data);
-      const getOl = document.querySelector('.cart__items');
-      getOl.appendChild(addLi);
+      newOl.appendChild(addLi);
+      localStorage.setItem('lista', newOl.innerHTML);
     });
   });
 };
@@ -90,11 +91,14 @@ const buttonAdd = () => {
   });
 };
 
-// clearCartBtn.addEventListener('click', () => {
-//   cartItems.innerHTML = '';
-// })
+// const saveLocalStorage = () => {
+  
+// }
 
 window.onload = () => {
   fetchComputer();
   buttonAdd();
+  if (localStorage.lista) {
+    newOl.innerHTML = localStorage.lista;
+  }
 };
