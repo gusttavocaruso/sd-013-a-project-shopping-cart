@@ -19,6 +19,10 @@ function createCustomElement(element, className, innerText) {
 // =======================================================================================
 function cartItemClickListener(event) {
   // coloque seu código aqui
+  const itemRemove = event.target;
+  // console.log(itemRemove)
+  // https://developer.mozilla.org/en-US/docs/Web/API/Element/remove
+  itemRemove.remove();
 }
 
 // =======================================================================================
