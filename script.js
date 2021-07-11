@@ -90,6 +90,14 @@ const getCartComputer = async (id) => {
   return apiJason;
 };
 
+const buttonDeleteAllCards = () => {
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', () => {
+    const lista = document.querySelector('.cart__items');
+    lista.innerHTML = '';
+  });
+}
+
 const buttonAddCards = () => {
   const classSection = document.querySelector('.items');
   classSection.addEventListener('click', async (evento) => {
@@ -135,4 +143,5 @@ window.onload = () => {
   fetchApi();
   buttonAddCards();
   getComputersFromLocalStorage();
+  buttonDeleteAllCards();
 };
