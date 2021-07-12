@@ -4,7 +4,7 @@ const localStorageData = [];
 // let pricesArray = [];
 const cartContainer = '.cart__items';
 
-// Quesito 5
+// Quesito 5 Resolvido com ajuda de Aline Hoshino
 const addPrices = () => {
   const priceContainer = document.querySelector('.total-price');
   let totalValue = 0;
@@ -52,12 +52,15 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// Requisito 1: continuação
+// Requisito 1: continuação e Quesito 7
 const createProductList = async () => {
+  const loadingContainer = document.querySelector('.loading');
+  loadingContainer.innerHTML = 'loading...';
   const api = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const apiJson = await api.json();
   // console.log(apiJson);
   const arrayResultsJson = apiJson.results;
+  loadingContainer.remove();
   arrayResultsJson.forEach((product) => 
   document.querySelector('.items').appendChild(createProductItemElement(product)));
 };
@@ -97,7 +100,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-// Quesito 1
+// Quesito 2
 const getCartComputer = async (id) => {
   const api = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const apiJson = await api.json();
