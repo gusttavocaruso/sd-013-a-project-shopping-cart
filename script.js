@@ -66,4 +66,15 @@ const fetchAPI = () => new Promise(() => {
   }));
 });
 
-  window.onload = () => { fetchAPI(); };
+const eraseShopList = () => {
+  const bntErase = document.querySelector('.empty-cart');
+  bntErase.addEventListener('click', () => {
+    const list = document.querySelectorAll('.cart__item');
+    list.forEach((item) => item.remove());
+  });
+};
+
+  window.onload = () => {
+ fetchAPI();
+    eraseShopList(); 
+};
