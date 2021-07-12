@@ -1,4 +1,5 @@
 // Projeto realizado com ajuda de alguns colegas, estive tendo muita dificuldade.
+const carti = '.cart__items';
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -26,22 +27,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-  //   return item.querySelector('span.item__sku').innerText;
-  // }
-
-// const save = () => {
-//   const carrin = document.querySelectorAll('.cart__item');
-//   localStorage.setItem('objeto', carrin.innerHTML);
-// }
-
-// const carrinhoCheio = () => {
-//   const carrinho = localStorage.getItem('objeto');
-//   document.querySelector('.cart__items').innerHTML = carrinho;
-// };
-
-// requisito 5
-
 const totalPrice = () => {
   const item = document.querySelector('.total-price');
   let total = 0;
@@ -52,9 +37,7 @@ const totalPrice = () => {
   item.innerText = `${total}`;
 };
 
-// requisito 4
-
-  const save = () => {
+const save = () => {
     const carrin = document.querySelectorAll('.cart__item');
     localStorage.clear();
     for (let i = 0; i < carrin.length; i += 1) {
@@ -62,8 +45,16 @@ const totalPrice = () => {
     }
     totalPrice();
   };
-  
-// requisito 3
+
+const pc = (func) => {
+  const buttons = document.querySelectorAll('.item__add');
+  const itemId = document.querySelectorAll('.item__sku');
+  buttons.forEach((button, i) => {
+    button.addEventListener('click', () => {
+      func(itemId[i].innerText);
+  });
+  });
+};
 
 function cartItemClickListener(event) {
   event.target.remove();
@@ -79,10 +70,9 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }, getLo
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-// requisito 4
 
 const carrinhoCheio = () => {
-  const retorna = document.querySelector('.cart__items');
+  const retorna = document.querySelector(carti);
   for (let i = 0; i < localStorage.length; i += 1) {
     const getLocal = localStorage.getItem(`objeto${[i]}`);
     retorna.appendChild(createCartItemElement({ id: undefined }, getLocal));
@@ -90,45 +80,42 @@ const carrinhoCheio = () => {
 totalPrice();
 };
 
-//  requisito 2
-
 const lista = async (id) => {
   const objetos = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const objeto = await objetos.json();
-  const item = document.querySelector('.cart__items');
+  const item = document.querySelector(carti);
   item.appendChild(createCartItemElement(objeto));
   save();
 };
 
-const pc = (func) => {
-  const buttons = document.querySelectorAll('.item__add');
-  const itemId = document.querySelectorAll('.item__sku');
-  buttons.forEach((button, i) => {
-    button.addEventListener('click', () => {
-      func(itemId[i].innerText);
-  });
-  });
+const loadApi = () => {
+  const item = document.querySelectorAll('.item');
+  const items = document.querySelector('.items');
+  const h1 = document.createElement('h1');
+  h1.className = 'loading';
+  h1.innerText = 'loading...';
+  if (item.length === 0) items.appendChild(h1);
+  if (item.length === 50) document.querySelector('.loading').remove();
 };
 
-// requisito 1
-
-  const r1 = async (produto) => {
+const r1 = async (produto) => {
   const computers = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${produto}`);
   const computer = await computers.json();
   computer.results.forEach((element) => {
     const setcomputer = document.querySelector('.items');
     setcomputer.appendChild(createProductItemElement(element));
+    loadApi();
   });
   pc(lista);
 };
 
-// const limpacarro = () => {
-//   const items = document.querySelector('.cart__items');
-//   const button = document.querySelector('.empty-cart');
+// const clearAll = () => {
+//   const item = document.querySelector(carti);
+//   const butt = document.querySelector('.empty-cart');
 
-//   button.addEventListener('click', () => {
+//   butt.addEventListener('click', () => {
 //     localStorage.clear();
-//     items.replaceChildren();
+//     item.replaceChildren();
 //     totalPrice();
 //   });
 // };
@@ -137,4 +124,6 @@ window.onload = () => {
   r1('computador');
   carrinhoCheio();
   totalPrice();
+  // clearAll();
+  loadApi();
 };
