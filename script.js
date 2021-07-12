@@ -1,3 +1,5 @@
+const ol = document.querySelector('.cart__items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -27,10 +29,11 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   // }
   
 function cartItemClickListener(event) {
-      // coloque seu código aqui
-      const itemToRemove = event.target;
-      itemToRemove.remove();
-  }
+  // coloque seu código aqui
+  const itemToRemove = event.target;
+  itemToRemove.remove();
+  localStorage.cartList = ol.innerHTML;
+}
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -40,20 +43,20 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-const achaID = (event) => {
+const achaID = async (event) => {
   const idProduct = event.target.parentElement.firstChild.innerHTML;
-  fetch(`https://api.mercadolibre.com/items/${idProduct}`)
-  .then((response) => response.json())
-  .then((data) => {
-    const ol = document.querySelector('.cart__items');
+  const response = await fetch(`https://api.mercadolibre.com/items/${idProduct}`);
+    const data = await response.json();
     const itensCompraveis = createCartItemElement(data);
+    console.log(itensCompraveis);
     ol.appendChild(itensCompraveis);
-  });
+    localStorage.cartList = ol.innerHTML;
+    // sumOfPrices(itensCompraveis);
 };
-
+  
 const fetchAPI = () => new Promise(() => {
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-  .then((response) => response.json()
+   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+   .then((response) => response.json()
   .then((computer) => {
     // Recebi Ajuda do Luiz Furtado
     const itemList = document.querySelector('.items');
@@ -71,10 +74,16 @@ const eraseShopList = () => {
   bntErase.addEventListener('click', () => {
     const list = document.querySelectorAll('.cart__item');
     list.forEach((item) => item.remove());
+    localStorage.cartList = ol.innerHTML;
   });
 };
 
-  window.onload = () => {
- fetchAPI();
-    eraseShopList(); 
+ol.innerHTML = localStorage.cartList || null;
+
+document.querySelectorAll('li')
+  .forEach((li) => li.addEventListener('click', cartItemClickListener));
+  
+eraseShopList(); 
+window.onload = async () => {
+    await fetchAPI();
 };
