@@ -18,8 +18,8 @@ function createCustomElement(element, className, innerText) {
   e.className = className;
   e.innerText = innerText;
 
-  if (element === 'button'){
-    e.addEventListener('click', fillCart);
+  if (element === 'button') {
+    e.addEventListener('click', fillCart); // eslint-disable-line
   }
 
   return e;
@@ -41,7 +41,7 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
+function cartItemClickListener() {
   console.log('aaa');
 }
 
@@ -91,6 +91,13 @@ function productList() {
       item.addEventListener('click', fillCart)
     }, 5000);
   };
+} 
+
+const addCart = () => {
+  const teste = await productList();
+
+  bnt
+  return 
 } */
 
 window.onload = () => { 
