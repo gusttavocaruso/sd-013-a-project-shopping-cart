@@ -19,7 +19,7 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
 
   if (element === 'button') {
-    e.addEventListener('click', fillCart); // eslint-disable-line
+    e.addEventListener('click', fillCart); // eslint-disable-line no-use-before-define
   }
 
   return e;
