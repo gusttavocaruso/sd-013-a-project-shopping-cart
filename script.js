@@ -35,10 +35,23 @@ function saveCart() {
     }
 }
 
+function updatePrice() {
+  let total = 0;
+  const cartItem = document.querySelectorAll('.cart__item');
+  console.log(cartItem);
+  cartItem.forEach((element) => {
+      const price = +element.innerText.split('$')[1];
+      total += price;
+  });
+  const totalPrice = document.querySelector('.total-price');
+  totalPrice.innerHTML = total;
+}
+
 function cartItemClickListenerRemove(event) {
   if (event.target.className === 'cart__item') { 
   event.target.remove();
   saveCart();
+  updatePrice();
   }
 }
 
@@ -63,6 +76,7 @@ async function cartWithItem(id) {
       const cartItems = document.querySelector('.cart__items');
       cartItems.appendChild(cartItem);
       saveCart();
+      updatePrice();
   });
 }
 
@@ -112,6 +126,7 @@ window.onload = () => {
   itemList('computador');
   eventWithItem();
   loadCart();
+  updatePrice();
 };
 
 // Requisito 1 - Havia feito dentro de uma função só, mas ficou bem melhor quando dividi o código fazendo semelhante a forma como o tio Jack fez;
