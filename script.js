@@ -1,5 +1,6 @@
 const buttonClearList = document.querySelector('.empty-cart');
 const ListCartItens = document.querySelector('.cart__items');
+const totalPriceItens = document.querySelector('.total-price');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -33,21 +34,36 @@ function getSkuFromProductItem(item) {
 
 const SaveList = () => {
   const carList = ListCartItens.innerText;
-  console.log(carList);
   localStorage.setItem('listitens', carList);
 };
 
+const sumPrice = () => {
+  const text = ListCartItens.innerText;
+  const itens = text.split('\n');
+  const prices = itens.map((item) => {
+    const indice = item.indexOf('$') + 1;
+    return parseFloat(item.substr(indice));
+  });
+  const totalPrice = prices.reduce((acc, current) => {
+    let soma = acc;
+    soma += current;
+    return soma;
+  }, 0);
+  console.log(Math.round(totalPrice * 100) / 100);
+  console.log(prices);
+  totalPriceItens.innerText = Math.round(totalPrice * 100) / 100;
+};
+
 function cartItemClickListener(event) {
-  console.log(event.target);
   ListCartItens.removeChild(event.target);
   SaveList();
+  sumPrice();
 }
 
 const updateList = () => {
   if (localStorage.getItem('listitens')) {
     const text = localStorage.getItem('listitens');
     const itens = text.split('\n');
-    console.log(itens);
     itens.forEach((item) => {
       const li = document.createElement('li');
       li.className = 'cart__item';
@@ -55,6 +71,7 @@ const updateList = () => {
       li.addEventListener('click', cartItemClickListener);
       ListCartItens.appendChild(li);
     });
+    sumPrice();
   }
 };
 
@@ -71,7 +88,8 @@ function addCartItem(event) {
   fetch(`https://api.mercadolibre.com/items/${idItem}`)
     .then((item) => item.json()).then((produto) => {
       ListCartItens.appendChild(createCartItemElement(produto));
-    }).then(SaveList);
+    }).then(SaveList)
+      .then(sumPrice);
 }
 
 const addEventButton = () => {
@@ -86,6 +104,7 @@ const addItensInSection = (arrayItens) => {
     document.querySelector('.items').appendChild(createProductItemElement(element));
   });
 };
+
 const clearList = () => {
   let tamanho = ListCartItens.children.length;
   for (let i = 0; i < tamanho; i += 1) {
