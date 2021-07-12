@@ -40,39 +40,55 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   document.querySelector('.cart__items').innerHTML = carrinho;
 // };
 
+// requisito 5
+
+const totalPrice = () => {
+  const item = document.querySelector('.total-price');
+  let total = 0;
+  for (let i = 0; i < localStorage.length; i += 1) {
+    const price = parseFloat(localStorage[`objeto${[i]}`].split('$')[1]);
+     total += price;
+  }
+  item.innerText = `${total}`;
+};
+
+// requisito 4
+
   const save = () => {
     const carrin = document.querySelectorAll('.cart__item');
     localStorage.clear();
     for (let i = 0; i < carrin.length; i += 1) {
       localStorage.setItem(`objeto${[i]}`, carrin[i].textContent);
     }
+    totalPrice();
   };
   
-  const carrinhoCheio = () => {
-    const retorna = document.querySelector('.cart__items');
-    for (let i = 0; i < localStorage.length; i += 1) {
-      const getLocal = localStorage.getItem(`objeto${[i]}`);
-      retorna.appendChild(createCartItemElement({ id: undefined }, getLocal));
-  }
-};
-
 // requisito 3
 
 function cartItemClickListener(event) {
   event.target.remove();
   save();
-};
-
-// 
+  totalPrice();
+}
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }, getLocal) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   if (sku) li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  if(!sku) li.innerText = getLocal;
+  if (!sku) li.innerText = getLocal;
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+// requisito 4
+
+const carrinhoCheio = () => {
+  const retorna = document.querySelector('.cart__items');
+  for (let i = 0; i < localStorage.length; i += 1) {
+    const getLocal = localStorage.getItem(`objeto${[i]}`);
+    retorna.appendChild(createCartItemElement({ id: undefined }, getLocal));
+}
+totalPrice();
+};
 
 //  requisito 2
 
@@ -106,7 +122,19 @@ const pc = (func) => {
   pc(lista);
 };
 
+// const limpacarro = () => {
+//   const items = document.querySelector('.cart__items');
+//   const button = document.querySelector('.empty-cart');
+
+//   button.addEventListener('click', () => {
+//     localStorage.clear();
+//     items.replaceChildren();
+//     totalPrice();
+//   });
+// };
+
 window.onload = () => {
   r1('computador');
   carrinhoCheio();
+  totalPrice();
 };
