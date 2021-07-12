@@ -28,30 +28,43 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
+function currentValue() {
+  return document.querySelector('.total-price');
+}
+
+function cartItems() {
+return document.querySelector('.cart__items');
+}
+
+function addToStorage() {
+  const wholeCart = document.querySelector('.cart');
+  localStorage.cart = wholeCart.innerHTML;
+}
+
 function emptyCart() {
   // Busca o botão de esvaziar carrinho
   const emptyButton = document.querySelector('.empty-cart');
   emptyButton.addEventListener('click', () => {
     // Busca o ol que contém todos os itens do carrinho para zerar o innerHTML
-    const cartItems = document.querySelector('.cart__items');
-    cartItems.innerHTML = null;
+    const cart = cartItems();
+    cart.innerHTML = null;
     // Busca o valor atual para depois zerá-lo
-    const currentValue = document.querySelector('.total-price');
-    currentValue.innerHTML = '0';
+    const cartValue = currentValue();
+    cartValue.innerHTML = '0';
+    addToStorage();
   });
 }
 
 function shoppingCartValue(itemPrice) {
   // Busca o elemento que tem o valor do momento através da classe
-  console.log(itemPrice);
-  const currentValue = document.querySelector('.total-price');
+  const current = currentValue();
   // Transforma o número extraído em uma Float
-  const floatCurrentAmount = parseFloat(currentValue.innerText);
+  const floatcurrent = parseFloat(current.innerText);
   // Soma os valores e arredonda
-  const totalAmount = Math.round((itemPrice + floatCurrentAmount) * 100) / 100;
-  console.log(totalAmount);
+  const totalAmount = Math.round((itemPrice + floatcurrent) * 100) / 100;
   // Coloca o valor somado como novo texto
-  currentValue.innerHTML = totalAmount;
+  current.innerHTML = totalAmount;
+  addToStorage();
 }
 
 function cartItemClickListener(event) {
@@ -68,6 +81,7 @@ function cartItemClickListener(event) {
   father.removeChild(event.target);
   // Inova a função de valor do carrinho de compras para remover valor do produto
   shoppingCartValue(-valueToSubtract);
+  addToStorage();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -82,9 +96,9 @@ function addToCart(item) {
   // Executa a função que cria um elemento do carrinho com o item do parâmetro
   const itemToAdd = createCartItemElement(item);
   // Busca o elemento referente ao carrinho de compras
-  const shoppingCart = document.querySelector('.cart__items');
+  const cart = cartItems();
   // Adicionar o item criado acima ao carrinho de compras
-  shoppingCart.appendChild(itemToAdd);
+  cart.appendChild(itemToAdd);
 }
 
 async function fetchId(iD) {
@@ -134,4 +148,16 @@ async function getApi(searchword) {
 window.onload = () => { 
   getApi('computador');
   emptyCart();
+  if (localStorage.cart) {
+    // Busca o valor do cart atual e substitui com o armazenado no localStorage
+    const initialValue = document.querySelector('.cart');
+    initialValue.innerHTML = localStorage.cart;
+    // Adiciona o eventListener ao botão de esvaziar carrinho
+    const emptyButton = document.querySelector('.empty-cart');
+    emptyButton.addEventListener('click', emptyCart);
+    // Adiciona o eventListener aos itens do carrinho
+    document.querySelectorAll('.cart__items').forEach((item) => {
+      item.addEventListener('click', cartItemClickListener);
+    });
+  }
 };
