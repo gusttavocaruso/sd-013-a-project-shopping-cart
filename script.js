@@ -24,6 +24,11 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+function localStorageSave() {
+  const cartItems = document.getElementsByClassName('cart__items')[0];
+  localStorage.setItem('cartInfos', cartItems.innerHTML);
+}
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
@@ -42,6 +47,7 @@ const sum = () => {
 function cartItemClickListener(event) {
   event.target.remove();
   sum();
+  localStorageSave();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -51,6 +57,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
 const fetchComputer = (query) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => {
@@ -64,10 +71,11 @@ const fetchComputer = (query) => {
     });
   });
 };
+
 const addProduct = (product) => {
-  const myCart = document.querySelector('.cart__items');
+  const cart = document.querySelector('.cart__items');
   const newLi = createCartItemElement(product);
-  myCart.appendChild(newLi);
+  cart.appendChild(newLi);
   sum();
 };
 
@@ -80,22 +88,37 @@ const addButtons = () => {
       const obj = await fetch(`https://api.mercadolibre.com/items/${itemId}`)
         .then((response) => response.json());
       addProduct(obj);
+      localStorageSave();
     }
   });
 };
 
 const clearCart = () => {
   const button = document.querySelector('.empty-cart');
-  const ol = document.querySelector('.cart__items');
+  const cart = document.querySelector('.cart__items');
   button.addEventListener('click', () => {
-    ol.innerHTML = '';
+    cart.innerHTML = '';
     sum();
   });
 };
 
-window.onload = () => {
+function localStorageLoad() {
+  const cartItems = document.getElementsByClassName('cart__items')[0];
+  cartItems.innerHTML = localStorage.getItem('cartInfos');
+  const cartArray = document.getElementsByClassName('cart__item');
+  Array.prototype.forEach.call(cartArray, function (e) {
+    e.addEventListener('click', cartItemClickListener);
+  });
+}
+
+const functions = () => {
   fetchComputer('computador');
   addButtons();
   clearCart();
   sum();
+  localStorageLoad();
+};
+
+window.onload = () => {
+  functions();
 };
