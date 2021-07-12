@@ -1,3 +1,28 @@
+function clearCart() {
+  const getButton = document.querySelector('.empty-cart');
+  const listItems = document.querySelectorAll('.cart__item');
+
+  console.log('Clear', getButton);
+  console.log('Lista', listItems);
+}
+// =======================================================================================
+function totalCart() {
+  let valorTotal = 0;
+  const listItems = document.querySelectorAll('.cart__item');
+  const totalPrice = document.querySelector('.total-price');
+
+  if (listItems.length === 0) {
+    totalPrice.innerText = '0';
+  } else {
+    listItems.forEach((listItem) => {
+      const valorString = listItem.innerText.split('$')[1];
+      const valorFloat = parseFloat(valorString);
+      valorTotal += valorFloat;
+      totalPrice.innerText = (Math.round(valorTotal * 100) / 100);
+    });
+  }
+}
+
 // =======================================================================================
 function localStorageCart() {
   const listItems = document.querySelector('.cart__items');
@@ -9,6 +34,12 @@ function localStorageCart() {
 function loadStorageCart() {
   const listItems = document.querySelector('.cart__items');
   listItems.innerHTML = localStorage.getItem('listItems');
+  totalCart();
+  listItems.addEventListener('click', (event) => {
+    event.target.remove();
+    localStorageCart();
+    totalCart();
+  });
 }
 
 // =======================================================================================
@@ -25,27 +56,6 @@ function createCustomElement(element, className, innerText) {
   e.className = className;
   e.innerText = innerText;
   return e;
-}
-
-// =======================================================================================
-function totalCart() {
-  let valorTotal = 0;
-  const listItems = document.querySelectorAll('.cart__item');
-  const totalPrice = document.querySelector('.total-price');
-
-  if (listItems.length === 0) {
-    totalPrice.innerText = '0';
-  } else {
-    listItems.forEach((listItem) => {
-      const valorString = listItem.innerText.split('$')[1];
-      // console.log(typeof(valorString))
-      const valorFloat = parseFloat(valorString);
-      // console.log(typeof(valorFloat))
-      valorTotal += valorFloat;
-      // console.log(valorTotal.toFixed(2))
-      totalPrice.innerText = valorTotal.toFixed(2);
-    });
-  }
 }
 
 // =======================================================================================
@@ -141,4 +151,5 @@ const fetchMblPromise = async () => {
 window.onload = () => {
   fetchMblPromise();
   loadStorageCart();
+  clearCart();
 };
