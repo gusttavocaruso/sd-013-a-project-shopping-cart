@@ -80,11 +80,11 @@ function productList() {
         pcs.appendChild(createProductItemElement(item));
       });
     })
-    .then((fill) => {
+    .then(() => {
       const tshopCart = document.querySelectorAll('.item__add');
       tshopCart.forEach((iten) => {
         iten.addEventListener('click', fillCart);
-      })
+      });
     });
 }
 
