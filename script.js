@@ -1,17 +1,29 @@
+const totalPrice = document.querySelector('.total-price');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
   img.src = imageSource;
   return img;
 }
+// usa o source da imagem do json do produto para criar uma tag html de imagem respectiva
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
+// função responsavel por pegar o itentificador do item em questão
+
+const saveLocalStorage = () => {
+  const carrinhoHtml = document.querySelector('ul').innerHTML;
+  localStorage.setItem('carrinho', carrinhoHtml);
+};
+// função responsavel por salvar o local storage toda vez que ocorre alterações
 
 function cartItemClickListener(event) {
   event.target.remove();
+  saveLocalStorage();
 }
+// remove o item clicado do carrinho, no futuro terá tambem que fazer a subtração
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -20,6 +32,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+// função de criar elementos html que representam os item no carrinho elemento li de uma ul
 
 function cliqueDeAdicionaNoCarrinho(section) {
   section.querySelector('button').addEventListener('click', (event) => {
@@ -29,9 +42,11 @@ function cliqueDeAdicionaNoCarrinho(section) {
       .then((data) => {
         const cartList = document.querySelector('.cart__items');
         cartList.appendChild(createCartItemElement(data));
+        saveLocalStorage();
       });
-    });
+  });
 }
+// evento para popular o carrinho de compras apartir de click no botao html
 
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
@@ -50,13 +65,20 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   cliqueDeAdicionaNoCarrinho(section);
   return section;
 }
+// função que cria uma sessão e os itens html dos respectivos produtos, com imagem, indentificador e titulo,
+// alem do event listner clique de adicionar ao carrinho
 
-function fetchElement(query) {
+async function fetchElement(query) {
+  const loading = document.createElement('h2');
+  loading.className = 'loading';
+  loading.innerHTML = 'loading...';
+  document.body.appendChild(loading);
   return fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => response.json());
 }
+// função que lança as requisições e retorna seu json
 
-function criaItemNoCarrinho() {
+async function criaItemDaPesquisa() {
   fetchElement('computador')
   .then((data) => {
     data.results
@@ -64,8 +86,41 @@ function criaItemNoCarrinho() {
       const sessão = document.querySelector('.items');
       sessão.appendChild((createProductItemElement(element)));
     });
+    const loading = document.querySelector('.loading');
+    loading.remove();
   });
 }
-window.onload = function onload() {
-  criaItemNoCarrinho();
+// função para carregar os dados da promises da API e apartir dos dados popular a pagina de itens a serem vendidos
+
+function addClickListner() {
+  const li = document.getElementsByTagName('li');
+  for (let i = 0; i < li.length; i += 1) {
+    li[i].addEventListener('click', cartItemClickListener);
+  }
+}
+
+const loadPreviusCart = () => {
+  const carrinhoLS = document.getElementById('cart');
+  const LSLoad = localStorage.getItem('carrinho');
+  carrinhoLS.innerHTML = LSLoad;
+  addClickListner();
 };
+// função para carregar e adicionar event de remove para todos os itens do carrinho salvos no LS
+
+function emptyCart() {
+  const clearBtn = document.querySelector('.empty-cart');
+  clearBtn.addEventListener('click', () => {
+  const cartItems = document.getElementsByClassName('cart__items')[0];
+  cartItems.innerHTML = '';
+  totalPrice.innerHTML = 0;
+  saveLocalStorage();
+});
+}
+// função para limpar o local storage e limpar o carrinho de compras // src = https://github.com/tryber/sd-013-b-project-shopping-cart/pull/107/files
+
+window.onload = function onload() {
+  criaItemDaPesquisa();
+  loadPreviusCart();
+  emptyCart();
+};
+// ao ser carregado executa as funções no windown.onload
