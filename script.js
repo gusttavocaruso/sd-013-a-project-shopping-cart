@@ -1,42 +1,61 @@
-// const fetch = require('node-fetch');
+// const fetch = require('node-fetch'); achei que precisava assim como o assert, mas o lint não aceitou, ainda assim, pelo terminal tive que instalar o fetch para que funcionasse
 const cartItems = '.cart__items';
 
+// Função já existente
+// Objetivo: Criar as imagens que serão renderizadas no browser
 function createProductImageElement(imageSource) {
-  const img = document.createElement('img');
-  img.className = 'item__image';
-  img.src = imageSource;
-  return img;
+  const img = document.createElement('img'); // cria o elemento img
+  img.className = 'item__image'; // dá uma classe para cada item img
+  img.src = imageSource; // usa o parâmetro como src
+  return img; // retorna a imagem
 }
 
+// Função já existente
+// Objetivo: Criar alementos, com classes e acessar o html
+
 function createCustomElement(element, className, innerText) {
-  const e = document.createElement(element);
-  e.className = className;
-  e.innerText = innerText;
+  const e = document.createElement(element); // cria elemento que for colocado no parâmetro element
+  e.className = className; // dá a classe que for colocada no parâmetro className
+  e.innerText = innerText; // renderiza
   return e;
 }
 
 // ==============================================
 
-// Requisito 5
+// Requisito 5 - Some o valor total dos itens do carrinho de compras
 
 // ==============================================
+
+// Exercício 5: Passo 1 - Criar no index.html:
+// <p>Preço Total: <span class="total-price"></span></p>
+
+// Exercício 5: Passo 2 - Criar função totalPrice()
+// Objetivo: Somar 
+// Função já veio no projeto, porém vazia, ou seja, o escopo da função foi criado
 
 function totalPrice() {
-  const getTotalPrice = document.querySelector('.total-price');
-  let price = 0;
-  const AllLi = document.querySelectorAll('li');
-  AllLi.forEach((item) => {
-  const computer = item.innerText.split('$');
-  price += Number(computer[1]);
+  const getTotalPrice = document.querySelector('.total-price'); // acessamos o elemento que criamos no html chamando ele pela classe
+  let price = 0; // iniciamos nosso preço total em 0
+  const AllLi = document.querySelectorAll('li'); // selecionamos todas as lis
+  AllLi.forEach((item) => { // para cada item da li
+  const computer = item.innerText.split('$'); // vamos até o código do HTML e fazemos um split, que vai separar tudo do preço que vinha com $0000 (preço)
+  price += Number(computer[1]); // indicamos a partir do número, sem o $, que é onde vamos acessar apenas os números para fazer a soma
   });
-  getTotalPrice.innerHTML = `${(Math.round((price * 100)) / 100)}`;
+  getTotalPrice.innerHTML = `${(Math.round((price * 100)) / 100)}`; // Verifiquei no Slack de uma das turmas antigas que estavam usando esse formato no código
   }
 
+  // Chamar função do Requisito 5 dentro da função do Requisito 3, que apaga tudo
+  // Chamar função do Requisito 5 dentro da função do Requisito 6, para que a soma esteja acessível lá
+
 // ==============================================
 
-// Requisito 1
+// Requisito 1 - Crie uma listagem de produtos
 
 // ==============================================
+
+// Exercício 1: Passo 2 - Verificar como essa função funciona e usar na função getJsonOnLink
+// Função já existente no código
+// Objetivo: Criar elementos dentro de sections
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
@@ -50,87 +69,99 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+// Exercício 1: Passo 1
+// Função criada
 // Objetivo: Resgatar os elementos do JSON e enviá-los para o html dinamicamente
 
 const getJsonOnLink = async (query) => {
   const api = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=$${query}`);
   const apiJson = await api.json();
-  const arrayResultsJson = apiJson.results;
-  arrayResultsJson.forEach((product) => document.querySelector('.items')
-    .appendChild(createProductItemElement(product)));
+  const arrayResultsJson = apiJson.results; // acessa exatamente os results do json que é onde iremos trabalhar
+  arrayResultsJson.forEach((product) => document.querySelector('.items') // percorrer cada computador que contenha a classe .items e injetar a função que cria os elementos no html
+    .appendChild(createProductItemElement(product))); // usando a função createProductItemElement para criar realmente o elemento
 };
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+// ==============================================
+
+// Requisito 4 - Carregue o carrinho de compras através do LocalStorage ao iniciar a página [PARTE 1]
 
 // ==============================================
 
-// Requisito 4 - PARTE 1
-
-// ==============================================
+// Exercício 4: Passo 1
+// Função criada
+// Objetivo: Fazer o setItem do Local Storage
 
 const setItemsLocalStorage = () => {
-  const ol = document.querySelector(cartItems);
-  const text = ol.innerHTML;
+  const ol = document.querySelector(cartItems); // resgatando ol
+  const text = ol.innerHTML; // acessar html
   localStorage.setItem('cartList', ''); // limpando o que tinha antes
   localStorage.setItem('cartList', JSON.stringify(text)); // pegar todo o texto de dentro da variável e transforma no formato JSON
 };
 
-// ==============================================
-
-// Requisito 3
+  // Chamar função do Requisito 5 dentro da função do Requisito 3, que apaga tudo
 
 // ==============================================
 
-// como já temos a função createCartItemElement() que cria as lis, aqui apenas removemos o evento criado
+// Requisito 3 - Remova o item do carrinho de compras ao clicar nele [Resolvido com ajuda de Luíza Antiques]
+
+// ==============================================
+
+// Exercício 3: Passo 1
+// Função veio com o projeto, mas veio vazia
+// Como já temos a função createCartItemElement() que cria as lis, aqui apenas removemos o evento criado
+// Objetivo: Apagar coisas
 
 function cartItemClickListener(event) {
-  event.target.remove();
+  event.target.remove(); // Exercício 3: Passo 2
   setItemsLocalStorage(); // chamando a função do requisito 4
   totalPrice(); // chamando a função do requisito 5
 }
 
 // ==============================================
 
-// Requisito 4 - PARTE 2
+// Requisito 4 - Carregue o carrinho de compras através do LocalStorage ao iniciar a página [PARTE 2]
 
 // ==============================================
+
+// Exercício 4: Passo 2
+// Objetivo: Fazer o getItem nos itens do Local Storage
 
 const getItemsLocalStorage = () => {
   const getLocalStorage = JSON.parse(localStorage.getItem('cartList')); // recupera o item criado no requisito 4
   const ol = document.querySelector(cartItems); // pegar onde tem os itens
   ol.innerHTML = getLocalStorage; // e colocar os itens que já tinham sido salvos
-  ol.addEventListener('click', (event) => {
-    if (event.target.className === 'cart__item') {
-      cartItemClickListener(event);
+  ol.addEventListener('click', (event) => { // se algum elemento da ol for clicado
+    if (event.target.className === 'cart__item') { // e contiver a classe cart__item
+      cartItemClickListener(event); // será apagado (usando a função do requisito 3)
     }
   });
 };
 
 // ==============================================
 
-// Requisito 2
+// Requisito 2 - Adicione o produto ao carrinho de compras
 
 // ==============================================
 
+// Exercício 2: Passo 2
 // Função já existente no projeto
 // Objetivo: criar o elemento li dentro da ol no formato id, name, price
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) { // desestruturando
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  const li = document.createElement('li'); // criando li
+  li.className = 'cart__item'; // para cada li criada a classe cart__item é adicionada
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`; // o formato que será entregue na li
+  li.addEventListener('click', cartItemClickListener); // o segundo parâmetro é a função que ainda vamos implementar no Requisito 3
   return li;
 }
 
-// Função criada (PASSO 1)
+// Exercício 2: Passo 1
+// Função criada
 // Objetivo: Acessar cada link único de cada computador da API
 
-const getCartComputer = async (id) => {
-  const api = await fetch(`https://api.mercadolibre.com/items/${id}`);
-  const apiJson = await api.json();
+const getCartComputer = async (id) => { // função assíncrona que recebe o id dos computadores como parâmetro
+  const api = await fetch(`https://api.mercadolibre.com/items/${id}`); // aguarda resposta do link da API
+  const apiJson = await api.json(); // aguarda o formato json do link da API
   return apiJson;
 };
 
@@ -161,21 +192,26 @@ const buttonAddCart = () => {
 
 // ==============================================
 
-// Requisito 6
+// Requisito 6 - Crie um botão para limpar carrinho de compras
 
 // ==============================================
 
+// Função criada
+// Objetivo: Remover todas as lis criadas após apertarmos o botão
+
 const buttonRemoveAll = () => {
-  const getButtonRemoveAll = document.querySelector('.empty-cart');
-  getButtonRemoveAll.addEventListener('click', () => {
-    const ol = document.querySelector(cartItems);
-    while (ol.firstChild) {
-      ol.removeChild(ol.firstChild);
-      totalPrice();
-      setItemsLocalStorage();
+  const getButtonRemoveAll = document.querySelector('.empty-cart'); // selecionamos o botão que remove tudo
+  getButtonRemoveAll.addEventListener('click', () => { // evento de click
+    const ol = document.querySelector(cartItems); // pegamos o caminho da ol
+    while (ol.firstChild) { // e enquanto existir a primeira filha da ol (li)
+      ol.removeChild(ol.firstChild); // vamos removê-la
+      totalPrice(); // chamar função do Requisito 5 que soma o valor total dos itens colocados no carrinho
+      setItemsLocalStorage(); // chamar função do Requisito 4, que guarda informações na Local Storage
     }
   });
 };
+
+// Chamar as funções quando a página iniciar
 
 window.onload = () => {
   getJsonOnLink('computador');
