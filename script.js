@@ -1,10 +1,8 @@
-/* function saveItens() {
-  localStorage.setItem('cart', cart.innerHTML);
-} */
-
-/* function getSavedItens() {
-  cart.innerHTML = localStorage.getItem('cart');
-} */
+function saveItens({ id, title, price }) {
+  const teste = JSON.parse(localStorage.getItem('cart')) || [];
+  teste.push({ id, title, price });
+  localStorage.setItem('cart', JSON.stringify(teste));
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -17,10 +15,6 @@ function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
   e.innerText = innerText;
-
-  /* if (element === 'button') {
-    e.addEventListener('click', fillCart);
-  } */
 
   return e;
 }
@@ -41,18 +35,30 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener() {
-  console.log('aaa');
+function cartItemClickListener(event, id) {
+  event.target.remove();
+
+  const teste = JSON.parse(localStorage.getItem('cart')) || [];
+  const removeItem = teste.filter((item) => item.id !== id);
+  localStorage.setItem('cart', JSON.stringify(removeItem));
 }
 
 function createCartItemElement({ id, title, price }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', (event) => cartItemClickListener(event, id));
 
-  console.log(li);
   return li;
+}
+
+function getSavedItens() {
+  const savedCart = JSON.parse(localStorage.getItem('cart'))  || [];
+  const cart = document.querySelector('ol.cart__items');
+
+  savedCart.forEach((itemCart) => {
+    cart.appendChild(createCartItemElement(itemCart));
+  })
 }
 
 function fillCart(event) {
@@ -60,10 +66,11 @@ function fillCart(event) {
   const itemID = getSkuFromProductItem(item);
   const url = `https://api.mercadolibre.com/items/${itemID}`;
 
-  return fetch(url)
+  fetch(url)
     .then((response) => response.json())
     .then((object) => {
       const cart = document.querySelector('.cart__items');
+      saveItens(object);
       cart.appendChild(createCartItemElement(object));
     });
 }
@@ -90,5 +97,5 @@ function productList() {
 
 window.onload = () => { 
   productList();
-  // getSavedItens();
+  getSavedItens();
 };
