@@ -1,10 +1,3 @@
-function clearCart() {
-  const getButton = document.querySelector('.empty-cart');
-  const listItems = document.querySelectorAll('.cart__item');
-
-  console.log('Clear', getButton);
-  console.log('Lista', listItems);
-}
 // =======================================================================================
 function totalCart() {
   let valorTotal = 0;
@@ -21,6 +14,22 @@ function totalCart() {
       totalPrice.innerText = (Math.round(valorTotal * 100) / 100);
     });
   }
+}
+
+// =======================================================================================
+function clearCart() {
+  const getButton = document.querySelector('.empty-cart');
+
+  getButton.addEventListener('click', () => {
+    const listItems = document.querySelectorAll('.cart__item');
+    console.log('Lista', listItems);
+
+    if (listItems.length > 0) {
+      listItems.forEach((listItem) => listItem.remove());
+      console.log('Clear', getButton);
+      totalCart();
+    }
+  });
 }
 
 // =======================================================================================
