@@ -24,45 +24,48 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-/*
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
+function cartItemClickListener() {
   // coloque seu código aqui
 }
-*/
+// --------------------------------------------------------------
 
-/* function createCartItemElement({ sku: id, name: title, salePrice: base_price }) {
+ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
-} */
-// --------------------------------------------------------------
-/* 
-const addItemInCart = (ItemCart) => {
-  const itemElementCart = createCartItemElement(ItemCart);
-  const listCart = document.querySelector('cart_items');
-  listCart.appendChild(itemElementCart);
+}
+ 
+const fetchCartApi = (id) => {
+  fetch(`https://api.mercadolibre.com/items/${id}`)
+  .then((response) => response.json())
+  .then((data) => {
+    const itemElementCart = createCartItemElement(data);
+    const listCart = document.querySelector('.cart__items');
+    listCart.appendChild(itemElementCart);
+    });  
+}; 
+
+const getIdItem = (event) => {
+  const id = getSkuFromProductItem(event.target.parentNode);
+  fetchCartApi(id);
 };
 
-const fetchCartApi = (event) => {
-  
-  fetch(`https://api.mercadolibre.com/items/${ItemID}`)
-  .then((response) => {
-    response.json().then((data) => addItemInCart(data)); 
-  });
-}; */
 // ---------------------------------------------------------------
+
 const addItensToSection = (items) => {
    items.forEach((item) => {
     const itemElement = createProductItemElement(item); // cada um dos produtos da lista JSON
     const section = document.querySelector('.items');
      section.appendChild(itemElement);
   });
+  const buttonAddItem = document.querySelectorAll('.item__add');
+  buttonAddItem.forEach((button) => button.addEventListener('click', getIdItem));
 };
 
 const fetchSearchApi = (produto) => {
