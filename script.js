@@ -1,20 +1,10 @@
+function cartItemClickListener(event) {
+  event.target.remove();
+}
 
-const getProducts = () => {
-  return new Promise((resolve, reject) => {
-   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
-      .then((response) => { 
-        response.json().then((jsonProduct) => { 
-            jsonProduct.results.forEach((element) => {
-              const product = createProductItemElement(element);
-              const bigSection = document.querySelector('.items')
-              bigSection.appendChild(product);
-              resolve()
-            })
-        });
-      })
-  });
-};
-
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -30,6 +20,35 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+function createCartItemElement({ id: sku, title: name, price: salePrice }) { 
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+function saveData() {
+  localStorage.clear();
+  const ol = document.querySelector('.cart__items');
+  localStorage.setItem('lista', ol.innerHTML);
+}
+
+function addToCart(event) { 
+  const section = event.target.parentElement;
+  const idProduct = getSkuFromProductItem(section);
+    return new Promise((resolve, reject) => {
+      fetch(`https://api.mercadolibre.com/items/${idProduct}`)
+        .then((response) => response.json()
+          .then((jsonProduct) => { 
+            const li = createCartItemElement(jsonProduct);
+            document.querySelector('.cart__items').appendChild(li);
+            resolve();
+            saveData();
+          }));
+    });
+}
+
 function createProductItemElement({ id, title, thumbnail }) {
   const section = document.createElement('section');
   
@@ -43,57 +62,31 @@ function createProductItemElement({ id, title, thumbnail }) {
   return section;
 }
 
-function addToCart (event) { // Adicionar ao carrinho
-  const section = event.target.parentElement;
-  idProduct = getSkuFromProductItem(section);
-    return new Promise((resolve, reject) => {
-      fetch(`https://api.mercadolibre.com/items/${idProduct}`)
-        .then((response) => response.json()
-          .then((jsonProduct) => { 
-            let li = createCartItemElement(jsonProduct)
-            document.querySelector('.cart__items').appendChild(li);
-            resolve();
-            saveData()
-          }));
-    })
-}
-
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
-function cartItemClickListener(event) {
-  event.target.remove();
-}
-
-function createCartItemElement({ id: sku, title: name, price: salePrice }) { 
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
-
-function saveData(){
-  localStorage.clear();
-  const ol = document.querySelector('.cart__items')
-  localStorage.setItem('lista', ol.innerHTML);
-}
+const getProducts = () => new Promise((resolve, reject) => {
+   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+      .then((response) => { 
+        response.json().then((jsonProduct) => { 
+            jsonProduct.results.forEach((element) => {
+              const product = createProductItemElement(element);
+              const bigSection = document.querySelector('.items');
+              bigSection.appendChild(product);
+              resolve();
+            });
+        });
+      });
+  });
 
 function getData() {
-  const ol = document.querySelector('.cart__items')
-  ol.innerHTML = localStorage.getItem('lista')
+  const ol = document.querySelector('ol');
+  ol.innerHTML = localStorage.getItem('lista');
   ol.addEventListener('click', (event) => {
     if (event.target.className === 'cart__item') { 
       cartItemClickListener(event); 
     }
-  })
+  });
 }
 
 window.onload = () => {
   getProducts();
   getData();
 };
-
-
-
