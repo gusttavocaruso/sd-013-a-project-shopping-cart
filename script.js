@@ -48,15 +48,39 @@ const getProduct = async (id) => {
   const ENDPOINT = `${DOMAIN}items/${id}`;
   return fetch(ENDPOINT, { headers: { 'Content-Type': 'application/json' } })
     .then((response) => response.json())
-    .then((product) => createCartItemElement(product))
     .catch((err) => console.log(`Error getting product: ${err}`));
+};
+
+const getStoredCart = () => JSON.parse(localStorage.getItem('cart')) || [];
+
+const updateStoredCart = ({ id: sku, title: name, price: salePrice }) => {
+  const storedCart = getStoredCart();
+  const productObj = {
+    id: sku,
+    title: name,
+    price: salePrice,
+  };
+  storedCart.push(productObj);
+  localStorage.setItem('cart', JSON.stringify(storedCart));
+};
+
+const loadStoredCart = () => {
+  const storedCart = getStoredCart();
+  storedCart.forEach((storedProduct) => {
+    const li = createCartItemElement(storedProduct);
+    cartList.appendChild(li);
+  });
 };
 
 async function addProductToCart(event) {
   if (event.target.classList.contains('item__add')) {
     const productId = getSkuFromProductItem(event.target.parentElement);
     await getProduct(productId)
-      .then((li) => cartList.appendChild(li))
+      .then((product) => {
+        const li = createCartItemElement(product);
+        cartList.appendChild(li);
+        updateStoredCart(product);
+      })
       .catch((err) => console.log(err));
   }
 }
@@ -82,5 +106,6 @@ const searchProducts = (query) => {
 
 window.onload = () => {
   searchProducts(QUERY);
+  loadStoredCart();
   document.body.addEventListener('click', addProductToCart);
 };
