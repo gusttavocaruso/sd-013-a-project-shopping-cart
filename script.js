@@ -18,9 +18,9 @@ function createCustomElement(element, className, innerText) {
   e.className = className;
   e.innerText = innerText;
 
-  if (element === 'button') {
-    e.addEventListener('click', fillCart); // eslint-disable-line no-use-before-define
-  }
+  /* if (element === 'button') {
+    e.addEventListener('click', fillCart);
+  } */
 
   return e;
 }
@@ -77,31 +77,18 @@ function productList() {
     .then((object) => {
       object.results.forEach((item) => {
         const pcs = document.getElementsByClassName('items')[0];
-        // console.log(item);
         pcs.appendChild(createProductItemElement(item));
       });
+    })
+    .then((fill) => {
+      const tshopCart = document.querySelectorAll('.item__add');
+      tshopCart.forEach((iten) => {
+        iten.addEventListener('click', fillCart);
+      })
     });
 }
 
-/* function addCart() {
-  return new Promice(resolve => {
-    setTimeout(() => {
-      const bnt = document.querySelector('.item__add');
-      bnt.forEach((item) => {
-      item.addEventListener('click', fillCart)
-    }, 5000);
-  };
-} 
-
-const addCart = () => {
-  const teste = await productList();
-
-  bnt
-  return 
-} */
-
 window.onload = () => { 
   productList();
-  // addCart();
   // getSavedItens();
 };
