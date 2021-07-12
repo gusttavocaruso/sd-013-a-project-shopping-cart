@@ -28,10 +28,10 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener() {
-  // coloque seu código aqui
+function cartItemClickListener(event) {
+event.target.remove();  
 }
-// --------------------------------------------------------------
+// -------------------------------------------------------------- parte 2
 
  function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -56,7 +56,7 @@ const getIdItem = (event) => {
   fetchCartApi(id);
 };
 
-// ---------------------------------------------------------------
+// --------------------------------------------------------------- parte 1
 
 const addItensToSection = (items) => {
    items.forEach((item) => {
