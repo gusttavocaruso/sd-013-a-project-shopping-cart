@@ -38,7 +38,7 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-// requisito 4 //a função deve ser declarada antes da sua execução na linha 92
+// requisito 4 // a função deve ser declarada antes da sua execução na linha 92
 function saveCart() {
   const info = document.querySelector('ol').innerHTML;
   const obj = {
