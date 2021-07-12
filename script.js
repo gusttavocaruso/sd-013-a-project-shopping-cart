@@ -15,12 +15,10 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
   return section;
 }
 
@@ -34,9 +32,11 @@ function cartItemClickListener(event) {
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
+  // const arrLiLocalStorage = [];
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  // arrLiLocalStorage.push(localStorage.setItem('cartShopActual', JSON.stringify({ sku })))
   return li;
 }
 
@@ -46,14 +46,14 @@ const buttonEvent = () => {
   addItemButton.forEach((button) => {
     button.addEventListener('click', (event) => {
       const itemSku = event.target.parentNode.firstChild.innerText; //  PR @cassiorodp
-      
+
       fetch(`https://api.mercadolibre.com/items/${itemSku}`)
         .then((resp) => resp.json())
-        .then((dataJson) => {
-          const itemInTheCartShop = createCartItemElement(dataJson);
-          const cartShop = document.querySelector('.cart__items');
-          cartShop.appendChild(itemInTheCartShop);
-        });
+          .then((dataJson) => {
+            const itemInTheCartShop = createCartItemElement(dataJson);
+            const cartShop = document.querySelector('.cart__items');
+            cartShop.appendChild(itemInTheCartShop);
+          });
     });
   });
 };
@@ -63,6 +63,14 @@ const addItems = (items) => {
     const itemElement = createProductItemElement(item);
     const section = document.querySelector('.items');
     section.appendChild(itemElement);
+  });
+};
+
+const clearCartShop = () => {
+  const clearButton = document.querySelector('.empty-cart');
+  clearButton.addEventListener('click', () => {
+    const cartItemsActual = document.querySelector('.cart__items');
+    cartItemsActual.innerHTML = '';
   });
 };
 
@@ -77,4 +85,5 @@ const getMLProductList = (product) => {
 
 window.onload = () => {
   getMLProductList('computador');
+  clearCartShop();
 };
