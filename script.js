@@ -54,6 +54,7 @@ function fetchObject(query) {
   });
 }
 
+
 const fetchItemCart = (element) => {
   const elementPai = element.target.parentElement;
   const getId = getSkuFromProductItem(elementPai);
@@ -65,6 +66,7 @@ const fetchItemCart = (element) => {
   const olCart = document.querySelector('.cart__items');
   olCart.appendChild(getLi);
   localStorage.setItem('lista', olCart.innerHTML);
+  
   });
   });
   }; 
@@ -85,4 +87,5 @@ window.onload = () => {
   if (localStorage.lista) {
     olCart.innerHTML = localStorage.lista;
   }
+  somaPreco();
 };
