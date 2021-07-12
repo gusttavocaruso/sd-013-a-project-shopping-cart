@@ -85,11 +85,10 @@ function salvarLocal() {
 function esvaziarCarrinho() {
   const buttn = document.querySelector('.empty-cart');
   buttn.addEventListener('click', () => {
-    itemCar = document.querySelectorAll('.cart__item');
+    const itemCar = document.querySelectorAll('.cart__item');
     itemCar.forEach((item) => item.parentNode.removeChild(item));
-  })
+  });
 }
-
 
 window.onload = () => {
   lista('computador');
