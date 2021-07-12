@@ -1,4 +1,15 @@
-// const fetch = require('node-fetch');
+// =======================================================================================
+function localStorageCart() {
+  const listItems = document.querySelector('.cart__items');
+  console.log('Local Storage:', listItems.innerHTML);
+  localStorage.setItem('listItems', listItems.innerHTML);
+}
+
+// =======================================================================================
+function loadStorageCart() {
+  const listItems = document.querySelector('.cart__items');
+  listItems.innerHTML = localStorage.getItem('listItems');
+}
 
 // =======================================================================================
 function createProductImageElement(imageSource) {
@@ -17,12 +28,35 @@ function createCustomElement(element, className, innerText) {
 }
 
 // =======================================================================================
+function totalCart() {
+  let valorTotal = 0;
+  const listItems = document.querySelectorAll('.cart__item');
+  const totalPrice = document.querySelector('.total-price');
+
+  if (listItems.length === 0) {
+    totalPrice.innerText = '0';
+  } else {
+    listItems.forEach((listItem) => {
+      const valorString = listItem.innerText.split('$')[1];
+      // console.log(typeof(valorString))
+      const valorFloat = parseFloat(valorString);
+      // console.log(typeof(valorFloat))
+      valorTotal += valorFloat;
+      // console.log(valorTotal.toFixed(2))
+      totalPrice.innerText = valorTotal.toFixed(2);
+    });
+  }
+}
+
+// =======================================================================================
 function cartItemClickListener(event) {
   // coloque seu código aqui
   const itemRemove = event.target;
-  // console.log(itemRemove)
+  console.log(itemRemove);
   // https://developer.mozilla.org/en-US/docs/Web/API/Element/remove
   itemRemove.remove();
+  totalCart();
+  localStorageCart();
 }
 
 // =======================================================================================
@@ -45,12 +79,20 @@ async function fetchItemID(itemID) {
 function getIdElement() {
   const itemID = this.parentNode.firstChild.innerText;
   const cartItemOl = document.getElementsByClassName('cart__items');
-  
+  // const totalPrice = document.querySelector('.total-price');
+
   fetchItemID(itemID).then((product) => {
-    console.log(product);
+    // console.log(product);
     const productItem = createCartItemElement(product);
     cartItemOl[0].appendChild(productItem);
+    // totalCart(product.price, 'sum');
+    // totalPrice.firstChild.innerText = `Preço total: $${totalCart(product.price, 'sum')}`;
+    totalCart();
+    localStorageCart();
   });
+
+  // https://developer.mozilla.org/pt-BR/docs/Web/API/Node/firstChild
+  // console.log(totalPrice.firstChild.innerText)
 }
 
 // =======================================================================================
@@ -62,7 +104,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'))
-  .addEventListener('click', getIdElement);
+    .addEventListener('click', getIdElement);
 
   return section;
 }
@@ -79,9 +121,9 @@ const getMblPromise = (item) => {
         // console.log(jsonMbl.results);
         jsonMbl.results.forEach((result) => {
           // console.log(result)
-          const teste = document.getElementsByClassName('items');
+          const list = document.getElementsByClassName('items');
           // console.log(createProductItemElement(result));
-          teste[0].appendChild(createProductItemElement(result));
+          list[0].appendChild(createProductItemElement(result));
         });
       });
     });
@@ -96,5 +138,7 @@ const fetchMblPromise = async () => {
 };
 
 // =======================================================================================
-window.onload = () => fetchMblPromise();
-// window.onload = () => { };
+window.onload = () => {
+  fetchMblPromise();
+  loadStorageCart();
+};
