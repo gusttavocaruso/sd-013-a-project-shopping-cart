@@ -1,3 +1,5 @@
+const loading = document.querySelector('.loading');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -51,7 +53,10 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 const lista = (query) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
   .then((response) => response.json()
-  .then((data) => createSection(data.results)));
+  .then((data) => {
+    createSection(data.results);
+    loading.remove();
+  }));
 };
 
 const fetchId = (event) => {
@@ -99,3 +104,4 @@ window.onload = () => {
 
  // Questão 1, 2 e 3 feita com ajuda de Matheus Macêdo
  // Questão 4 feita com ajuda de Felipe Neves
+// Questão 7 feita com ajuda de Josué e Rogério.
