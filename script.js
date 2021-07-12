@@ -1,7 +1,10 @@
 // const fetch = require('node-fetch');
 // const listItens = document.querySelector('.cart__items');
 const priceCart = document.querySelector('.total-price');
-let arrayItensCart = [];
+const arrayPricesStorage = localStorage.getItem('array_prices');
+
+let arrayItensCart = (arrayPricesStorage === undefined
+  || arrayPricesStorage === null) ? [] : JSON.parse(arrayPricesStorage);
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -41,17 +44,14 @@ const cartEmpty = () => {
 };
 
 function cartItemClickListener(event) {
-const nodeListLi = document.querySelectorAll('.cart__item');
-const arrayLi = Array.from(nodeListLi)
-
-  // console.log(arrayLi.indexOf(event.target));
-
-  arrayItensCart.splice(arrayLi.indexOf(event.target), 1);
-  console.log(arrayItensCart);
-
+  const nodeListLi = document.querySelectorAll('.cart__item');
+  const newNode = Array.from(nodeListLi);
   const n = parseFloat(localStorage.getItem('total_price'))
-    - arrayItensCart[arrayLi.indexOf(event.target)];
+  - (arrayItensCart[newNode.indexOf(event.target)]);
 
+  localStorage.setItem('total_price', n);
+  arrayItensCart.splice(newNode.indexOf(event.target), 1);
+  localStorage.setItem('array_prices', JSON.stringify(arrayItensCart));
   event.target.remove();
 
   const listItens = document.querySelector('.cart__items');
@@ -91,11 +91,11 @@ const calcTotalCart = ((price) => {
   if ((totalPriceStorage === undefined)
   || (totalPriceStorage === null)) {
     localStorage.setItem('total_price', parseFloat(price));
-    // arrayItensCart.push(price);
-    localStorage.setItem("array_prices", JSON.stringify(arrayItensCart));
+    arrayItensCart.push(price);
+    localStorage.setItem('array_prices', JSON.stringify(arrayItensCart));
     priceCart.innerText = `Total da compra: R$ ${price}`;
   } else {
-    // arrayItensCart.push(price);
+    arrayItensCart.push(price);
     localStorage.setItem("array_prices", JSON.stringify(arrayItensCart));
     localStorage.setItem('total_price', arrayItensCart.reduce((acc, current) => acc + current, 0));
     priceCart.innerText = `Total da compra: R$ ${localStorage.getItem('total_price')}`;
@@ -134,37 +134,35 @@ const itemAdd = async () => {
   }
 };
 
-
 // ONLOAD CARREGA AS INFORMAÇÕES ASSIM QUE A PÁGINA É CARREGADA
-window.onload = () => {
+// window.onload = () => {
 const listItensCart = document.querySelector('.cart__items'); // INSTANCIA O CONTAINTER "OL" DE PRODUTOS
+// const priceCart = document.querySelector('.total-price');
 const localCart = localStorage.getItem('shop_cart'); // BUSCA ITENS ADICIONADOS AO CARRINHO, SALVOS NO LOCALSTORAGE
-const priceCart = document.querySelector('.total-price');
 
 const localPrices = localStorage.getItem('array_prices');
 if ((localPrices !== undefined)
   || (localPrices !== null)) {
     priceCart.innerText = `Total da compra: R$ ${localStorage.getItem('total_price')}`;
   } 
-arrayItensCart = JSON.parse(localPrices);
+// arrayItensCart = JSON.parse(localPrices); 
 // console.log(localPrices, typeof(localPrices));
+// const nodeListLi = document.querySelectorAll('.cart__item');
+
 listItensCart.innerHTML = localCart; // CARREGA PRODUTOS SALVOS NO LOCALSTORAGE
-const nodeListLi = document.querySelectorAll('.cart__item');
 
 // ESPERA O EVENTO DE CLICK PARA ADD UM PRODUTO AO CARRINHO
-listItensCart.addEventListener('click', (e) => {
-    if (e.target.className === 'cart__item') {
-      cartItemClickListener(e);
-    }
-  });
+// listItensCart.addEventListener('click', (e) => {
+//     if (e.target.className === 'cart__item') {
+//       cartItemClickListener(e);
+//     }
+//   });
 
-nodeListLi.forEach((element) => {
-  element.addEventListener('click', (event) => {
-  cartItemClickListener(event);
-  })
-})
-
-
+// nodeListLi.forEach((element) => {
+//   element.addEventListener('click', (event) => {
+//   cartItemClickListener(event);
+//   })
+// })
 
 // ESPERA O EVENTO DE CLICK NO BOTAO ESVAZIAR CARRINHO E LIMPA O CARRINHO
 const buttonClear = document.querySelector('.empty-cart');
@@ -174,24 +172,6 @@ buttonClear.addEventListener('click', () => {
   localStorage.setItem('total_price', 0);
   priceCart.innerText = 'Adicione algum item ao carrinho!';
 });
-
-
-const totalPriceStorage = localStorage.getItem('total_price');
-if ((totalPriceStorage !== undefined)
-  || (totalPriceStorage !== null)) {
-    priceCart.innerText = `Total da compra: R$ ${localStorage.getItem('total_price')}`;
-  } 
-
-// const arrayPricesStorage = localStorage.getItem('array_prices');
-// if ((arrayPricesStorage !== undefined)
-//   || (arrayPricesStorage !== null)) {
-//     arrayItensCart = JSON.parse(localStorage.getItem('array_prices'));
-//     // localStorage.setItem('array_prices', JSON.stringify(arrayItensCart));
-//   } 
   
 itemAdd();
 cartEmpty();
-};
-
-  // const priceCart = document.querySelector('.total-price');
-  //   priceCart.innerText = `Total da compra: R$ ${localStorage.getItem('total_price')}`;
