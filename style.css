@@ -74,3 +74,8 @@
   font-size: 16pt;
   text-align: center;
 }
+
+.loading{
+  color: tomato;
+  font-size: xx-large;
+}

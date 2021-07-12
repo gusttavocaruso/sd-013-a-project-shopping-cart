@@ -81,10 +81,6 @@ sectionCriada.appendChild(section);
   return section;
   }
 
-/* function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-} */
-
 function promessa(event) {
   new Promise((resolve, reject) => {
     if (event !== 'computador') {
@@ -112,7 +108,34 @@ acessaButton.addEventListener('click', function () {
 });
 });
 
-window.onload = () => {
+// ========== questão 05
+function calculaPgto() {
+
+}
+/*  // acesso a section 
+ const sectionPreco = document.querySelector('.cart');
+ const criaSaldoFinal = document.createElement('p');
+ criaSaldoFinal.innerText = /* functiomn.... */
+ /* sectionPreco.appendChild(criaSaldoFinal); */
+ /* */ 
+function loading() {
+  const body = document.querySelector('body');
+  body.appendChild(createCustomElement('h1', 'loading', 'loading'));
+}
+
+function endLoading() {
+  const body = document.querySelector('body');
+  const h1 = document.querySelector('.loading');
+  body.removeChild(h1);
+}
+
+function pro() {
+  endLoading();
   promessa('computador');
+}
+
+window.onload = async () => {
+  await loading();
+  await setTimeout(pro, 3000);
   loadLocalStorage();
  };
