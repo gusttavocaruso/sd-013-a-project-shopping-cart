@@ -52,6 +52,7 @@ function cartItemClickListener(event) {
   localStorage.setItem('total_price', n);
   arrayItensCart.splice(newNode.indexOf(event.target), 1);
   localStorage.setItem('array_prices', JSON.stringify(arrayItensCart));
+  priceCart.innerText = localStorage.getItem('total_price');
   event.target.remove();
 
   const listItens = document.querySelector('.cart__items');
@@ -93,12 +94,12 @@ const calcTotalCart = ((price) => {
     localStorage.setItem('total_price', parseFloat(price));
     arrayItensCart.push(price);
     localStorage.setItem('array_prices', JSON.stringify(arrayItensCart));
-    priceCart.innerText = `Total da compra: R$ ${price}`;
+    priceCart.innerText = price;
   } else {
     arrayItensCart.push(price);
     localStorage.setItem("array_prices", JSON.stringify(arrayItensCart));
     localStorage.setItem('total_price', arrayItensCart.reduce((acc, current) => acc + current, 0));
-    priceCart.innerText = `Total da compra: R$ ${localStorage.getItem('total_price')}`;
+    priceCart.innerText = localStorage.getItem('total_price');
   }
 });
 
