@@ -1,4 +1,5 @@
 const totalPrice = document.querySelector('.total-price');
+let sumPrices = 0;
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -29,7 +30,11 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', (event) => {
+    cartItemClickListener(event);
+    sumPrices -= salePrice;
+    totalPrice.innerHTML = sumPrices;
+  });
   return li;
 }
 // função de criar elementos html que representam os item no carrinho elemento li de uma ul
@@ -42,6 +47,8 @@ function cliqueDeAdicionaNoCarrinho(section) {
       .then((data) => {
         const cartList = document.querySelector('.cart__items');
         cartList.appendChild(createCartItemElement(data));
+        sumPrices += data.price;
+        totalPrice.innerHTML = sumPrices;
         saveLocalStorage();
       });
   });
