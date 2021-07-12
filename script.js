@@ -1,4 +1,12 @@
 // =======================================================================================
+/* https://pt.stackoverflow.com/questions/22726/como-esconder-mostrar-uma-div-em-html */
+
+function loading() {
+  const display = document.querySelector('.loading');
+  display.remove();
+}
+
+// =======================================================================================
 function totalCart() {
   let valorTotal = 0;
   const listItems = document.querySelectorAll('.cart__item');
@@ -98,20 +106,15 @@ async function fetchItemID(itemID) {
 function getIdElement() {
   const itemID = this.parentNode.firstChild.innerText;
   const cartItemOl = document.getElementsByClassName('cart__items');
-  // const totalPrice = document.querySelector('.total-price');
 
   fetchItemID(itemID).then((product) => {
     // console.log(product);
     const productItem = createCartItemElement(product);
     cartItemOl[0].appendChild(productItem);
-    // totalCart(product.price, 'sum');
-    // totalPrice.firstChild.innerText = `Preço total: $${totalCart(product.price, 'sum')}`;
     totalCart();
     localStorageCart();
   });
-
   // https://developer.mozilla.org/pt-BR/docs/Web/API/Node/firstChild
-  // console.log(totalPrice.firstChild.innerText)
 }
 
 // =======================================================================================
@@ -133,8 +136,8 @@ function getSkuFromProductItem(item) {
 }
 
 // =======================================================================================
-const getMblPromise = (item) => {
-  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${item}`) // retorna uma promise
+function getMblPromise(item) {
+  return fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${item}`) // retorna uma promise
     .then((response) => {
       response.json().then((jsonMbl) => {
         // console.log(jsonMbl.results);
@@ -146,11 +149,12 @@ const getMblPromise = (item) => {
         });
       });
     });
-};
+}
 
 const fetchMblPromise = async () => {
   try {
     await getMblPromise('computador');
+    loading();
   } catch (error) {
     console.log(error);
   }
