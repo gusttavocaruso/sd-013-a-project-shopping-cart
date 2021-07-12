@@ -1,10 +1,19 @@
 const apiMercadoLivre = 'https://api.mercadolibre.com/sites/MLB/search?q=computador'; // estou atribuindo a constante o endereco da API do mercado livre. Ao invés de usar de forma repedida que dava erro no lint. 
 const cartItemsClass = '.cart__items'; // atribui a constante o resgate do elemento atraves da classe, pois será utilizada em alguns momentos. Ao invés de usar de forma repedida que dava erro no lint. 
 
-const updateTotalPrice = (newComputerPrice) => { // criei uma funcao que recebe como parametro o newComputerPrice. 
-  const elementoTotalPrice = document.querySelector('.total-price'); // Criei uma constante que recupera a classe '.total-price' do h2 do HTML.
-  const currentPrice = Number(elementoTotalPrice.innerHTML); // criei uma constante e atribui a ela a constante anterior, buscando o innerHTML e transformando ele em numero com o NUMBER.
-  elementoTotalPrice.innerHTML = currentPrice + newComputerPrice; // atribui um novo valor ao elementoTotalPrice e somando o valor de currentPrice  com o parametro newComputerPrice
+const updateTotalPrice = () => {
+  let totalPrice = 0;
+  const elementTotalPrice = document.querySelector('.total-price');
+  const listCartItem = document.querySelectorAll('li');
+
+  listCartItem.forEach((cartItem) => {
+    const cartItemText = cartItem.innerText;
+    const cartItemPrice = Number(cartItemText.split('$')[1]);
+
+    totalPrice += cartItemPrice;
+  });
+
+  elementTotalPrice.innerHTML = totalPrice;
 };
 
 function cartItemClickListener(event) { // funcao já existente do código e só trabalhei os valores dela. Essa funcao é responsavél por realizar algo ao ser clicado.
@@ -21,10 +30,8 @@ function cartItemClickListener(event) { // funcao já existente do código e só
     'computadoresNoCarrinhoDeCompras',
     JSON.stringify(computerListUpdated), // transformando os valores em strings com o stringfy.
   );
-  // ESSA PARTE FOI PARA REVOLVER A REMOCAO DOS VALORES AO ELIMINAR ITENS DO CARRINHO DE COMPRAS
-  const elementPrice = Number(element.innerText.split('$')[1]); // Criei uma constante e atribui a ela o elemento clicado, pegando seu sexto e transformando em array com o split usando o $ do price para ter acesso ao preço.
 
-  updateTotalPrice(elementPrice * -1); // chamei a funcao que atualiza o preço transformando ele num valor negativo.
+  updateTotalPrice();
 }
 
 // FUNÇÃO JÁ FAZIA PARTE DO CÓDIGO ORIGINAL
@@ -99,6 +106,7 @@ const buttonDeleteAllCards = () => { // funcao responsavel por deletar todos os 
   button.addEventListener('click', () => { // dei um escutador de click nesse button com o addEventListener
     const lista = document.querySelector(cartItemsClass); // criei uma constante e atribui a ela o resgate da classe atribuida no inicio da pagina.
     lista.innerHTML = ''; // atualizei o valor do innerHTML como uma string vazia
+    updateTotalPrice();
   });
 };
 
@@ -112,7 +120,8 @@ const buttonAddCards = () => { // essa funcao é responsavel por adicionar ao ca
       const elementoLiComputador = createCartItemElement(dadosDoComputador); // criei uma constante e atribui a chamada da funcao que é responsável por criar o elemento li, passando como parametro a constante acima.
       document.querySelector(cartItemsClass).appendChild(elementoLiComputador); // resgatanto a classe declarada no inicio da página, criando um appendChild da constante acima.
       addLocalStorageItems(dadosDoComputador); // chamei a funcao que é responsavel de gravar e pegar os elementos no localstorage, para que desde o inicio, tudo seja adicionado no localstorage
-      updateTotalPrice(dadosDoComputador.price); // chamei a funcao que atualiza o total de precos de acordo com os itens adicionados 
+
+      updateTotalPrice();
     }
   });
 };
