@@ -15,12 +15,34 @@ function createProductImageElement(imageSource) {
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
+  section.id = sku;
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
 
   return section;
+}
+
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
+function cartItemClickListener(event) {
+  fetch(`https://api.mercadolibre.com/items/${event}`)
+  .then((response) => response.json())
+  .then((data) => {
+    const newProduct = createCartItemElement(data);
+    document.querySelector('.cart__items').appendChild(newProduct);
+  });
+}
+
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
 }
 
 const results = (items) => {
@@ -42,22 +64,10 @@ const searches = (query) => {
     alert(error);
   }
 };
-searches('computador');
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
-
-function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
-
-window.onload = () => { };
+window.onload = () => {
+  searches('computador');
+  document.querySelector('.items').addEventListener('click', (e) => {
+    if (e.target.className === 'item__add') cartItemClickListener(e.target.parentNode.id);
+  });
+ };
