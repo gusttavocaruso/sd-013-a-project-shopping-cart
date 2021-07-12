@@ -1,9 +1,9 @@
 // const fetch = require('node-fetch');
-// const listItens = document.querySelector('.cart__items');
+const listItens = document.querySelector('.cart__items'); // INSTANCIA O CONTAINTER "OL" DE PRODUTOS
 const priceCart = document.querySelector('.total-price');
 const arrayPricesStorage = localStorage.getItem('array_prices');
 
-let arrayItensCart = (arrayPricesStorage === undefined
+const arrayItensCart = (arrayPricesStorage === undefined
   || arrayPricesStorage === null) ? [] : JSON.parse(arrayPricesStorage);
 
 function createProductImageElement(imageSource) {
@@ -32,13 +32,8 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
-
 const cartEmpty = () => {
   if (!localStorage.getItem('total_price')) {
-  const priceCart = document.querySelector('.total-price');
   priceCart.innerText = 'Adicione algum item ao carrinho!';
   }
 };
@@ -54,8 +49,6 @@ function cartItemClickListener(event) {
   localStorage.setItem('array_prices', JSON.stringify(arrayItensCart));
   priceCart.innerText = localStorage.getItem('total_price');
   event.target.remove();
-
-  const listItens = document.querySelector('.cart__items');
   localStorage.setItem('shop_cart', listItens.innerHTML);
 
   cartEmpty();
@@ -87,7 +80,6 @@ const fetchMeli = (query) => fetch(`https://api.mercadolibre.com/sites/MLB/searc
 });
 
 const calcTotalCart = ((price) => {
-  const priceCart = document.querySelector('.total-price');
   const totalPriceStorage = localStorage.getItem('total_price');
   if ((totalPriceStorage === undefined)
   || (totalPriceStorage === null)) {
@@ -97,7 +89,7 @@ const calcTotalCart = ((price) => {
     priceCart.innerText = price;
   } else {
     arrayItensCart.push(price);
-    localStorage.setItem("array_prices", JSON.stringify(arrayItensCart));
+    localStorage.setItem('array_prices', JSON.stringify(arrayItensCart));
     localStorage.setItem('total_price', arrayItensCart.reduce((acc, current) => acc + current, 0));
     priceCart.innerText = localStorage.getItem('total_price');
   }
@@ -110,9 +102,8 @@ const getProduct = (query) => {
     .then((response) => response.json()
     .then((data) => {
       const itemSelectAdd = { sku: data.id, name: data.title, salePrice: data.price };
-      const listItensCart = document.querySelector('.cart__items');
-      listItensCart.appendChild(createCartItemElement(itemSelectAdd));
-      localStorage.setItem('shop_cart', listItensCart.innerHTML);
+      listItens.appendChild(createCartItemElement(itemSelectAdd));
+      localStorage.setItem('shop_cart', listItens.innerHTML);
     
       calcTotalCart(parseFloat(itemSelectAdd.salePrice));
     }));
@@ -135,10 +126,6 @@ const itemAdd = async () => {
   }
 };
 
-// ONLOAD CARREGA AS INFORMAÇÕES ASSIM QUE A PÁGINA É CARREGADA
-// window.onload = () => {
-const listItensCart = document.querySelector('.cart__items'); // INSTANCIA O CONTAINTER "OL" DE PRODUTOS
-// const priceCart = document.querySelector('.total-price');
 const localCart = localStorage.getItem('shop_cart'); // BUSCA ITENS ADICIONADOS AO CARRINHO, SALVOS NO LOCALSTORAGE
 
 const localPrices = localStorage.getItem('array_prices');
@@ -146,30 +133,14 @@ if ((localPrices !== undefined)
   || (localPrices !== null)) {
     priceCart.innerText = `Total da compra: R$ ${localStorage.getItem('total_price')}`;
   } 
-// arrayItensCart = JSON.parse(localPrices); 
-// console.log(localPrices, typeof(localPrices));
-// const nodeListLi = document.querySelectorAll('.cart__item');
 
-listItensCart.innerHTML = localCart; // CARREGA PRODUTOS SALVOS NO LOCALSTORAGE
-
-// ESPERA O EVENTO DE CLICK PARA ADD UM PRODUTO AO CARRINHO
-// listItensCart.addEventListener('click', (e) => {
-//     if (e.target.className === 'cart__item') {
-//       cartItemClickListener(e);
-//     }
-//   });
-
-// nodeListLi.forEach((element) => {
-//   element.addEventListener('click', (event) => {
-//   cartItemClickListener(event);
-//   })
-// })
+listItens.innerHTML = localCart; // CARREGA PRODUTOS SALVOS NO LOCALSTORAGE
 
 // ESPERA O EVENTO DE CLICK NO BOTAO ESVAZIAR CARRINHO E LIMPA O CARRINHO
 const buttonClear = document.querySelector('.empty-cart');
 buttonClear.addEventListener('click', () => {
-  listItensCart.innerText = '';
-  localStorage.setItem('shop_cart', listItensCart.innerText);
+  listItens.innerText = '';
+  localStorage.setItem('shop_cart', listItens.innerText);
   localStorage.setItem('total_price', 0);
   priceCart.innerText = 'Adicione algum item ao carrinho!';
 });
