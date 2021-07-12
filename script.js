@@ -3,22 +3,21 @@ const priceCartUpdate = () => {
   let cartPrice = 0;
   const cartI = document.querySelectorAll('.cart__item');
   for (let i = 0; i < cartI.length; i += 1) {
-    cartPrice += cartI[i].salePrice;
-    // console.log(cartI[i].salePrice);
+    cartPrice += cartI[i].price;
   }  
-  return cartPrice;
+  return Math.round(cartPrice * 100) / 100;
 };
 
-const totalPriceUpdate = () => {
+async function totalPriceUpdate() {
 const clearUp = document.querySelector('.total-price');
 if (clearUp !== null) {
   clearUp.remove();
 }
 const h2 = document.createElement('h2');
 h2.classList = 'total-price';
-h2.innerText = `Total: R$ ${priceCartUpdate()}`;
+h2.innerText = priceCartUpdate();
 document.querySelector('.cart').appendChild(h2);
-};
+}
 
 // criada em aula
 function createProductImageElement(imageSource) {
@@ -59,15 +58,15 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
     totalPriceUpdate();
   }
   
-  function createCartItemElement(sku, name, salePrice) {
+  function createCartItemElement(sku, name, price) {
     const li = document.createElement('li');
     li.className = 'cart__item';
-    li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+    li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${price}`;
     li.sku = sku;
-    li.salePrice = salePrice;
+    li.price = price;
     document.querySelector('.cart__items').appendChild(li);
     li.addEventListener('click', cartItemClickListener);
-    localStorage.setItem(sku, salePrice);      
+    localStorage.setItem(sku, price);      
     totalPriceUpdate();
     return li;
   }
@@ -97,7 +96,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
     .then((response) => {
       response.json().then((data) => {
         // console.log(data.base_price);
-        createCartItemElement(data.id, data.title, data.base_price);
+        createCartItemElement(data.id, data.title, data.price);
         // console.log(data); //aqui ta a resposta completa do produto
       });
     });  
