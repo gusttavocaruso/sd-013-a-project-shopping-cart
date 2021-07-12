@@ -1,3 +1,33 @@
+// =========== localstorage
+function saveLocalStorage() {
+  const arrayDeposito = []; 
+  const acessaLis = document.querySelectorAll('.cart__item');
+  if (acessaLis !== null && acessaLis.length > 0) {
+  acessaLis.forEach((li) => {
+    arrayDeposito.push(li.innerText);
+  });
+  console.log(arrayDeposito);
+   localStorage.setItem('itemCarr', JSON.stringify(arrayDeposito));
+  }
+}
+  saveLocalStorage();
+// ======== função resolve problema
+function acessaOls() {
+  return document.querySelector('.cart__items');
+}
+
+function loadLocalStorage() {
+const recupered = JSON.parse(localStorage.getItem('itemCarr'));
+console.log(recupered);
+if (recupered !== null && recupered.length > 0) {
+  recupered.forEach((item) => {
+    const criaLi = document.createElement('li');
+    criaLi.innerText = item;
+    acessaOls().appendChild(criaLi);
+  });
+}
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -14,22 +44,22 @@ function createCustomElement(element, className, innerText) {
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
-event.remove();
+  event.remove();
+  saveLocalStorage();
 }
 
 function createCartItemElement(result) {
   fetch(`https://api.mercadolibre.com/items/${result}`)
       .then((response) => response.json())
       .then((ObjResult) => {
-        console.log(ObjResult);
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${ObjResult.id} | NAME: ${ObjResult.title} | PRICE: $${ObjResult.price}`;
-  const cart = document.querySelector('.cart__items');
-  cart.appendChild(li);
+  acessaOls().appendChild(li);
   li.addEventListener('click', (event) => { 
   cartItemClickListener(event.target);
 });
+saveLocalStorage();
   return li;
 });
 }
@@ -81,6 +111,8 @@ acessaButton.addEventListener('click', function () {
   acessaPaiCarrinho.innerText = '';
 });
 });
+
 window.onload = () => {
   promessa('computador');
+  loadLocalStorage();
  };
