@@ -55,5 +55,7 @@ const search = (query) => {
       results(body.results);
     });
 };
-search('computador');
-window.onload = () => { };
+
+window.onload = () => { 
+  search('computador');
+};
