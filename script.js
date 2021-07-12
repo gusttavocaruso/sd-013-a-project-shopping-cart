@@ -35,7 +35,9 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  const item = event.target;
+
+  item.remove();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -74,6 +76,18 @@ function fetchItem(event) {
     });
 }
 
-    window.onload = () => {
+// Requisito 6. Consultando: https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
+function emptyCart () {
+  const buttonRemoveItems = document.querySelector('.empty-cart');
+  buttonRemoveItems.addEventListener('click', () => {
+    const allCartItems = document.querySelector('.cart__items');
+    while(allCartItems.lastChild) {
+      allCartItems.removeChild(allCartItems.lastChild);
+    }
+  })
+}
+    
+window.onload = () => {
   fetchML('computador');
+  emptyCart();
  };
