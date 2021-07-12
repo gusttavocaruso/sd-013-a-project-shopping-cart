@@ -74,8 +74,3 @@
   font-size: 16pt;
   text-align: center;
 }
-
-.cart__price {
-  display: flex;
-  align-items: center;
-}

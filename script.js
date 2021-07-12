@@ -43,11 +43,13 @@ function emptyCart() {
 
 function shoppingCartValue(itemPrice) {
   // Busca o elemento que tem o valor do momento através da classe
+  console.log(itemPrice);
   const currentValue = document.querySelector('.total-price');
   // Transforma o número extraído em uma Float
   const floatCurrentAmount = parseFloat(currentValue.innerText);
   // Soma os valores e arredonda
   const totalAmount = Math.round((itemPrice + floatCurrentAmount) * 100) / 100;
+  console.log(totalAmount);
   // Coloca o valor somado como novo texto
   currentValue.innerHTML = totalAmount;
 }
@@ -93,7 +95,7 @@ async function fetchId(iD) {
   // Executa uma função que adicionar o item ao carrinho
   addToCart(data);
   // Executa uma função que adiciona o valor do item ao total
-  shoppingCartValue(data.base_price);
+  shoppingCartValue(data.price);
 }
 
 const getItemId = (event) => {
