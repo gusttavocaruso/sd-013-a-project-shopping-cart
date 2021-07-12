@@ -53,12 +53,12 @@ function createCartItemElement({ id, title, price }) {
 }
 
 function getSavedItens() {
-  const savedCart = JSON.parse(localStorage.getItem('cart'))  || [];
+  const savedCart = JSON.parse(localStorage.getItem('cart')) || [];
   const cart = document.querySelector('ol.cart__items');
 
   savedCart.forEach((itemCart) => {
     cart.appendChild(createCartItemElement(itemCart));
-  })
+  });
 }
 
 function fillCart(event) {
