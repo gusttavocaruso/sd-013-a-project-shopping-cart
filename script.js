@@ -28,21 +28,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-function addLoadingMessage() {
-  // Cria um elemento de texto e coloca dentro dele o texto Carregando
-  const loadingMessage = document.createElement('p');
-  loadingMessage.classList.add('loading');
-  loadingMessage.innerText = 'Carregando....';
-  const emptyCartButton = document.querySelector('.empty-cart');
-  emptyCartButton.parentNode.insertBefore(loadingMessage, emptyCartButton);
-}
-
-function removeLoadingMessage() {
-  // Remove o elemento de loading
-  const loadingMessage = document.querySelector('.loading');
-  loadingMessage.parentNode.removeChild(loadingMessage);
-}
-
 function emptyCart() {
   // Busca o botão de esvaziar carrinho
   const emptyButton = document.querySelector('.empty-cart');
@@ -51,29 +36,36 @@ function emptyCart() {
     const cartItems = document.querySelector('.cart__items');
     cartItems.innerHTML = null;
     // Busca o valor atual para depois zerá-lo
-    const currentValue = document.querySelector('.current-value');
-    currentValue.innerText = '0';
+    const currentValue = document.querySelector('.total-price');
+    currentValue.innerHTML = '0';
   });
 }
 
 function shoppingCartValue(itemPrice) {
   // Busca o elemento que tem o valor do momento através da classe
-  const currentValue = document.querySelector('.current-value');
+  const currentValue = document.querySelector('.total-price');
   // Transforma o número extraído em uma Float
   const floatCurrentAmount = parseFloat(currentValue.innerText);
   // Soma os valores e arredonda
   const totalAmount = Math.round((itemPrice + floatCurrentAmount) * 100) / 100;
   // Coloca o valor somado como novo texto
-  currentValue.innerText = totalAmount;
+  currentValue.innerHTML = totalAmount;
 }
 
 function cartItemClickListener(event) {
+  // Pega o texto do elemento removido
+  const itemText = event.target.innerText;
+  // Verifica onde começa o texto abaixo
+  const indexOfPrice = itemText.indexOf('PRICE: $');
+  // Cria uma string que começa após o price e vai até o fim, desta maneira equivalente ao valor do produto
+  const stringToSubtract = itemText.substring((indexOfPrice + 8), (itemText.length));
+  const valueToSubtract = parseFloat(stringToSubtract);
   // Pega o elemento pai do elemento clicado
   const father = event.target.parentNode;
   // Remove o filho clicado do elemento pai, que foi buscado acima
   father.removeChild(event.target);
   // Inova a função de valor do carrinho de compras para remover valor do produto
-  shoppingCartValue(-100);
+  shoppingCartValue(-valueToSubtract);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -96,10 +88,8 @@ function addToCart(item) {
 async function fetchId(iD) {
   // Faz o fetch através do iD informado para a função
   const response = await fetch(`https://api.mercadolibre.com/items/${iD}`);
-  addLoadingMessage();
   // Pega o json da consulta acima
   const data = await response.json();
-  removeLoadingMessage();
   // Executa uma função que adicionar o item ao carrinho
   addToCart(data);
   // Executa uma função que adiciona o valor do item ao total
@@ -117,9 +107,10 @@ const getItemId = (event) => {
 
 const addChild = (items) => {
   // Faz a função de criar um elemento para cada item e colocá-lo como filho da classe .items
+  const section = document.querySelector('.items');
+  section.innerText = null;
   items.forEach((item) => {
     const newItem = createProductItemElement(item);
-    const section = document.querySelector('.items');
     section.appendChild(newItem);
   });
   // Busca todos os botões criados nos itens
@@ -132,9 +123,7 @@ async function getApi(searchword) {
   // Recebe a promise do site do MercadoLivre
   const response = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${searchword}`);
   // Após receber o resultado da promise, pega apenas o json
-  addLoadingMessage();
   const data = await response.json();
-  removeLoadingMessage();
   // Executa a função addChild enviando as informações presentes em result do json
   addChild(data.results);
   return data;

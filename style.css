@@ -77,4 +77,5 @@
 
 .cart__price {
   display: flex;
+  align-items: center;
 }
