@@ -17,7 +17,7 @@ const addPrices = () => {
       const itemPrice = itemArray[1];
       const priceToNumber = Math.round(itemPrice * 100) / 100;
       totalValue += priceToNumber;
-      // roundedValue = Math.round(totalValue * 100) / 100;
+      totalValue = Math.round(totalValue * 100) / 100;
     });
   }
   priceContainer.innerText = totalValue;
@@ -31,6 +31,7 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+// Requisito 1: continuação
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -38,6 +39,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// Requisito 1: continuação
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -50,6 +52,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+// Requisito 1: continuação
 const createProductList = async () => {
   const api = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador');
   const apiJson = await api.json();
@@ -80,8 +83,6 @@ function cartItemClickListener(event) {
   addPrices();
 }
 
-// const totalPrice = () => prices.reduce((acc, curr) => acc + curr);
-
 // Requisito 2: Resolvido com ajuda de Lanai conceição, Caroline Boaventura, Luiza Antiques, Aline Hoshino, Pedro Delicoli
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -96,6 +97,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+// Quesito 1
 const getCartComputer = async (id) => {
   const api = await fetch(`https://api.mercadolibre.com/items/${id}`);
   const apiJson = await api.json();
@@ -103,27 +105,11 @@ const getCartComputer = async (id) => {
   return apiJson;
 };
 
-// Quesito 3
+// Quesito 4
 const addCartItemToLocalSorage = () => {
   localStorage.setItem('cartList', '');
   localStorage.setItem('cartList', JSON.stringify(localStorageData));
 };
-
-// const totalPrice = () => {
-//   const span = document.querySelector('.price');
-//   const total = pricesArray.reduce((acc, curr) => acc + curr).toFixed(2);
-//   span.innerHTML = total;
-//   localStorage.setItem('total', '');
-//   localStorage.setItem('total', JSON.stringify(total));
-// };
-
-// const getTotalLocalStorage = () => {
-//   const totalValue = JSON.parse(localStorage.getItem('total'));
-//   if (totalValue) {
-//     const span = document.querySelector('.price');
-//     span.innerHTML = totalValue;
-//   }
-// };
 
 // Requisito 2: Resolvido com ajuda de Lanai conceição, Caroline Boaventura, Luiza Antiques, Aline Hoshino, Pedro Delicoli
 const buttonEvent = () => {
@@ -142,6 +128,7 @@ const buttonEvent = () => {
   });
 };
 
+// Quesito 4
 const getCartFromLocalSorage = () => {
   const list = JSON.parse(localStorage.getItem('cartList'));
   if (list) {
@@ -154,8 +141,20 @@ const getCartFromLocalSorage = () => {
   }
 };
 
+// Quesito 6:
+const clearCartList = () => {
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', () => {
+    const container = document.querySelector(cartContainer);
+    container.innerHTML = '';
+    localStorage.setItem('cartList', '');
+    addPrices();
+  });
+};
+
 window.onload = async () => {
   createProductList();
   buttonEvent();
   getCartFromLocalSorage();
+  clearCartList();
 };
