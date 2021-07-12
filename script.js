@@ -30,9 +30,9 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 function cartItemClickListener(event) {
   const item = event.target;
@@ -77,14 +77,14 @@ function fetchItem(event) {
 }
 
 // Requisito 6. Consultando: https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
-function emptyCart () {
+function emptyCart() {
   const buttonRemoveItems = document.querySelector('.empty-cart');
   buttonRemoveItems.addEventListener('click', () => {
     const allCartItems = document.querySelector('.cart__items');
-    while(allCartItems.lastChild) {
+    while (allCartItems.lastChild) {
       allCartItems.removeChild(allCartItems.lastChild);
     }
-  })
+  });
 }
     
 window.onload = () => {
