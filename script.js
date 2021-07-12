@@ -20,7 +20,7 @@ const totalPrice = async () => {
     const priceTheItems = item.innerText.split('$');
     price += Number(priceTheItems[1]);
   });
-  priceOfPay.innerHTML = `${Math.round((price * 100) / 100)}`;
+  priceOfPay.innerHTML = `${Math.round((price * 100)) / 100}`;
 };
 
 function createProductImageElement(imageSource) {
