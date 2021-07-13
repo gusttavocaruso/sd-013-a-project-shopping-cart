@@ -32,6 +32,14 @@ function cartItemClickListener(event) {
   event.target.remove();
 }
 
+const createP = (price = 0) => {
+  const olPai = document.querySelector('.cart');
+  const paragrafo = document.createElement('p');
+  paragrafo.innerHTML = `Preço total: $${price}`;
+  paragrafo.className = 'total-price';
+  olPai.appendChild(paragrafo);
+};
+
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -57,9 +65,11 @@ const aPromiseML = (pesquisa) => {
 
 const buttonAdd = () => {
   const listPai = document.querySelector('.cart__items');
-  const salvar = () => {
-    localStorage.setItem('lista', listPai.innerHTML);
-  };
+  const salvar = () => localStorage.setItem('lista', listPai.innerHTML);
+  listPai.addEventListener('click', (event) => {
+    if (event.target.className === 'cart__item') cartItemClickListener(event);
+  });
+  
   const section = document.querySelector('.items');
   section.addEventListener('click', async (event) => {
     if (event.target.className === 'item__add') {
@@ -73,10 +83,41 @@ const buttonAdd = () => {
   });
 };
 
-window.onload = () => {
-  aPromiseML('computador');
-  buttonAdd();
-  if (localStorage.lista) {
-    document.querySelector('.cart__items').innerHTML = localStorage.lista;
+const apagarLi = () => {
+  const pegarLis = document.querySelectorAll('.cart__item');
+  if (pegarLis) {
+    pegarLis.forEach((element) => {
+      localStorage.clear();
+      element.remove();
+    });
   }
+  localStorage.clear();
+};
+
+const clearCart = () => {
+  const buttonClear = document.querySelector('.empty-cart');
+  buttonClear.addEventListener('click', apagarLi);
+};
+
+const creatPload = () => {
+  const body = document.getElementsByTagName('body')[0];
+  const criarP = document.createElement('p');
+  criarP.className = 'loading';
+  criarP.innerHTML = 'loading...';
+  body.appendChild(criarP);
+};
+
+window.onload = () => {
+  creatPload();
+
+  setTimeout(() => {
+    const bodyRemove = document.getElementsByTagName('body')[0];
+    bodyRemove.removeChild(document.querySelector('.loading'));
+    aPromiseML('computador');
+  }, 2000);
+
+  buttonAdd();
+  createP();
+  clearCart();
+  if (localStorage.lista) document.querySelector('.cart__items').innerHTML = localStorage.lista;
 };
