@@ -83,9 +83,11 @@ function createSectionObject(items) {
 }
 
 function fetchObject(query) {
+  const loading = document.querySelector('.loading');
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => response.json()).then((data) => {
       createSectionObject(data.results);
+      loading.remove();
     });
 }
 
