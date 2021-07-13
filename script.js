@@ -12,12 +12,13 @@ function createProductImageElement(imageSource) {
 function totalPrice() {
   const span = document.querySelector('.total-price');
   let price = 0;
-  const allLi = document.querySelectorAll('li');
+  const allLi = document.querySelectorAll('.cart__item');// chamando as li pela classe
   allLi.forEach((item) => {
-  const computer = item.innerText.split('$');// posição 0- é tudo que vem antes do cifrão que é isso aqui SKU: MLB1218701240 | NAME: Computador Pc Completo Intel 8gb Hd 500gb Monitor 18 Wind 10 | PRICE: $2699
-  price += Number(computer[1]);// só o price
+  const inner = item.innerText;// pegando o texto da li
+  const arrayofLi = inner.split('$'); // posição 0- é tudo que vem antes do cifrão que é isso aqui SKU: MLB1218701240 | NAME: Computador Pc Completo Intel 8gb Hd 500gb Monitor 18 Wind 10 | PRICE:, posição 1: 1269(preço)
+  price += Number(arrayofLi[1]);// só o price
   });
-  span.innerHTML = `${(Math.round((price * 100)) / 100)}`;
+  span.innerHTML = `${(Math.round((price * 100)) / 100)}`;// arredondar os centavos 
   }
 
 function createCustomElement(element, className, innerText) {
