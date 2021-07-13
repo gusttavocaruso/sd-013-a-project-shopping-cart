@@ -6,6 +6,21 @@ const saveListLocalStore = () => {
   localStorage.setItem('lista', html); 
 };
 
+const sumItems = () => {
+  const ol = document.querySelector(string);
+  const olChildren = [...ol.children];
+  const priceOl = olChildren.reduce((acc, li) => {
+  let accumulator = acc;
+  accumulator += Number(li.innerText.split('$')[1]);
+  return accumulator;
+  }, 0);
+  return priceOl;
+  };
+  
+  const pullDiv = () => {
+  const div = document.querySelector('.total-price');
+  div.innerText = `${Math.round(sumItems() * 100) / 100}`;
+  }; 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -23,12 +38,12 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
+  
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
+  
   return section;
 }
 
@@ -37,8 +52,9 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-event.target.remove();
-saveListLocalStore();
+  event.target.remove();
+  saveListLocalStore();
+  pullDiv();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -77,6 +93,7 @@ const fetchItemCart = (element) => {
       const olCart = document.querySelector(string);
       olCart.appendChild(getLi);
       saveListLocalStore();
+      pullDiv();
     });
   });
 };
@@ -100,20 +117,9 @@ const getItem = () => {
   });
 };
 
-// function totalPrice() {
-//   const getTotalPrice = document.querySelector('.total-price');
-//   let price = 0;
-//   const AllLi = document.querySelectorAll('li');
-//   AllLi.forEach((item) => {
-//   const computer = item.innerText.split('$');
-//   price += Number(computer[1]);
-//   });
-//   getTotalPrice.innerHTML = `${(Math.round((price * 100)) / 100)}`;
-//   }
-
 window.onload = () => {
   fetchML('computador');
   buttonItem();
   getItem();
-  // totalPrice();
+  pullDiv();
  };
