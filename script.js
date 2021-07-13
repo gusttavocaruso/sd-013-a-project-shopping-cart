@@ -20,7 +20,8 @@ const sumItems = () => {
   const pullDiv = () => {
   const div = document.querySelector('.total-price');
   div.innerText = `${Math.round(sumItems() * 100) / 100}`;
-  }; 
+  };
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -117,9 +118,20 @@ const getItem = () => {
   });
 };
 
+const removeBtn = () => {
+  const botao = document.querySelector('.empty-cart');
+  botao.addEventListener('click', () => {
+    const ol = document.querySelector(string);
+    ol.innerText = '';
+    localStorage.removeItem('lista');
+    document.querySelector('.total-price').innerText = 0;
+  });
+};
+
 window.onload = () => {
   fetchML('computador');
   buttonItem();
   getItem();
   pullDiv();
+  removeBtn();
  };
