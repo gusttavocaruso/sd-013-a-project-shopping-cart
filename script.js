@@ -33,14 +33,29 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const getStoredCart = () => JSON.parse(localStorage.getItem('cart')) || [];
+
+const updateCartTotal = () => {
+  const storedCart = getStoredCart();
+  const total = storedCart.reduce((acc, curr) => acc + curr.price, 0);
+  priceDisplay.innerText = total.toString();
+};
+
+const removeProductFromStoredCart = (sku) => {
+  const storedCart = getStoredCart();
+  const newCart = storedCart.filter(({ id }) => id !== sku);
+  localStorage.setItem('cart', JSON.stringify(newCart));
+};
+
 function cartItemClickListener(event) {
+  removeProductFromStoredCart(event.target.id);
   event.target.remove();
-  // todo: remove item from updateStoredCart
   updateCartTotal();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
+  li.id = sku;
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
@@ -54,15 +69,10 @@ const getProduct = async (id) => {
     .catch((err) => console.log(`Error getting product: ${err}`));
 };
 
-const getStoredCart = () => JSON.parse(localStorage.getItem('cart')) || [];
-
-const updateCartTotal = () => {
-  const total = storedCart.reduce((total, curr) => total + curr.price, 0);
-  priceDisplay.innerText = total.toString();
-};
-
-const updateStoredCart = ({ id: sku, title: name, price: salePrice }) => {
+const addProductToStoredCart = ({ id: sku, title: name, price: salePrice }) => {
   const storedCart = getStoredCart();
+  if (storedCart.find(({ id }) => id === sku)) return;
+
   const productObj = {
     id: sku,
     title: name,
@@ -71,9 +81,7 @@ const updateStoredCart = ({ id: sku, title: name, price: salePrice }) => {
   storedCart.push(productObj);
   localStorage.setItem('cart', JSON.stringify(storedCart));
 
-  const total = storedCart.reduce((total, curr) => total + curr.price, 0);
-  priceDisplay.innerText = total.toString();
-  // todo: update storedCart when a product is removed
+  updateCartTotal();
 };
 
 const loadStoredCart = () => {
@@ -87,11 +95,13 @@ const loadStoredCart = () => {
 async function addProductToCart(event) {
   if (event.target.classList.contains('item__add')) {
     const productId = getSkuFromProductItem(event.target.parentElement);
+    if (document.getElementById(productId)) return;
+
     await getProduct(productId)
       .then((product) => {
         const li = createCartItemElement(product);
         cartList.appendChild(li);
-        updateStoredCart(product);
+        addProductToStoredCart(product);
       })
       .catch((err) => console.log(err));
   }
