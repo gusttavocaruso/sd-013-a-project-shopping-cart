@@ -64,6 +64,7 @@ const addProduct = (items) => {
 };
 
 const getProduct = async (product) => {
+  const loading = document.querySelector('.loading');
   try {
     const url = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${product}`);
     const data = await url.json();
@@ -71,6 +72,7 @@ const getProduct = async (product) => {
   } catch (error) {
     alert(error);
   }
+  loading.remove();
 };
 
 window.onload = () => {
