@@ -1,3 +1,10 @@
+const string = '.cart__items';
+
+const salvar = () => {
+  const ol = document.querySelector(string).innerHTML;
+  localStorage.setItem('lista', ol);
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -29,7 +36,18 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  salvar();
 }
+
+const get = () => {
+  const ol = document.querySelector(string);
+  ol.innerHTML = localStorage.getItem('lista');
+  ol.addEventListener('click', (event) => {
+    if (event.target.className === 'cart__item') {
+    cartItemClickListener(event);
+    }
+  });
+};
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -40,52 +58,46 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 }
 
 function createSectionObject(items) {
-items.forEach((item) => {
-  const createItemElement = createProductItemElement(item);
-  const section = document.querySelector('.items');
-  section.appendChild(createItemElement);
-});
+  items.forEach((item) => {
+    const createItemElement = createProductItemElement(item);
+    const section = document.querySelector('.items');
+    section.appendChild(createItemElement);
+  });
 }
 
 function fetchObject(query) {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
-  .then((response) => response.json()).then((data) => {
-   createSectionObject(data.results);
-  });
+    .then((response) => response.json()).then((data) => {
+      createSectionObject(data.results);
+    });
 }
-
 
 const fetchItemCart = (element) => {
   const elementPai = element.target.parentElement;
   const getId = getSkuFromProductItem(elementPai);
   fetch(`https://api.mercadolibre.com/items/${getId}`)
-  .then((response) => {
-  response.json()
-  .then((data) => {
-  const getLi = createCartItemElement(data);
-  const olCart = document.querySelector('.cart__items');
-  olCart.appendChild(getLi);
-  localStorage.setItem('lista', olCart.innerHTML);
-  
-  });
-  });
-  }; 
+    .then((response) => {
+      response.json()
+        .then((data) => {
+          const getLi = createCartItemElement(data);
+          const olCart = document.querySelector(string);
+          olCart.appendChild(getLi);
+          salvar();
+        });
+    });
+};
 
 const buttonItem = () => {
   const section = document.querySelector('.items');
   section.addEventListener('click', (element) => {
-  if (element.target.className === 'item__add') {
-  return fetchItemCart(element);
-  }
+    if (element.target.className === 'item__add') {
+      return fetchItemCart(element);
+    }
   });
-  }; 
- 
-window.onload = () => { 
+};
+
+window.onload = () => {
   fetchObject('computador');
   buttonItem();
-  const olCart = document.querySelector('.cart__items');
-  if (localStorage.lista) {
-    olCart.innerHTML = localStorage.lista;
-  }
-  somaPreco();
+  get();
 };
