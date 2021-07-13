@@ -52,7 +52,7 @@ function addToCart(event) {
     return new Promise((resolve, reject) => {
       fetch(`https://api.mercadolibre.com/items/${idProduct}`)
         .then((response) => response.json()
-          .then((jsonProduct) => { 
+          .then((jsonProduct) => {
             const li = createCartItemElement(jsonProduct);
             document.querySelector('.cart__items').appendChild(li);
             getTotalPrice();
@@ -77,7 +77,8 @@ const getProducts = () => new Promise((resolve, reject) => {
    fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
       .then((response) => { 
         response.json().then((jsonProduct) => { 
-            jsonProduct.results.forEach((element) => {
+          document.querySelector('.loading').remove();   
+          jsonProduct.results.forEach((element) => {              
               const product = createProductItemElement(element);
               const bigSection = document.querySelector('.items');
               bigSection.appendChild(product);
@@ -99,15 +100,18 @@ function getData() {
 }
 
 function emptyCart() {
+  const emptyBtn = document.querySelector('.empty-cart');
+  emptyBtn.addEventListener('click', () => {
   const products = document.querySelectorAll('li');
   products.forEach((li) => li.remove());
   getTotalPrice();
+  });
+  
 }
-const emptyBtn = document.querySelector('.empty-cart');
-emptyBtn.addEventListener('click', emptyCart);
 
 window.onload = () => {
   getProducts();
   getData();
   getTotalPrice();
+  emptyCart();
 };
