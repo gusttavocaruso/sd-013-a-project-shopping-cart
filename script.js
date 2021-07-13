@@ -1,3 +1,4 @@
+const string = '.cart__items';
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -28,8 +29,15 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const save = () => { // Requisito 4
+  const olCart = document.querySelector(string);
+  const html = olCart.innerHTML;
+  localStorage.setItem('lista', html);
+};
+
 function cartItemClickListener(event) {
   event.target.remove();
+  save();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -71,13 +79,24 @@ const buttonEvent = () => {
       const parent = event.target.parentElement;
       const idProduct = getSkuFromProductItem(parent);
       const searchId = await fetchItems(idProduct);
-      const cartItems = document.querySelector('.cart__items');
+      const cartItems = document.querySelector(string);
       cartItems.appendChild(createCartItemElement(searchId));
+      save();
     }
   });
 };
 
+const getItem = () => {
+  const olItems = document.querySelector(string);
+  olItems.innerHTML = localStorage.getItem('lista');
+  const divs = [...olItems.children];
+  divs.forEach((li) => {
+    li.addEventListener('click', cartItemClickListener);
+  });
+  };
+
 window.onload = () => { 
   fetchMl('computador');
   buttonEvent();
+  getItem();
 };
