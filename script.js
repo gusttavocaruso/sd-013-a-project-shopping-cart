@@ -1,3 +1,21 @@
+const olClass = '.cart__items';
+
+const somaDeItems = () => {
+  const ol = document.querySelector(olClass);
+  const olChildren = [...ol.children];
+  const priceOl = olChildren.reduce((acc, li) => {
+    let accumulator = acc;
+    accumulator += Number(li.innerText.split('$')[1]);
+    return accumulator;
+  }, 0);
+  return priceOl;
+};
+  
+const pullDiv = () => {
+  const div = document.querySelector('.total-price');
+  div.innerText = `${Math.round(somaDeItems() * 100) / 100}`;
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -63,13 +81,17 @@ const aPromiseML = (pesquisa) => {
     }));
 };
 
+const salvarTudo = () => {
+  const listPai1 = document.querySelector(olClass);
+  localStorage.setItem('lista', listPai1.innerHTML);
+};
+
 const buttonAdd = () => {
-  const listPai = document.querySelector('.cart__items');
-  const salvar = () => localStorage.setItem('lista', listPai.innerHTML);
-  listPai.addEventListener('click', (event) => {
+  const listPai2 = document.querySelector(olClass);
+  listPai2.addEventListener('click', (event) => {
     if (event.target.className === 'cart__item') cartItemClickListener(event);
   });
-  
+
   const section = document.querySelector('.items');
   section.addEventListener('click', async (event) => {
     if (event.target.className === 'item__add') {
@@ -77,8 +99,9 @@ const buttonAdd = () => {
       const pegarId = getSkuFromProductItem(elementPai);
       const requisitarObj = await pegarObj(pegarId);
       const addLi = createCartItemElement(requisitarObj);
-      listPai.appendChild(addLi);
-      salvar();
+      listPai2.appendChild(addLi);
+      pullDiv();
+      salvarTudo();
     }
   });
 };
@@ -100,7 +123,7 @@ const clearCart = () => {
 };
 
 const creatPload = () => {
-  const body = document.getElementsByTagName('body')[0];
+  const body = document.querySelector('.container');
   const criarP = document.createElement('p');
   criarP.className = 'loading';
   criarP.innerHTML = 'loading...';
@@ -111,8 +134,8 @@ window.onload = () => {
   creatPload();
 
   setTimeout(() => {
-    const bodyRemove = document.getElementsByTagName('body')[0];
-    bodyRemove.removeChild(document.querySelector('.loading'));
+    const container = document.querySelector('.container');
+    container.removeChild(document.querySelector('.loading'));
     aPromiseML('computador');
   }, 2000);
 
