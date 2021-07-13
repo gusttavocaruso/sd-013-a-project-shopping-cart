@@ -5,34 +5,8 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-function createCustomElement(element, className, innerText) {
-  const e = document.createElement(element);
-  e.className = className;
-  e.innerText = innerText;
-  if (element === 'button') {
-    e.addEventListener('click', addCart);
-  }
-  return e;
-}
-
-function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
-  const section = document.createElement('section');
-  section.className = 'item';
-
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-  addCart
-  return section;
-}
-
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText; // captura id do elemento
-// }
-
 function cartItemClickListener(event) {
- event.target.remove(); // Requisito 3
+  event.target.remove(); // Requisito 3
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -56,6 +30,32 @@ const addCart = (event) => {
       });
     });
 };
+
+function createCustomElement(element, className, innerText) {
+  const e = document.createElement(element);
+  e.className = className;
+  e.innerText = innerText;
+  if (element === 'button') {
+    e.addEventListener('click', addCart);
+  }
+  return e;
+}
+
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
+  const section = document.createElement('section');
+  section.className = 'item';
+
+  section.appendChild(createCustomElement('span', 'item__sku', sku));
+  section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createProductImageElement(image));
+  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+
+  return section;
+}
+
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText; // captura id do elemento
+// }
 
 // Susbtituido na função que cria o botão
 // const clickAdd = () => {
