@@ -19,6 +19,22 @@ const save = () => {
   const textHtml = ol.innerHTML;
   localStorage.setItem('lista salva', textHtml);
 };
+// função que retorna o valor total do carrinho.
+const sumItems = () => {
+  const ol = document.querySelector(string);
+  const divs = [...ol.children];
+  const priceTotal = divs.reduce((acc, li) => {
+    let accumulator = acc;
+    accumulator += Number(li.innerText.split('$')[1]);
+    return accumulator;
+  }, 0);
+  return priceTotal;
+};
+
+const newDiv = () => {
+  const div = document.querySelector('.total-price');
+  div.innerText = `${Math.round(sumItems() * 100) / 100}`
+}
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
@@ -39,6 +55,7 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   event.target.remove();
   save();
+  newDiv();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -76,6 +93,7 @@ const addCart = (event) => {
       const addOl = document.querySelector(string);
       addOl.appendChild(addLi);
       save();
+      newDiv();
     });
   });
 };
