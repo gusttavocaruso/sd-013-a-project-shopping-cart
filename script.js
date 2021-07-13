@@ -114,9 +114,20 @@ const getItem = () => {
   });
   };
 
+const removeBtn = () => {
+  const buttonDelete = document.querySelector('.empty-cart');
+  buttonDelete.addEventListener('click', () => {
+    const ol = document.querySelector(string);
+    ol.innerHTML = '';
+    localStorage.removeItem('lista');
+    document.querySelector('.total-price').innerText = 0;
+  });
+};
+
 window.onload = () => { 
   fetchMl('computador');
   buttonEvent();
   getItem();
   pullDiv();
+  removeBtn();
 };
