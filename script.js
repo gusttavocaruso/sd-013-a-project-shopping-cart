@@ -1,4 +1,5 @@
 const olClass = '.cart__items';
+const containerDiv = '.total-price';
 
 const somaDeItems = () => {
   const ol = document.querySelector(olClass);
@@ -12,8 +13,8 @@ const somaDeItems = () => {
 };
   
 const pullDiv = () => {
-  const div = document.querySelector('.total-price');
-  div.innerText = `${Math.round(somaDeItems() * 100) / 100}`;
+  const container1 = document.querySelector(containerDiv);
+  container1.innerText = `${Math.round(somaDeItems() * 100) / 100}`;
 };
 
 function createProductImageElement(imageSource) {
@@ -46,17 +47,19 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const salvarTudo = () => {
+  const listPai1 = document.querySelector(olClass);
+  const container2 = document.querySelector(containerDiv);
+  
+  localStorage.setItem('lista', listPai1.innerHTML);
+  localStorage.setItem('prices', container2.innerHTML);
+};
+
 function cartItemClickListener(event) {
   event.target.remove();
+  salvarTudo();
+  pullDiv();
 }
-
-const createP = (price = 0) => {
-  const olPai = document.querySelector('.cart');
-  const paragrafo = document.createElement('p');
-  paragrafo.innerHTML = `Preço total: $${price}`;
-  paragrafo.className = 'total-price';
-  olPai.appendChild(paragrafo);
-};
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -81,11 +84,6 @@ const aPromiseML = (pesquisa) => {
     }));
 };
 
-const salvarTudo = () => {
-  const listPai1 = document.querySelector(olClass);
-  localStorage.setItem('lista', listPai1.innerHTML);
-};
-
 const buttonAdd = () => {
   const listPai2 = document.querySelector(olClass);
   listPai2.addEventListener('click', (event) => {
@@ -100,8 +98,8 @@ const buttonAdd = () => {
       const requisitarObj = await pegarObj(pegarId);
       const addLi = createCartItemElement(requisitarObj);
       listPai2.appendChild(addLi);
-      pullDiv();
       salvarTudo();
+      pullDiv();
     }
   });
 };
@@ -132,7 +130,6 @@ const creatPload = () => {
 
 window.onload = () => {
   creatPload();
-
   setTimeout(() => {
     const container = document.querySelector('.container');
     container.removeChild(document.querySelector('.loading'));
@@ -140,7 +137,9 @@ window.onload = () => {
   }, 2000);
 
   buttonAdd();
-  createP();
   clearCart();
-  if (localStorage.lista) document.querySelector('.cart__items').innerHTML = localStorage.lista;
+  if (localStorage.lista) {
+    document.querySelector('.cart__items').innerHTML = localStorage.lista;
+    document.querySelector(containerDiv).innerHTML = localStorage.prices;
+  }
 };
