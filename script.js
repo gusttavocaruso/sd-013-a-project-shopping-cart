@@ -106,7 +106,6 @@ function emptyCart() {
   products.forEach((li) => li.remove());
   getTotalPrice();
   });
-  
 }
 
 window.onload = () => {
