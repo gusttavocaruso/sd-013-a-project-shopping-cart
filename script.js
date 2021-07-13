@@ -1,8 +1,33 @@
-// const cartItems = document.querySelector('.cart__items');
-// const clearCartBtn = document.querySelector('.empty-cart');
-// const addToCartBtn = document.querySelector('.item__add');
-// eslint-disable-next-line sonarjs/no-duplicate-string
+const cartString = '.cart__items';
+const clearCartBtn = document.querySelector('.empty-cart');
 const newOl = document.querySelector('.cart__items');
+
+const sumPrices = () => {
+  const ol = document.querySelector(cartString);
+  const olChildren = [...ol.children];
+  const priceOl = olChildren.reduce((acc, curr) => {
+  let accumulator = acc;
+  accumulator += Number(curr.innerText.split('$')[1]);
+  return accumulator;
+  }, 0);
+  return priceOl;
+  };
+  
+  const createDiv = () => {
+  const div = document.querySelector('.total-price');
+  div.innerText = `${Math.round(sumPrices() * 100) / 100}`;
+  }; 
+
+const saveStorage = () => {
+  const olHtml = newOl.innerHTML;
+  localStorage.setItem('lista', olHtml);
+};
+
+function cartItemClickListener(event) {
+  event.target.remove();
+  saveStorage();
+  createDiv();
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -10,6 +35,16 @@ function createProductImageElement(imageSource) {
   img.src = imageSource;
   return img;
 }
+
+// Realizado com a ajuda do Leonardo da turma 13.
+const getStorage = () => {
+  const getItem = document.querySelector(cartString);
+  getItem.innerHTML = localStorage.getItem('lista');
+  const divs = [...newOl.children];
+  divs.forEach((li) => {
+    li.addEventListener('click', cartItemClickListener);
+  });
+};
 
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
@@ -32,10 +67,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}
-
-function cartItemClickListener(event) {
-  event.target.remove();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -77,7 +108,8 @@ const fetchComputer = () => {
     .then((data) => {
       const addLi = createCartItemElement(data);
       newOl.appendChild(addLi);
-      localStorage.setItem('lista', newOl.innerHTML);
+      saveStorage();
+      createDiv();
     });
   });
 };
@@ -90,15 +122,17 @@ const buttonAdd = () => {
     }
   });
 };
+// Requisito 6 realizado com a ajuda do Leonardo da turma 13.
+const clearCart = () => {
+  newOl.innerHTML = '';
+  localStorage.removeItem('lista');
+  document.querySelector('.total-price').innerText = 0;
+};
 
-// const saveLocalStorage = () => {
-  
-// }
+clearCartBtn.addEventListener('click', clearCart);
 
 window.onload = () => {
   fetchComputer();
   buttonAdd();
-  if (localStorage.lista) {
-    newOl.innerHTML = localStorage.lista;
-  }
+  getStorage();
 };
