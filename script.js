@@ -17,7 +17,7 @@ function createCustomElement(element, className, innerText) {
 const save = () => {
   const ol = document.querySelector(string);
   const textHtml = ol.innerHTML;
-  localStorage.setItem('lista salva', textHtml);
+  localStorage.setItem('lista', textHtml);
 };
 // função que retorna o valor total do carrinho.
 const sumItems = () => {
@@ -109,7 +109,7 @@ const buttonFunction = () => {
 // função para pegar o valor salvo do local Storage.
 const saveReload = () => {
   const searchOl = document.querySelector(string);
-  searchOl.innerHTML = localStorage.getItem('lista salva');
+  searchOl.innerHTML = localStorage.getItem('lista');
   searchOl.addEventListener('click', (event) => {
     if (event.target.className === 'cart__item') {
       cartItemClickListener(event);
@@ -118,8 +118,19 @@ const saveReload = () => {
   });
 };
 
+const removeBtn = () => {
+  const botao = document.querySelector('.empty-cart');
+  botao.addEventListener('click', () => {
+    const ol = document.querySelector(string);
+    ol.innerHTML = '';
+    localStorage.removeItem('lista');
+    document.querySelector('.total-price').innerText = 0;
+  });
+};
+
 window.onload = () => { 
   fetchML('computador');
   buttonFunction();
   saveReload();
+  removeBtn();
 };
