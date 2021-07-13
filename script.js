@@ -47,6 +47,12 @@ const removeProductFromStoredCart = (sku) => {
   localStorage.setItem('cart', JSON.stringify(newCart));
 };
 
+const emptyCart = () => {
+  cartList.innerHTML = '';
+  localStorage.removeItem('cart');
+  updateCartTotal();
+};
+
 function cartItemClickListener(event) {
   removeProductFromStoredCart(event.target.id);
   event.target.remove();
@@ -130,4 +136,5 @@ window.onload = () => {
   searchProducts(QUERY);
   loadStoredCart();
   document.body.addEventListener('click', addProductToCart);
+  document.querySelector('.empty-cart').addEventListener('click', emptyCart);
 };
