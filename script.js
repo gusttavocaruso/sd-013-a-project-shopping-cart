@@ -1,10 +1,30 @@
 const olMain = document.querySelector('.cart__items');
 const esvaziar = document.querySelector('.empty-cart');
-// const somaPrice = document.querySelector('#price');
+const somaPrice = document.querySelector('.total-price');
+
+const teste = async () => {
+  const sil = document.querySelectorAll('.cart__item');
+  let aculador = 0;
+  if (sil.length === 0) {
+    somaPrice.innerHTML = 0;
+    const z = somaPrice.innerHTML;
+    localStorage.setItem('preco', z);
+  }
+  sil.forEach((itemNaLi) => {
+    const a = itemNaLi.innerHTML;
+    const t = parseFloat(a.substring(a.indexOf('$') + 1)); // indexOf pega a posição do $ + 1 para ser o porximo caractere após o $
+    aculador += t;  
+    somaPrice.innerHTML = Math.round(aculador * 100) / 100;
+    const z = somaPrice.innerHTML;
+    localStorage.setItem('preco', z);
+  });
+};
+// console.log(teste());
 
 function salvaLocal() {
   const x = olMain.innerHTML;
   localStorage.setItem('key', x);
+  teste();
 }
 
 function createProductImageElement(imageSource) {
@@ -52,14 +72,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 function addItemNaLi(id) { // fazendo requisição do item selecionado.
   fetch(`https://api.mercadolibre.com/items/${id}`)
     .then((response) => response.json())
-    .then((data) => {
-      const x = createCartItemElement(data);
-      olMain.appendChild(x);
-    
-      //     const aux = item.innerText;
-      //     aculador += num;
-      //     somaPrice.innerText = Math.round(aculador * 100) / 100;
-    });
+    .then((data) => createCartItemElement(data));
   }
 
 function recuperaId() {
@@ -67,7 +80,8 @@ function recuperaId() {
   const item = document.querySelectorAll('.item__sku');
   botaoAddCarinho.forEach((botao, index) => {
     botao.addEventListener('click', () => {
-      addItemNaLi(item[index].innerText); // usado para dar target no id que está no innerText de item__sku
+       addItemNaLi(item[index].innerText);
+         // usado para dar target no id que está no innerText de item__sku
     });
   });
 }
@@ -88,6 +102,8 @@ function buscaNaApi() {
 function carregarLocal() {
   const x = localStorage.getItem('key');
   olMain.innerHTML = x;
+  const z = localStorage.getItem('preco');
+  somaPrice.innerHTML = z;
   const li = document.querySelectorAll('.cart__item');
   li.forEach((cartItem) => {
     cartItem.addEventListener('click', cartItemClickListener);
