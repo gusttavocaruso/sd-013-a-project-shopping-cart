@@ -7,17 +7,6 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-function precoTotal() {
-  let price = 0;
-  const span = document.querySelector('.total-price');
-  const todasLi = document.querySelectorAll('li');
-  todasLi.forEach((item) => {
-    const computer = item.innerText.split('$');
-    price += Number(computer[1]);
-  });
-  span.innerHTML = `${(Math.round((price * 100)) / 100)}`;
-}
-
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -36,48 +25,14 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-async function fetchApiComputer() {
-  const loading = document.querySelector('.loading');
-  const api = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
-  const obj = await api.json();
-  const result = obj.results;
-  loading.remove();
-  result.forEach((computer) => document.querySelector('.items')
-    .appendChild(createProductItemElement(computer)));
-}
-
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-async function fetchAddCart(id) {
-  const api = await fetch(`https://api.mercadolibre.com/items/${id}`);
-  const json = await api.json();
-  return json;
-}
-
-function addLocalStorage() {
-  const lista = document.querySelector(cartItems);
-  const text = lista.innerHTML;
-  localStorage.setItem('cartList', '');
-  localStorage.setItem('cartList', JSON.stringify(text));
-}
-
 function cartItemClickListener(event) {
   event.target.remove();
-  precoTotal();
   addLocalStorage();
-}
-
-function getStorage() {
-  const storage = JSON.parse(localStorage.getItem('cartList'));
-  const lista = document.querySelector(cartItems);
-  lista.innerHTML = storage;
-  lista.addEventListener('click', (event) => {
-    if (event.target.className === 'cart__item') {
-      cartItemClickListener(event);
-    }
-  });
+  precoTotal();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -88,15 +43,60 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+async function fetchApiComputer() {
+  const loading = document.querySelector('.loading');
+  const api = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador');
+  const response = await api.json();
+  const results = response.results;
+  loading.remove();
+  results.forEach((element => document.querySelector('.items')
+    .appendChild(createProductItemElement(element))));
+}
+
+async function fetchAddCart(id) {
+  const api = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const json = await api.json();
+  return json;
+}
+
+function precoTotal() {
+  let price = 0;
+  const span = document.querySelector('.total-price');
+  const todasLi = document.querySelectorAll('li');
+  todasLi.forEach((item) => {
+    const computer = item.innerText.split('$');
+    price += Number(computer[1]);
+  });
+  span.innerHTML = `${(Math.round((price * 100)) / 100)}`;
+}
+
+function addLocalStorage() {
+  const lista = document.querySelector(cartItems);
+  const text = lista.innerHTML;
+  localStorage.setItem('cartList', '');
+  localStorage.setItem('cartList', JSON.stringify(text));
+}
+
+function getStorage() {
+  const storage = JSON.parse(localStorage.getItem('cartList'));
+  const lista = document.querySelector(cartItems);
+  lista.innerHTML = storage;
+  lista.addEventListener('click', (event) => {
+    if (event.target.className === cartItems) {
+      cartItemClickListener(event);
+    }
+  });
+}
+
 function buttonAddCarrinho() {
   const items = document.querySelector('.items');
   items.addEventListener('click', async (e) => {
     if (e.target.className === 'item__add') {
-      const parent = e.target.parentElement;
-      const id = getSkuFromProductItem(parent);
+      const element = e.target.parentElement;
+      const id = getSkuFromProductItem(element);
       const data = await fetchAddCart(id);
-      const createComputer = createCartItemElement(data);
-      document.querySelector(cartItems).appendChild(createComputer);
+      const createData = createCartItemElement(data);
+      document.querySelector(cartItems).appendChild(createData);
       addLocalStorage();
       precoTotal();
     }
