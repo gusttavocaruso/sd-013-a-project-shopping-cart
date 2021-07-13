@@ -35,8 +35,6 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-
-
 function addToCart(event) { 
   const section = event.target.parentElement;
   const idProduct = getSkuFromProductItem(section);
@@ -89,13 +87,6 @@ function getData() {
   });
 }
 
-/* function sumProducts({ price }) {
-  const finalPrice = document.querySelector('.total-price').firstElementChild;
-   finalPrice.innerHTML = (Number(finalPrice.innerHTML) + price); 
-
-} */
-
-// Aux get total price from cart items
 function getTotalPrice() {
   let total = 0;
   const totalPrice = document.querySelector('.total-price');
@@ -107,7 +98,13 @@ function getTotalPrice() {
     totalPrice.innerHTML = `${(Math.round((total * 100)) / 100)}`;
 };
 
-
+function emptyCart () {
+  const products = document.querySelectorAll('li');
+  products.forEach(li => li.remove())
+  getTotalPrice()
+}
+const emptyBtn = document.querySelector('.empty-cart')
+emptyBtn.addEventListener('click', emptyCart);
 
 window.onload = () => {
   getProducts();
