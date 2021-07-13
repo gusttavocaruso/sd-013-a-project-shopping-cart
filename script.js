@@ -30,7 +30,7 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.remove();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -61,7 +61,6 @@ const adicionaClick = (id) => {
   fetch(`https://api.mercadolibre.com/items/${id}`)
     .then((response) => {
       response.json().then((data) => {
-        console.log(data);
         const newProduct = createCartItemElement(data);
         document.querySelector('.cart__items').appendChild(newProduct);
       });
