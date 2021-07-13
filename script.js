@@ -84,10 +84,12 @@ const appendData = (resultado) => {
 };
 
 const fetchML = (item) => {
+  const paragraph = document.querySelector('.loading');
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${item}`)
-    .then((response) => {
-      response.json().then((data) => {
-        appendData(data.results);
+  .then((response) => {
+    response.json().then((data) => {
+      appendData(data.results);
+      paragraph.remove();
       });
     });
 };
