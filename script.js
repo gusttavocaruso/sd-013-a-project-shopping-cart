@@ -1,6 +1,7 @@
 const QUERY = 'computador';
 const DOMAIN = 'https://api.mercadolibre.com/';
 const cartList = document.querySelector('.cart__items');
+const priceDisplay = document.querySelector('.total-price');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -62,6 +63,10 @@ const updateStoredCart = ({ id: sku, title: name, price: salePrice }) => {
   };
   storedCart.push(productObj);
   localStorage.setItem('cart', JSON.stringify(storedCart));
+
+  const total = storedCart.reduce((total, curr) => total + curr.price, 0);
+  priceDisplay.innerText = total.toString();
+  // todo: update storedCart when a product is removed
 };
 
 const loadStoredCart = () => {
