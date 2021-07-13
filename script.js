@@ -1,5 +1,4 @@
 const string = '.cart__items';
-
 // função para exercico 1: cria imagens
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -16,7 +15,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-//ex.1: função cria a section, e adiciona os filhos.
+// ex.1: função cria a section, e adiciona os filhos.
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -25,39 +24,52 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
   return section;
 }
 
-//cria uma linha com elemento, através do ID do elemento.
+// cria uma linha com elemento, através do ID do elemento.
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-//desafio4
+// desafio5
+// const sum = () => {
+//   const ol = document.querySelector(string);
+//   const divs = [...ol.children];
+//   divs.reduce((acc, li) => {
+//   let acc = acc;
+//   acc += number(li.innerText.split('$')[1]
+//   return acc
+//   }, 0);
+//   return divs;
+// };
+// const divdiv =() => {
+//   const div = document.querySelector('')
+// }
+  
+// desafio4
 const local = () => {
   const ol = document.querySelector(string);
   const olol = ol.innerHTML;
   localStorage.setItem('lista', olol);
-}
+};
 
 const salva = (() => {
   const ol = document.querySelector(string);
   ol.innerHTML = localStorage.getItem('lista');
-  console.log(ol.children);
+  // console.log(ol.children);
   ol.addEventListener('click', (event) => { 
-  if(event.target.className === 'cart__item'){
-    cartItemClickListener(event)
+  if (event.target.className === 'cart__item') {
+    event.target.remove();
   }
-  })
+  });
 });
 
-
-//desafio3
+// desafio3
 function cartItemClickListener(event) {
   event.target.remove();
   local();
-};
+}
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -67,20 +79,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-//resolve desafio 1 e parte do 2 - (com ajuda da Aline Hoshino)
-const addProducts = (itens) => {
-  itens.forEach((item) => {
-    const product = createProductItemElement(item);
-    const section = document.querySelector('.items');
-    section.appendChild(product);
-  });
-  const butons = document.querySelectorAll('.item__add')
-  butons.forEach((button) => {
-    button.addEventListener('click', getId)
-  })
-
-};
-
+// resolve desafio 1 e parte do 2 - (com ajuda da Aline Hoshino)
 const mercadoLivre = ((query) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((resposta) => {
@@ -90,28 +89,33 @@ const mercadoLivre = ((query) => {
     });
 });
 
-//desafio 2 ajuda de GAbriel
-const funcFetch = (query) => {
-  fetch(`https://api.mercadolibre.com/items/${query}`)
-    .then((response) => {
-      return response.json()
-    })
-    .then((data) => {
-      const li = createCartItemElement(data)
-      const ol = document.querySelector(string);
-      ol.appendChild(li)
-      local();
-
-    });
-
+const getId = (event) => {
+  const idElement = getSkuFromProductItem(event.target.parentElement);
+  funcFetch(idElement);
+};
+const addProducts = (itens) => {
+  itens.forEach((item) => {
+    const product = createProductItemElement(item);
+    const section = document.querySelector('.items');
+    section.appendChild(product);
+  });
+  const butons = document.querySelectorAll('.item__add');
+  butons.forEach((button) => {
+    button.addEventListener('click', getId);
+  });
 };
 
-const getId = (event) => {
-  const idElement = getSkuFromProductItem(event.target.parentElement)
-  funcFetch(idElement)
-
-}
-
+// desafio 2 ajuda de Gabriel
+const funcFetch = (query) => {
+  fetch(`https://api.mercadolibre.com/items/${query}`)
+    .then((response) => response.json())
+    .then((data) => {
+      const li = createCartItemElement(data);
+      const ol = document.querySelector(string);
+      ol.appendChild(li);
+      local();
+    });
+};
 
 window.onload = () => {
   mercadoLivre('computador');
