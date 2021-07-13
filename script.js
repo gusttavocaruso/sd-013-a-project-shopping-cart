@@ -33,8 +33,8 @@ const sumItems = () => {
 
 const newDiv = () => {
   const div = document.querySelector('.total-price');
-  div.innerText = `${Math.round(sumItems() * 100) / 100}`
-}
+  div.innerText = `${Math.round(sumItems() * 100) / 100}`;
+};
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
