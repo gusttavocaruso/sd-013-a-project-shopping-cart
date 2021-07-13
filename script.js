@@ -13,7 +13,7 @@ function createCustomElement(element, className, innerText) {
   e.innerText = innerText;
   return e;
 }
-
+// função que salva o item no local storage.
 const save = () => {
   const ol = document.querySelector(string);
   const textHtml = ol.innerHTML;
@@ -35,7 +35,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-
+// remover o carrinho da lista
 function cartItemClickListener(event) {
   event.target.remove();
   save();
@@ -88,7 +88,7 @@ const buttonFunction = () => {
     }
   });
 };
-
+// função para pegar o valor salvo do local Storage.
 const saveReload = () => {
   const searchOl = document.querySelector(string);
   searchOl.innerHTML = localStorage.getItem('lista salva');
