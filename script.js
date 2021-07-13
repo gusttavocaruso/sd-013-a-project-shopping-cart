@@ -75,9 +75,11 @@ const addProductList = (products) => { // Adicionando cada item a section
 };
 
 const fetchMl = async (query) => { // Puxando o conteúdo da Api que contém os produtos 
+    const loading = document.querySelector('.loading');
     const response = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`);
       const data = await response.json();
       const { results } = data;
+      if (data) loading.remove();
       return addProductList(results);
   }; 
 
