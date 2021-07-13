@@ -1,7 +1,9 @@
 const QUERY = 'computador';
 const DOMAIN = 'https://api.mercadolibre.com/';
+const LOADING_MESSAGE = '<p class="loading"><strong>loading...</strong></p>';
 const cartList = document.querySelector('.cart__items');
 const priceDisplay = document.querySelector('.total-price');
+const loadingDisplay = document.querySelector('.top-bar');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -70,8 +72,13 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 
 const getProduct = async (id) => {
   const ENDPOINT = `${DOMAIN}items/${id}`;
+  loadingDisplay.innerHTML = LOADING_MESSAGE;
+
   return fetch(ENDPOINT, { headers: { 'Content-Type': 'application/json' } })
-    .then((response) => response.json())
+    .then((response) => {
+      loadingDisplay.innerHTML = '';
+      return response.json();
+    })
     .catch((err) => console.log(`Error getting product: ${err}`));
 };
 
@@ -121,14 +128,19 @@ const parseProducts = (products) => {
   });
 };
 
-const searchProducts = (query) => {
+const searchProducts = async (query) => {
   const ENDPOINT = `${DOMAIN}sites/MLB/search?q=${query}`;
-  fetch(ENDPOINT, {
+
+  loadingDisplay.innerHTML = LOADING_MESSAGE;
+  await fetch(ENDPOINT, {
     headers: { 'Content-Type': 'application/json' },
   })
   .then((response) => response.json())
   .then((data) => data.results)
-  .then((products) => parseProducts(products))
+  .then((products) => {
+    loadingDisplay.innerHTML = '';
+    return parseProducts(products);
+  })
   .catch((error) => console.log(`Error ${error}`));
 };
 
