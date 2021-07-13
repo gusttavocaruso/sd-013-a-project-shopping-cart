@@ -1,5 +1,12 @@
+function saveData() {
+  localStorage.clear();
+  const ol = document.querySelector('.cart__items');
+  localStorage.setItem('lista', ol.innerHTML);
+}
+
 function cartItemClickListener(event) {
   event.target.remove();
+  saveData()
 }
 
 function getSkuFromProductItem(item) {
@@ -28,11 +35,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-function saveData() {
-  localStorage.clear();
-  const ol = document.querySelector('.cart__items');
-  localStorage.setItem('lista', ol.innerHTML);
-}
+
 
 function addToCart(event) { 
   const section = event.target.parentElement;
@@ -43,6 +46,7 @@ function addToCart(event) {
           .then((jsonProduct) => { 
             const li = createCartItemElement(jsonProduct);
             document.querySelector('.cart__items').appendChild(li);
+            getTotalPrice();
             resolve();
             saveData();
           }));
@@ -51,14 +55,12 @@ function addToCart(event) {
 
 function createProductItemElement({ id, title, thumbnail }) {
   const section = document.createElement('section');
-  
   section.className = 'item';
   section.appendChild(createCustomElement('span', 'item__sku', id));
   section.appendChild(createCustomElement('span', 'item__title', title));
   section.appendChild(createProductImageElement(thumbnail));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'))
   .addEventListener('click', addToCart);
- 
   return section;
 }
 
@@ -83,10 +85,32 @@ function getData() {
     if (event.target.className === 'cart__item') { 
       cartItemClickListener(event); 
     }
+    getTotalPrice();
   });
 }
+
+/* function sumProducts({ price }) {
+  const finalPrice = document.querySelector('.total-price').firstElementChild;
+   finalPrice.innerHTML = (Number(finalPrice.innerHTML) + price); 
+
+} */
+
+// Aux get total price from cart items
+function getTotalPrice() {
+  let total = 0;
+  const totalPrice = document.querySelector('.total-price');
+  const products = document.querySelectorAll('li');
+  products.forEach((product) => {
+    const aux = product.innerText.split('$');
+    total = total + parseFloat(aux[1])
+  })
+    totalPrice.innerHTML = `${(Math.round((total * 100)) / 100)}`;
+};
+
+
 
 window.onload = () => {
   getProducts();
   getData();
+  getTotalPrice();
 };
