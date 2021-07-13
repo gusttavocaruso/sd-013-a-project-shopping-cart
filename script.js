@@ -28,8 +28,11 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) {
-event.target.remove();  
+function cartItemClickListener(event, sku) {
+  const localStorageData = JSON.parse(localStorage.getItem('itens')) || [];
+  const filterData = localStorageData.filter((localData) => localData.sku !== sku);
+  localStorage.setItem('itens', JSON.stringify(filterData));
+  event.target.remove();  
 }
 // -------------------------------------------------------------- parte 2
 
@@ -37,14 +40,26 @@ event.target.remove();
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', (event) => cartItemClickListener(event, sku));
   return li;
+}
+
+function createCartItemElementStorage({ sku, name, salePrice }) {
+  const list = document.createElement('li');
+  list.className = 'cart__item';
+  list.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  list.addEventListener('click', (event) => cartItemClickListener(event, sku));
+  return list;
 }
  
 const fetchCartApi = (id) => {
   fetch(`https://api.mercadolibre.com/items/${id}`)
   .then((response) => response.json())
   .then((data) => {
+    const localStorageData = JSON.parse(localStorage.getItem('itens')) || [];
+    const objectData = { sku: data.id, name: data.title, salePrice: data.price };
+    localStorageData.push(objectData);
+    localStorage.setItem('itens', JSON.stringify(localStorageData));
     const itemElementCart = createCartItemElement(data);
     const listCart = document.querySelector('.cart__items');
     listCart.appendChild(itemElementCart);
@@ -54,6 +69,17 @@ const fetchCartApi = (id) => {
 const getIdItem = (event) => {
   const id = getSkuFromProductItem(event.target.parentNode);
   fetchCartApi(id);
+};
+
+const getItensFromLocalStorage = () => {
+  const itensLocalStorage = JSON.parse(localStorage.getItem('itens'));
+  if (itensLocalStorage) {
+  itensLocalStorage.forEach((item) => {
+    const liItem = createCartItemElementStorage(item);
+    const listCart = document.querySelector('.cart__items');
+    listCart.appendChild(liItem);
+  });
+}
 };
 
 // --------------------------------------------------------------- parte 1
@@ -79,4 +105,5 @@ const fetchSearchApi = (produto) => {
 
 window.onload = () => { 
   fetchSearchApi('computador');
+  getItensFromLocalStorage();
 };
