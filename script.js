@@ -71,7 +71,9 @@ const updateStoredCart = ({ id: sku, title: name, price: salePrice }) => {
   storedCart.push(productObj);
   localStorage.setItem('cart', JSON.stringify(storedCart));
 
-  updateCartTotal();
+  const total = storedCart.reduce((total, curr) => total + curr.price, 0);
+  priceDisplay.innerText = total.toString();
+  // todo: update storedCart when a product is removed
 };
 
 const loadStoredCart = () => {
