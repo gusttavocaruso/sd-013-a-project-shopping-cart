@@ -2,10 +2,22 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function saveItemToStorage(item) {
+  const currentList = JSON.parse(localStorage.getItem('cart-list')) || [];
+  localStorage.setItem('cart-list', JSON.stringify([...currentList, item]));
+}
+
 function deleteItemFromStorage(index) {
   const items = JSON.parse(localStorage.getItem('cart-list')) || [];
   const filteredItems = items.filter((item, itemIndex) => itemIndex !== index);
   localStorage.setItem('cart-list', JSON.stringify(filteredItems));
+}
+
+function updateCartTotalPrice() {
+  const items = JSON.parse(localStorage.getItem('cart-list')) || [];
+  const prices = items.map((item) => item.salePrice).reduce((acc, curr) => acc + curr, 0);
+  const totalPrice = document.querySelector('.total-price');
+  totalPrice.innerText = prices;
 }
 
 function cartItemClickListener(event) {
@@ -13,7 +25,16 @@ function cartItemClickListener(event) {
   const itemShopList = event.target;
   const index = [...itemShopList.parentElement.children].indexOf(itemShopList);
   deleteItemFromStorage(index);
+  updateCartTotalPrice();
   itemShopList.remove();
+}
+
+function deleteAllClickListener(event) {
+  event.preventDefault();
+  const listItems = document.querySelectorAll('.cart__item');
+  localStorage.removeItem('cart-list');
+  updateCartTotalPrice();
+  listItems.forEach((item) => item.remove());
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
@@ -24,27 +45,6 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-function createProductImageElement(imageSource) {
-  const img = document.createElement('img');
-  img.className = 'item__image';
-  img.src = imageSource;
-  return img;
-}
-
-function createCustomElement(element, className, innerText) {
-  const e = document.createElement(element);
-  e.className = className;
-  e.innerText = innerText;
-  return e;
-}
-
-function deleteAllClickListener(event) {
-  event.preventDefault();
-  const listItems = document.querySelectorAll('.cart__item');
-  localStorage.removeItem('cart-list');
-  listItems.forEach((item) => item.remove());
-}
-
 function addProductToShoppingList({ sku, name, salePrice }) {
   const cartList = document.querySelector('.cart__items');
   const elementList = createCartItemElement({ sku, name, salePrice });
@@ -52,11 +52,6 @@ function addProductToShoppingList({ sku, name, salePrice }) {
 
   const deleteAll = document.querySelector('.empty-cart');
   deleteAll.addEventListener('click', deleteAllClickListener);
-}
-
-function saveItemToStorage(item) {
-  const currentList = JSON.parse(localStorage.getItem('cart-list')) || [];
-  localStorage.setItem('cart-list', JSON.stringify([...currentList, item]));
 }
 
 async function getProductApi(id) {
@@ -70,6 +65,20 @@ async function getProductApi(id) {
   throw new Error(response.statusText);
 }
 
+function createCustomElement(element, className, innerText) {
+  const e = document.createElement(element);
+  e.className = className;
+  e.innerText = innerText;
+  return e;
+}
+
+function createProductImageElement(imageSource) {
+  const img = document.createElement('img');
+  img.className = 'item__image';
+  img.src = imageSource;
+  return img;
+}
+
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -81,13 +90,12 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
     const item = { sku: product.id, name: product.title, salePrice: product.price };
     addProductToShoppingList(item);
     saveItemToStorage(item);
+    updateCartTotalPrice();
   });
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(button);
-
   return section;
 }
 
@@ -139,4 +147,5 @@ function loadCartFromStorage() {
 window.onload = () => {
   getDataApi();
   loadCartFromStorage();
+  updateCartTotalPrice();
 };
