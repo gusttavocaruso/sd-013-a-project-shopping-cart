@@ -6,7 +6,7 @@ function saveData() {
 
 function cartItemClickListener(event) {
   event.target.remove();
-  saveData()
+  saveData();
 }
 
 function getSkuFromProductItem(item) {
@@ -33,6 +33,17 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
+}
+
+function getTotalPrice() {
+  let total = 0;
+  const totalPrice = document.querySelector('.total-price');
+  const products = document.querySelectorAll('li');
+  products.forEach((product) => {
+    const aux = product.innerText.split('$');
+    total += parseFloat(aux[1]);
+  });
+    totalPrice.innerHTML = `${(Math.round((total * 100)) / 100)}`;
 }
 
 function addToCart(event) { 
@@ -87,23 +98,12 @@ function getData() {
   });
 }
 
-function getTotalPrice() {
-  let total = 0;
-  const totalPrice = document.querySelector('.total-price');
+function emptyCart() {
   const products = document.querySelectorAll('li');
-  products.forEach((product) => {
-    const aux = product.innerText.split('$');
-    total = total + parseFloat(aux[1])
-  })
-    totalPrice.innerHTML = `${(Math.round((total * 100)) / 100)}`;
-};
-
-function emptyCart () {
-  const products = document.querySelectorAll('li');
-  products.forEach(li => li.remove())
-  getTotalPrice()
+  products.forEach((li) => li.remove());
+  getTotalPrice();
 }
-const emptyBtn = document.querySelector('.empty-cart')
+const emptyBtn = document.querySelector('.empty-cart');
 emptyBtn.addEventListener('click', emptyCart);
 
 window.onload = () => {
