@@ -1,5 +1,21 @@
 const string = '.cart__items';
 
+const sumItems = () => {
+  const ol = document.querySelector(string);
+  const olChildren = [...ol.children];
+  const priceOl = olChildren.reduce((acc, li) => {
+    let accumulator = acc;
+    accumulator += Number(li.innerText.split('$')[1]);
+    return accumulator;
+  }, 0);
+  return priceOl;
+};
+
+const pullDiv = () => {
+  const div = document.querySelector('.total-price');
+  div.innerText = `${Math.round(sumItems() * 100) / 100}`;
+};
+
 const saveLocal = () => {
   const ol = document.querySelector(string);
   const htmlText = ol.innerHTML;
@@ -9,6 +25,7 @@ const saveLocal = () => {
 function cartItemClickListener(event) {
   event.target.remove();
   saveLocal();
+  pullDiv();
 }
 
 const getItem = () => {
@@ -86,6 +103,7 @@ const fetchItemCart = (element) => {
           const olCart = document.querySelector(string);
           olCart.appendChild(getLi);
           saveLocal();
+          pullDiv();
         });
     });
 };
