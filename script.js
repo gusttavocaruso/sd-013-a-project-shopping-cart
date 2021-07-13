@@ -1,4 +1,5 @@
-/* eslint-disable sonarjs/no-duplicate-string */
+const olCartItems = document.querySelector('.cart__items');
+
 function stopLoading() {
   const loading = document.querySelector('.loading');
   if (loading) {
@@ -46,8 +47,7 @@ function saveCart(param) {
 }
 
 const sumItems = () => {
-  const ol = document.querySelector('.cart__items');
-  const olChildren = [...ol.children];
+  const olChildren = [...olCartItems.children];
   const priceItems = olChildren.reduce((acc, li) => {
     let a = acc;
     a += Number(li.innerText.split('$')[1]);
@@ -75,9 +75,8 @@ function appendItemsPrices() {
 }
 
 function cartItemClickListener(event) {
-  const cart = document.querySelector('.cart__items');
-  cart.removeChild(event.target);
-  const toStore = cart.innerHTML;
+  olCartItems.removeChild(event.target);
+  const toStore = olCartItems.innerHTML;
   saveCart(toStore);
   appendItemsPrices();
 }
@@ -88,9 +87,8 @@ function getSavedPrices() {
 }
 
 function getSavedCart() {
-  const ol = document.querySelector('.cart__items');
-  ol.innerHTML = localStorage.getItem('cart');
-  const lis = [...ol.children];
+  olCartItems.innerHTML = localStorage.getItem('cart');
+  const lis = [...olCartItems.children];
   lis.forEach((li) => {
     li.addEventListener('click', cartItemClickListener);
   });
@@ -109,9 +107,8 @@ function passParamsToCreateCartItem(event) {
   fetch(`https://api.mercadolibre.com/items/${auxFetchItemToCart}`)
   .then((response) => response.json()).then((data) => {
     const cartItemGenerated = createCartItemElement(data);
-    const cart = document.querySelector('.cart__items');
-    cart.appendChild(cartItemGenerated);
-    const toStore = cart.innerHTML;
+    olCartItems.appendChild(cartItemGenerated);
+    const toStore = olCartItems.innerHTML;
     saveCart(toStore);
     appendItemsPrices();
   });
@@ -144,12 +141,11 @@ const fetchML = (query) => {
 };
 
 function clearCart() {
-  const ol = document.querySelector('.cart__items');
   const liColection = document.querySelectorAll('.cart__item');
   liColection.forEach((li) => {
-    ol.removeChild(li);
+    olCartItems.removeChild(li);
   });
-  const toStore = ol.innerHTML;
+  const toStore = olCartItems.innerHTML;
   saveCart(toStore);
   appendItemsPrices();
 }
