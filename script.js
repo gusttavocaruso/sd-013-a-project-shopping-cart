@@ -1,5 +1,21 @@
 const string = '.cart__items';
 
+const sumPrices = () => {
+  const ol = document.querySelector(string);
+  const olChildren = [...ol.children];
+  const priceOl = olChildren.reduce((acc, li) => {
+   let acumulador = acc;
+   acumulador += Number(li.innerText.split('$')[1]);
+   return acumulador;
+  }, 0);
+  return priceOl;
+  };
+
+  const valorTotal = () => {
+    const valor = document.querySelector('.total-price');
+    valor.innerText = `${Math.round(sumPrices() * 100) / 100}`; 
+  };
+
 const salvar = () => {
   const ol = document.querySelector(string).innerHTML;
   localStorage.setItem('lista', ol);
@@ -37,6 +53,7 @@ function getSkuFromProductItem(item) {
 function cartItemClickListener(event) {
   event.target.remove();
   salvar();
+  valorTotal();
 }
 
 const get = () => {
@@ -83,6 +100,7 @@ const fetchItemCart = (element) => {
           const olCart = document.querySelector(string);
           olCart.appendChild(getLi);
           salvar();
+          valorTotal();
         });
     });
 };
@@ -96,8 +114,20 @@ const buttonItem = () => {
   });
 };
 
+const botaoApagar = () => {
+  const botaoLimpa = document.querySelector('.empty-cart');
+  botaoLimpa.addEventListener('click', () => {
+  const ol = document.querySelector(string);
+  ol.innerHTML = '';
+  localStorage.removeItem('lista');
+  document.querySelector('.total-price').innerText = 0;
+  });
+};
+
 window.onload = () => {
   fetchObject('computador');
   buttonItem();
   get();
+  valorTotal();
+  botaoApagar();
 };
