@@ -35,8 +35,17 @@ const storeCart = () => {
   localStorage.setItem('cart_content', cartItems.innerHTML);
 };
 
+const displayTotalPrice = () => {
+  const priceDisplay = document.querySelector('.total-price');
+  const cartItemsArr = [...getCartItems().children];
+  const totalPrice = cartItemsArr.reduce((acc, curr) => 
+    acc + Number(curr.innerText.split('$')[1]), 0);
+  priceDisplay.innerText = totalPrice;
+};
+
 function cartItemClickListener(event) {
   event.target.remove();
+  displayTotalPrice();
   storeCart();
 }
 
@@ -48,13 +57,20 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+const changeLoadingDisplay = (display) => {
+  document.querySelector('.loading-container').style.display = display;
+};
+
 async function addItemToCart(event) {
+  changeLoadingDisplay('flex');
   const cartItems = getCartItems();
   const itemSku = getSkuFromProductItem(event.target.parentElement);
   await fetch(`https://api.mercadolibre.com/items/${itemSku}`)
     .then((response) => response.json())
     .then((data) => {
+      changeLoadingDisplay('none');
       cartItems.appendChild(createCartItemElement(data));
+      displayTotalPrice();
       storeCart();
     });
 }
@@ -76,8 +92,10 @@ async function postQueryResults(query) {
         if (!response.ok) throw new Error('Não foi possível acessar o servidor');
         return response.json();
       })
-      .then((data) => data.results)
-      .then((data) => appendItemsToList(data));
+      .then((data) => {
+        changeLoadingDisplay('none');
+        return appendItemsToList(data.results);
+      });
   } catch (err) {
     console.log(`Sua requisição falhou. ${err}`);
   }
@@ -95,8 +113,19 @@ function retrieveCart() {
   cartItems.innerHTML = localStorage.getItem('cart_content');
 }
 
+function emptyBtn() {
+  const emptyCart = document.querySelector('.empty-cart');
+  emptyCart.addEventListener('click', () => {
+    const cartItems = getCartItems();
+    cartItems.innerHTML = '';
+    displayTotalPrice();
+    storeCart();
+  });
+}
+
 window.onload = () => {
   postQueryResults('computadores');
   retrieveCart();
   deleteItemOnClick();
+  emptyBtn();
 };
