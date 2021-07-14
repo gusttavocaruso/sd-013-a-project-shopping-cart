@@ -1,3 +1,6 @@
+const ol = document.querySelector('.cart__items');
+const eraseButton = document.querySelector('.empty-cart');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -48,11 +51,9 @@ const createItens = (itens) => {
   });
 };
 
-const createItemToCart = (data) => {
-  const test = createCartItemElement(data);
-  console.log(test);
-  const ol = document.querySelector('.cart__items');
-  ol.appendChild(test);
+const createItemInCart = (data) => {
+  const sendItensToCart = createCartItemElement(data);
+  ol.appendChild(sendItensToCart);
 };
 
 const sendToCart = (id) => {
@@ -60,7 +61,7 @@ const sendToCart = (id) => {
   fetch(`https://api.mercadolibre.com/items/${numberId}`)
     .then((resolve) => {
       resolve.json().then((data) => {
-        createItemToCart(data);
+        createItemInCart(data);
       });
   });
 };
@@ -84,6 +85,10 @@ const getItensML = (product) => {
       });
     });
 };
+
+eraseButton.addEventListener('click', () => {
+  ol.innerHTML = '';
+});
 
 window.onload = () => {
   getItensML('computador');
