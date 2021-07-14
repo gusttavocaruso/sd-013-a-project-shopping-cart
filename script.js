@@ -12,33 +12,38 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function cartItemClickListener(event) {
+function cartItemClickListener() {
   
 }
 
-const getOrderList = document.querySelector('.cart__items');
-
+// Cria a lista de elementos para ser adicionada ao carrinho;
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const createListElement = document.createElement('li');
-  createListElement.className = 'cart__item';
-  createListElement.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  createListElement.addEventListener('click', cartItemClickListener);
+  const createCartListElement = document.createElement('li');
+  createCartListElement.className = 'cart__item';
+  createCartListElement.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  createCartListElement.addEventListener('click', cartItemClickListener);
 
-  getOrderList.appendChild(createListElement);
-
-  return createListElement;
+  return createCartListElement;
 }
 
-const fetchOneItem = (id) => {
-  fetch(`https://api.mercadolibre.com/items/${id}`)
+// Faz a segunda requisição a API do ML pra recuperar o 'id' do elemento;
+// Popula a lista que será adicionada ao carinho;
+const fetchOneItem = (productId) => {
+  fetch(`https://api.mercadolibre.com/items/${productId}`)
     .then((response) => response.json())
-    .then((data) => Object.values(data).forEach((item) => console.log(item)));
+    .then((results) => {
+      const getOrderListCart = document.querySelector('.cart__items');
+      getOrderListCart.appendChild(createCartItemElement(results));
+    });
 };
 
+// Acessa o 'id' do elemento e acrescenta como parâmetro da função 'fetchOneItem';
 const addItemToCart = (event) => {
   fetchOneItem(event.target.parentElement.firstChild.innerText);
 };
 
+// Cria e popula a section com os elementos trazidos a partir da requisição;
+// Adiciona o 'Event Listener' aos botões de cada elemento(produto);
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -59,6 +64,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
+// Faz a requisição na API do Mercado Livre;
 const returnFetch = (query) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => response.json()
