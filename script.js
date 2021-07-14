@@ -25,16 +25,18 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // function getSkuFromProductItem(item) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
-
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
+// Requisito 3 
+// Referência https://catalin.red/removing-an-element-with-plain-javascript-remove-method/
+function cartItemClickListener(event) {
+  const cartItem = event.target;
+  cartItem.parentNode.removeChild(cartItem);
+}
 
 function createCartItemElement({ id, title, price }) { // desestruturação feita. É selecionado apenas o id, title e price.
   const li = document.createElement('li'); // criação da const 'li'
   li.className = 'cart__item'; // add classe na 'li'
   li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`; // Isso é para pegar apenas o texto de cada elemento
-  // li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', cartItemClickListener);
   const cartItens = document.querySelector('.cart__items'); // Criação da const referente a classe cart__items
   cartItens.appendChild(li); // li vai ser filho do cartItens
   return li;
