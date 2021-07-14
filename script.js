@@ -28,8 +28,16 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const getCartItems = () => document.querySelector('.cart__items');
+
+const storeCart = () => {
+  const cartItems = getCartItems();
+  localStorage.setItem('cart_content', cartItems.innerHTML);
+};
+
 function cartItemClickListener(event) {
-  
+  event.target.remove();
+  storeCart();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -41,13 +49,13 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 }
 
 async function addItemToCart(event) {
-  const cartItems = document.querySelector('.cart__items');
-  const itemSku = event.target.parentElement.querySelector('.item__sku').innerText;
+  const cartItems = getCartItems();
+  const itemSku = getSkuFromProductItem(event.target.parentElement);
   await fetch(`https://api.mercadolibre.com/items/${itemSku}`)
     .then((response) => response.json())
     .then((data) => {
       cartItems.appendChild(createCartItemElement(data));
-      localStorage.setItem('cart_content', cartItems.innerHTML);
+      storeCart();
     });
 }
 
@@ -61,7 +69,7 @@ function appendItemsToList(results) {
   });
 }
 
-async function PostQueryResults(query) {
+async function postQueryResults(query) {
   try {
     await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
       .then((response) => {
@@ -75,14 +83,20 @@ async function PostQueryResults(query) {
   }
 }
 
+const deleteItemOnClick = () => {
+  const cartItemsArr = [...getCartItems().children];
+  cartItemsArr.forEach((element) => {
+    element.addEventListener('click', cartItemClickListener);
+  });
+};
+
 function retrieveCart() {
-  const cartContent = localStorage.getItem('cart_content');
-  console.log(cartContent);
-  const cartItems = document.querySelector('.cart__items');
-  cartItems.innerHTML = cartContent;
+  const cartItems = getCartItems();
+  cartItems.innerHTML = localStorage.getItem('cart_content');
 }
 
 window.onload = () => {
-  PostQueryResults('computadores');
+  postQueryResults('computadores');
   retrieveCart();
+  deleteItemOnClick();
 };
