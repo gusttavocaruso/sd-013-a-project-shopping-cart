@@ -40,7 +40,7 @@ const sub = (value, operation) => { // Função para somar os valores dos produt
 
 // Resolvi consultando o Matheus Duarte T13-A
 const setTotalPrice = (value, operation) => {
-  const getActualPrice = Number(getTotalPrice.innerHTML); // Transformo o innerHTML do preço total do carrinho em tipo numérico
+  const getActualPrice = Number(getTotalPrice.innerHTML); // Transformo o innerHTML(string) do preço total do carrinho em Number
 
   // Realizando as funções acima com base no operador escolhido
   if (operation === '+') sum(getActualPrice, value);
@@ -53,7 +53,7 @@ const returnCart = () => { // Função para retornar os valores do carrinho salv
 };
 
 const removeCartItem = (event) => { // Função para remover item do carrinho
-  if (event.target.className === 'cart_item') {
+  if (event.target.className === 'cart__item') {
     event.target.remove(); // removo o item selecionado
 
     const getProductPrice = event.target.querySelector('span').innerText; 
@@ -113,7 +113,7 @@ const catchProducts = async (product = 'computador') => {
     ((await (await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${product}`))
       .json())
         .results)
-          .forEach((result) => createProductItemElement(result), loading.remove());
+          .forEach((computador) => createProductItemElement(computador), loading.remove());
   } catch (error) {
     alert(error);
   }
