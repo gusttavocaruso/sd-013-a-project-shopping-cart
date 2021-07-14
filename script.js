@@ -28,8 +28,8 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // Requisito 3 
 // Referência https://catalin.red/removing-an-element-with-plain-javascript-remove-method/
 function cartItemClickListener(event) {
-  const cartItem = event.target;
-  cartItem.parentNode.removeChild(cartItem);
+  const cartItem = event.target; // Vem o elemento html que eu cliquei
+  cartItem.remove();
 }
 
 function createCartItemElement({ id, title, price }) { // desestruturação feita. É selecionado apenas o id, title e price.
