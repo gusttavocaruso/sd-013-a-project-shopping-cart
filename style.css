@@ -75,3 +75,8 @@
   font-size: 16pt;
   text-align: center;
 }
+
+.item-buscar {
+  font-size: large;
+  margin: 10px;
+}
