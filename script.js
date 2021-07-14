@@ -33,7 +33,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', (event) => {
     cartItemClickListener(event);
     sumPrices -= salePrice;
-    totalPrice.innerHTML = sumPrices;
+    totalPrice.innerHTML = `$ ${sumPrices}`;
   });
   return li;
 }
@@ -48,7 +48,7 @@ function cliqueDeAdicionaNoCarrinho(section) {
         const cartList = document.querySelector('.cart__items');
         cartList.appendChild(createCartItemElement(data));
         sumPrices += data.price;
-        totalPrice.innerHTML = sumPrices;
+        totalPrice.innerHTML = `$ ${sumPrices}`;
         saveLocalStorage();
       });
   });
@@ -76,6 +76,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // alem do event listner clique de adicionar ao carrinho
 
 async function fetchElement(query) {
+  if (!query) query = 'computador';
   const loading = document.createElement('h2');
   loading.className = 'loading';
   loading.innerHTML = 'loading...';
@@ -85,8 +86,8 @@ async function fetchElement(query) {
 }
 // função que lança as requisições e retorna seu json
 
-async function criaItemDaPesquisa() {
-  fetchElement('computador')
+async function criaItemDaPesquisa(item) {
+  fetchElement(item)
   .then((data) => {
     data.results
     .forEach((element) => {
@@ -119,15 +120,38 @@ function emptyCart() {
   clearBtn.addEventListener('click', () => {
   const cartItems = document.getElementsByClassName('cart__items')[0];
   cartItems.innerHTML = '';
-  totalPrice.innerHTML = 0;
+  totalPrice.innerHTML = `$ ${0}`;
   saveLocalStorage();
 });
 }
+
+function newSerch() {
+  const valor = document.querySelector('#bora').value;
+  const itens = document.querySelectorAll('.item');
+  itens.forEach((item) => item.remove());
+  criaItemDaPesquisa(valor);
+}
 // função para limpar o local storage e limpar o carrinho de compras // src = https://github.com/tryber/sd-013-b-project-shopping-cart/pull/107/files
+
+window.addEventListener('scroll', () => {
+  const windowTop = window.pageYOffset;
+  if (windowTop >= 318) {
+    document.querySelector('#pageUp').style.display = 'flex';
+
+  } else {
+    document.querySelector('#pageUp').style.display = 'none';
+  }
+});
 
 window.onload = function onload() {
   criaItemDaPesquisa();
   loadPreviusCart();
   emptyCart();
+  const input = document.querySelector('#bora');
+  input.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+      newSerch();
+    }
+  });
 };
 // ao ser carregado executa as funções no windown.onload
