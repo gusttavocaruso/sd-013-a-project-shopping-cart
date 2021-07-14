@@ -12,7 +12,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -24,20 +24,42 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
+// function cartItemClickListener(event) {
+//   // coloque seu código aqui
+// }
 
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
+// function createCartItemElement({ sku, name, salePrice }) {
+//   const li = document.createElement('li');
+//   li.className = 'cart__item';
+//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+//   li.addEventListener('click', cartItemClickListener);
+//   return li;
+// }
+const addItem = (items) => {
+  items
+    .forEach((item) => {
+      const createdProdItem = createProductItemElement(item);
+      const sectionItems = document.querySelector('.items');
 
-window.onload = () => { };
+      sectionItems.appendChild(createdProdItem);
+    });
+};
+
+const fetchML = (query) => {
+  const url = `https://api.mercadolibre.com/sites/MLB/search?q=${query}`;
+
+  fetch(url)
+    .then((response) => response.json()) // response materializa as informações buscadas no fetch
+    .then((productData) => {
+      addItem(productData.results); 
+    }); // esse then realiza algo em cima do que foi trago no response
+};
+
+
+window.onload = () => {
+  fetchML('computador');
+};
