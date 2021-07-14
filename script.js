@@ -33,16 +33,32 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return sectionItems.appendChild(section);
 }
 
-const returnfetch = (query) =>
+const returnfetch = (query) => {
  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
 .then((response) => response.json())
 .then((data) => data.results.forEach((element) => createProductItemElement(element)));
+};
 // resolve o requisito 3 remove o alvo clicado
-function cartItemClickListener(event) {
-  event.target.remove();
-}
+
 // resolve o requisito 2 onde li é colocado como filho da class cart items
 // e desestrutura algumas chaves do paramentro 
+// 2a
+
+// 2b
+
+// pega o id que vai ser usado na fetch da funçao realizarRequis
+
+function LocalSto() {
+  const cart = document.querySelector('ol.cart__items').innerHTML;
+  localStorage.setItem('cart', '');
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+function cartItemClickListener(event) {
+  event.target.remove();
+  LocalSto();
+}
+
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -54,6 +70,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 }
 
 function realizarRequis(itemId) {
+  // const cart = document.querySelector('ol.cart__items');
   fetch(`https://api.mercadolibre.com/items/${itemId}`)
     .then((response) => {
       response.json().then((data) => {
@@ -61,28 +78,24 @@ function realizarRequis(itemId) {
       // vira o objeto que é trabalhado na linha 46 
       });
     });
+    LocalSto();
 }
-// pega o id que vai ser usado na fetch da funçao realizarRequis
-const addCar = (click) => {
+
+const getSkuFromProductItem = (click) => {
   if (click.target.classList.contains('item__add')) {
     const id = ((click.target).parentNode.firstChild).innerText;
     realizarRequis(id);
   }
 };
 
-function getSkuFromProductItem(item) {
-  const sku = item.querySelector('span.item__sku').innerText;
-  realizarRequis(sku);
- }
-// adiciona o eventlistenner a todos os botoes que tem a classe item__add que estao dentro da classe .item
- function productItemClickListener() {
-  const products = document.querySelectorAll('.item');
-  products.forEach((product) => product.querySelector('button.item__add')
-    .addEventListener('click', getSkuFromProductItem));
-}
+/* function productItemClickListener() {
+  const botaos = document.querySelectorAll('button.item__add')
+  .forEach((buton) => buton.addEventListener('click', getSkuFromProductItem));
+} */
 
 function eventos() {
-  document.addEventListener('click', addCar);
+  // productItemClickListener();
+  document.addEventListener('click', getSkuFromProductItem);
 }
 
 window.onload = () => { 
