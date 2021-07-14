@@ -97,11 +97,13 @@ const addItems = (items) => {
 };
 
 const getMLProductList = (product = 'computador') => {
+  const loadingWarning = document.querySelector('.loading');
   fetch(url + product)
     .then((resp) => resp.json())
       .then((dataJson) => {
         addItems(dataJson.results);
         buttonEvent(); // PR @cassiorodp
+        loadingWarning.remove();
       });
 };
 
@@ -120,6 +122,7 @@ const clearCartShop = () => {
     const cartItemsActual = document.querySelector('.cart__items');
     cartItemsActual.innerHTML = '';
     localStorage.setItem('cartShopActual', JSON.stringify([]));
+    updateCartTotalPrice();
   });
 };
 
