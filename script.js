@@ -78,7 +78,6 @@ function fillCart(event) {
 // fonte: https://www.youtube.com/watch?v=m3K8DP4kVXQ
 function productList() {
   const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-
   fetch(url)
     .then((response) => response.json())
     .then((object) => {
@@ -94,7 +93,7 @@ function productList() {
       });
     })
     .then(() => {
-      document.querySelector('.loading').remove()
+      document.querySelector('.loading').remove();
     });
 }
 
