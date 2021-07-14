@@ -33,7 +33,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', (event) => {
     cartItemClickListener(event);
     sumPrices -= salePrice;
-    totalPrice.innerHTML = `$ ${sumPrices}`;
+    totalPrice.innerHTML = sumPrices;
   });
   return li;
 }
@@ -48,7 +48,7 @@ function cliqueDeAdicionaNoCarrinho(section) {
         const cartList = document.querySelector('.cart__items');
         cartList.appendChild(createCartItemElement(data));
         sumPrices += data.price;
-        totalPrice.innerHTML = `$ ${sumPrices}`;
+        totalPrice.innerHTML = sumPrices;
         saveLocalStorage();
       });
   });
@@ -76,12 +76,16 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // alem do event listner clique de adicionar ao carrinho
 
 async function fetchElement(query) {
-  if (!query) query = 'computador';
+  let busca = '';
+  if (!query) {
+    busca = 'computador';
+  }
+  busca = query;
   const loading = document.createElement('h2');
   loading.className = 'loading';
   loading.innerHTML = 'loading...';
   document.body.appendChild(loading);
-  return fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
+  return fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${busca}`)
     .then((response) => response.json());
 }
 // função que lança as requisições e retorna seu json
@@ -120,7 +124,7 @@ function emptyCart() {
   clearBtn.addEventListener('click', () => {
   const cartItems = document.getElementsByClassName('cart__items')[0];
   cartItems.innerHTML = '';
-  totalPrice.innerHTML = `$ ${0}`;
+  totalPrice.innerHTML = 0;
   saveLocalStorage();
 });
 }
@@ -137,7 +141,6 @@ window.addEventListener('scroll', () => {
   const windowTop = window.pageYOffset;
   if (windowTop >= 318) {
     document.querySelector('#pageUp').style.display = 'flex';
-
   } else {
     document.querySelector('#pageUp').style.display = 'none';
   }

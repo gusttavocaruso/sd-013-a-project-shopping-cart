@@ -137,7 +137,7 @@ header {
   background-color: #ff7630;
   border-radius: 5px;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   height: 50px;
 }
 
