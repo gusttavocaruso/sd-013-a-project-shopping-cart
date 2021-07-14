@@ -1,21 +1,21 @@
 const url = 'https://api.mercadolibre.com/sites/MLB/search?q=';
 const url2 = 'https://api.mercadolibre.com/items/';
 const sectionItems = document.querySelector('.items');
+const cartShop = document.querySelector('.cart__items');
 
-const getMLProductList = (product) => {
-  fetch(url + product)
-    .then((resp) => resp.json())
-      .then((dataJson) => {
-        addItems(dataJson.results);
-        buttonEvent(); // PR @cassiorodp
-      });
-};
-const addItems = (items) => {
-  items.forEach((item) => {
-    const itemElement = createProductItemElement(item);
-    sectionItems.appendChild(itemElement);
-  });
-};
+function createCustomElement(element, className, innerText) {
+  const e = document.createElement(element);
+  e.className = className;
+  e.innerText = innerText;
+  return e;
+}
+
+function createProductImageElement(imageSource) {
+  const img = document.createElement('img');
+  img.className = 'item__image';
+  img.src = imageSource;
+  return img;
+}
 
 function createProductItemElement({ id, title, thumbnail }) {
   const itemInTheSection = document.createElement('section');
@@ -23,21 +23,48 @@ function createProductItemElement({ id, title, thumbnail }) {
   itemInTheSection.appendChild(createCustomElement('span', 'item__sku', id));
   itemInTheSection.appendChild(createCustomElement('span', 'item__title', title));
   itemInTheSection.appendChild(createProductImageElement(thumbnail));
-  itemInTheSection.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  itemInTheSection.appendChild(createCustomElement(
+    'button', 'item__add', 'Adicionar ao carrinho!',
+  ));
   return itemInTheSection;
 }
-function createCustomElement(element, className, innerText) {
-  const e = document.createElement(element);
-  e.className = className;
-  e.innerText = innerText;
-  return e;
+
+const removeItemToLocalStorage = (id) => {
+  const localStorageActual = JSON.parse(localStorage.getItem('cartShopActual')) || [];
+  const removeFromLocalStorage = localStorageActual.filter((item) => item.id !== id);
+  localStorage.setItem('cartShopActual', JSON.stringify(removeFromLocalStorage));
+};
+
+function cartItemClickListener(event, id) {
+  event.target.remove();
+  removeItemToLocalStorage(id);
 }
-function createProductImageElement(imageSource) {
-  const img = document.createElement('img');
-  img.className = 'item__image';
-  img.src = imageSource;
-  return img;
+
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', (event) => cartItemClickListener(event, sku));
+  return li;
 }
+
+const addItemToLocalStorage = (item) => {
+  const localStorageActual = JSON.parse(localStorage.getItem('cartShopActual')) || [];
+  localStorageActual.push(item);
+  localStorage.setItem('cartShopActual', JSON.stringify(localStorageActual));
+  // localStorageActual.push({ sku: dataJson.id, name: dataJson.title, salePrice: dataJson.price });
+};
+
+const addItemToCartShop = (itemSku) => {
+  fetch(url2 + itemSku)
+    .then((resp) => resp.json())
+      .then((dataJson) => {
+        const itemInTheCartShop = createCartItemElement(dataJson);
+        // const cartShop = document.querySelector('.cart__items');
+        cartShop.appendChild(itemInTheCartShop);
+        addItemToLocalStorage(dataJson);
+      });
+};
 
 const buttonEvent = () => {
   const addItemButton = document.querySelectorAll('.item__add');
@@ -48,40 +75,31 @@ const buttonEvent = () => {
     });
   });
 };
-const addItemToCartShop = (itemSku) => {
-  fetch(url2 + itemSku)
+
+const addItems = (items) => {
+  items.forEach((item) => {
+    const itemElement = createProductItemElement(item);
+    sectionItems.appendChild(itemElement);
+  });
+};
+
+const getMLProductList = (product) => {
+  fetch(url + product)
     .then((resp) => resp.json())
       .then((dataJson) => {
-        const itemInTheCartShop = createCartItemElement(dataJson);
-        const cartShop = document.querySelector('.cart__items');
-        cartShop.appendChild(itemInTheCartShop);
-        addItemToLocalStorage(dataJson);
+        addItems(dataJson.results);
+        buttonEvent(); // PR @cassiorodp
       });
-}
+};
 
-function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', (event) => cartItemClickListener(event, sku));
-  return li;
-}
-function cartItemClickListener(event, id) {
-  event.target.remove();
-  removeItemToLocalStorage(id);
-}
-
-const addItemToLocalStorage = (item) => {
-  const localStorageActual = JSON.parse(localStorage.getItem('cartShopActual')) || [];
-  localStorageActual.push(item);
-  localStorage.setItem('cartShopActual', JSON.stringify(localStorageActual));
-  // localStorageActual.push({ sku: dataJson.id, name: dataJson.title, salePrice: dataJson.price });
-}
-const removeItemToLocalStorage = (id) => {
-  const localStorageActual = JSON.parse(localStorage.getItem('cartShopActual')) || [];
-  const removeFromLocalStorage = localStorageActual.filter((item) => item.id !== id);
-  localStorage.setItem('cartShopActual', JSON.stringify(removeFromLocalStorage));
-}
+const getItemsToLocalStorage = () => {
+  // const cartShop = document.querySelector('.cart__items');
+  const dadosLocalStorage = JSON.parse(localStorage.getItem('cartShopActual'));
+  dadosLocalStorage.forEach((itemLS) => {
+    const LSElement = createCartItemElement(itemLS);
+    cartShop.appendChild(LSElement);
+  });
+};
 
 const clearCartShop = () => {
   const clearButton = document.querySelector('.empty-cart');
@@ -95,7 +113,17 @@ const clearCartShop = () => {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-window.onload = () => {
+window.onload = async () => {
   getMLProductList('computador');
   clearCartShop();
+  getItemsToLocalStorage();
 };
+
+// const localStorageActual = JSON.parse(localStorage.getItem('cartShopActual')) 
+// let actualLocalStorage = localStorage.getItem('cartShopActual') !== null
+//   ? localStorageActual : [];
+//   // localStorageActual.push({ sku: dataJson.id, name: dataJson.title, salePrice: dataJson.price });
+
+// const updateLocalStorage = () => {
+//   localStorage.setItem('carShopActual', JSON.stringify(actualLocalStorage));
+// }
