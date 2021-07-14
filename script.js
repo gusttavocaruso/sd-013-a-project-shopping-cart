@@ -39,7 +39,7 @@ function totalPrice() {
   const AllLi = document.querySelectorAll('li'); // selecionamos todas as lis
   AllLi.forEach((item) => { // para cada item da li
   const computer = item.innerText.split('$'); // vamos até o código do HTML e fazemos um split, que vai separar tudo do preço que vinha com $0000 (preço)
-  price += Number(computer[1]); // indicamos a partir do número, sem o $, que é onde vamos acessar apenas os números para fazer a soma
+  price += Number(computer[1]); // indicamos a partir do número, sem o $, que é onde vamos acessar apenas os números para fazer a soma // obs: Number converte a string de preço em numero
   });
   getTotalPrice.innerHTML = `${(Math.round((price * 100)) / 100)}`; // Verifiquei no Slack de uma das turmas antigas que estavam usando esse formato no código
   }
@@ -95,7 +95,7 @@ const setItemsLocalStorage = () => {
   const ol = document.querySelector(cartItems); // resgatando ol
   const text = ol.innerHTML; // acessar html
   localStorage.setItem('cartList', ''); // limpando o que tinha antes
-  localStorage.setItem('cartList', JSON.stringify(text)); // pegar todo o texto de dentro da variável e transforma no formato JSON
+  localStorage.setItem('cartList', JSON.stringify(text)); // pegar todo o texto de dentro da variável e transforma no formato JSON // obs: localStorage.setItem('cartList', ol.innerHTML);
 };
 
   // Chamar função do Requisito 5 dentro da função do Requisito 3, que apaga tudo
@@ -110,6 +110,7 @@ const setItemsLocalStorage = () => {
 // Função veio com o projeto, mas veio vazia
 // Como já temos a função createCartItemElement() que cria as lis, aqui apenas removemos o evento criado
 // Objetivo: Apagar coisas
+// Feito com ajuda de Luiza Antiques
 
 function cartItemClickListener(event) {
   event.target.remove(); // Exercício 3: Passo 2
@@ -127,7 +128,7 @@ function cartItemClickListener(event) {
 // Objetivo: Fazer o getItem nos itens do Local Storage
 
 const getItemsLocalStorage = () => {
-  const getLocalStorage = JSON.parse(localStorage.getItem('cartList')); // recupera o item criado no requisito 4
+  const getLocalStorage = JSON.parse(localStorage.getItem('cartList')); // recupera o item criado no requisito 4 // obs: recuperar ol, ol.innerHTML = localStorage.getItem('nomeDaChave')
   const ol = document.querySelector(cartItems); // pegar onde tem os itens
   ol.innerHTML = getLocalStorage; // e colocar os itens que já tinham sido salvos
   ol.addEventListener('click', (event) => { // se algum elemento da ol for clicado
@@ -169,17 +170,18 @@ const getCartComputer = async (id) => { // função assíncrona que recebe o id 
 // Objetivo:
 
 function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
+  return item.querySelector('span.item__sku').innerText; // acessando o ID que é o innerText do span
 }
 
-// Função criada (PASSO 2)
+// Função criada
+// Exercício 2: Passo 3
 // Objetivo: selecionar o botão do 'Adicionar ao carrinho' e criar um evento de click que cria uma lista
 
 const buttonAddCart = () => {
   const parent = document.querySelector('.items'); // acessamos a classe que possui os 50 computadores
   parent.addEventListener('click', async (event) => {
     if (event.target.className === 'item__add') { // se o click no botão do Add carrinho for feito
-      const buttonParent = event.target.parentElement; // acessando o pai do botão pq temos uma função que pega o ID do computador
+      const buttonParent = event.target.parentElement; // acessar CADA botão dos computadores
       const buttonId = getSkuFromProductItem(buttonParent);
       const buttonData = await getCartComputer(buttonId); // acessa o link de cada computador
       const createComputer = createCartItemElement(buttonData); // cria no formato id, nome e preço as lis de acordo com os dados do json que foram específicados na função createCartItemElement
