@@ -75,7 +75,7 @@
   text-align: center;
 }
 
-.loading-container {
+.loading-modal {
   position: fixed;
   text-align: center;
   top: 0;
@@ -88,7 +88,7 @@
   justify-content: center;
 }
 
-#loading {
+.loading {
   display: block;
   padding: 2em 4em;
   border-radius: 15px;

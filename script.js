@@ -57,18 +57,29 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-const changeLoadingDisplay = (display) => {
-  document.querySelector('.loading-container').style.display = display;
+const addLoadingDisplay = () => {
+  const loadingModal = document.createElement('div');
+  loadingModal.className = 'loading-modal';
+  const loading = document.createElement('p');
+  loading.innerText = 'Loading...';
+  loading.className = 'loading';
+  loadingModal.appendChild(loading);
+  document.querySelector('.container').appendChild(loadingModal);
+};
+
+const removeLoadingDisplay = () => {
+  const loadingModal = document.querySelector('.loading-modal');
+  loadingModal.remove();
 };
 
 async function addItemToCart(event) {
-  changeLoadingDisplay('flex');
+  addLoadingDisplay();
   const cartItems = getCartItems();
   const itemSku = getSkuFromProductItem(event.target.parentElement);
   await fetch(`https://api.mercadolibre.com/items/${itemSku}`)
     .then((response) => response.json())
     .then((data) => {
-      changeLoadingDisplay('none');
+      removeLoadingDisplay();
       cartItems.appendChild(createCartItemElement(data));
       displayTotalPrice();
       storeCart();
@@ -86,6 +97,7 @@ function appendItemsToList(results) {
 }
 
 async function postQueryResults(query) {
+  addLoadingDisplay();
   try {
     await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
       .then((response) => {
@@ -93,7 +105,7 @@ async function postQueryResults(query) {
         return response.json();
       })
       .then((data) => {
-        changeLoadingDisplay('none');
+        removeLoadingDisplay();
         return appendItemsToList(data.results);
       });
   } catch (err) {
