@@ -35,9 +35,18 @@ const removeItemToLocalStorage = (id) => {
   localStorage.setItem('cartShopActual', JSON.stringify(removeFromLocalStorage));
 };
 
+function updateCartTotalPrice() {
+  const dadosLocalStorage = JSON.parse(localStorage.getItem('cartShopActual')) || [];
+  const prices = dadosLocalStorage.map((itemLS) =>
+    itemLS.price).reduce((acc, curr) => acc + curr, 0);
+  const totalPrice = document.querySelector('.total-price');
+  totalPrice.innerText = prices;
+}
+
 function cartItemClickListener(event, id) {
   event.target.remove();
   removeItemToLocalStorage(id);
+  updateCartTotalPrice();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -60,9 +69,9 @@ const addItemToCartShop = (itemSku) => {
     .then((resp) => resp.json())
       .then((dataJson) => {
         const itemInTheCartShop = createCartItemElement(dataJson);
-        // const cartShop = document.querySelector('.cart__items');
         cartShop.appendChild(itemInTheCartShop);
         addItemToLocalStorage(dataJson);
+        updateCartTotalPrice();
       });
 };
 
@@ -94,7 +103,7 @@ const getMLProductList = (product) => {
 
 const getItemsToLocalStorage = () => {
   // const cartShop = document.querySelector('.cart__items');
-  const dadosLocalStorage = JSON.parse(localStorage.getItem('cartShopActual'));
+  const dadosLocalStorage = JSON.parse(localStorage.getItem('cartShopActual')) || [];
   dadosLocalStorage.forEach((itemLS) => {
     const LSElement = createCartItemElement(itemLS);
     cartShop.appendChild(LSElement);
@@ -113,17 +122,8 @@ const clearCartShop = () => {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-window.onload = async () => {
+window.onload = () => {
   getMLProductList('computador');
   clearCartShop();
   getItemsToLocalStorage();
 };
-
-// const localStorageActual = JSON.parse(localStorage.getItem('cartShopActual')) 
-// let actualLocalStorage = localStorage.getItem('cartShopActual') !== null
-//   ? localStorageActual : [];
-//   // localStorageActual.push({ sku: dataJson.id, name: dataJson.title, salePrice: dataJson.price });
-
-// const updateLocalStorage = () => {
-//   localStorage.setItem('carShopActual', JSON.stringify(actualLocalStorage));
-// }
