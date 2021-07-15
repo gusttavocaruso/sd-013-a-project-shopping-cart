@@ -1,6 +1,8 @@
 // const fetch = require('node-fetch');
 // Projeto feito com a ajuda da Lanai, Luiza e Júlia
+
 const olClassName = '.cart__items';
+
 // Cria imagem para cada item - requisito 1
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -9,6 +11,7 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+// cria elementos de forma dinâmica que será criado de fato quando for chamado na função abaixo com os parâmetros do objeto
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -55,6 +58,7 @@ const setItemLocalStorage = () => {
   localStorage.setItem('liItems', JSON.stringify(lis)); // guarda os itens a serem colocados no localStorage
 };
 // =============================================================================================
+
 // REQUISITO 5 =================================================================================
 const priceSum = () => {
   const getSpan = document.querySelector('.total-price'); // elemento onde a soma será colocada no html
@@ -102,7 +106,6 @@ const getCartItem = async (ItemID) => {
   return apiJson;
 };
 
-// Função feita com ajuda da Luiza e da Júlia
 const buttonCart = () => {
   const getSection = document.querySelector('.items');
   getSection.addEventListener('click', async (event) => {
@@ -120,8 +123,23 @@ const buttonCart = () => {
 };
 // =============================================================================================
 
+// REQUISITO 6 =================================================================================
+const buttonEmptyCart = () => {
+  const getButton = document.querySelector('.empty-cart');
+  getButton.addEventListener('click', () => {
+    const getOl = document.querySelector(olClassName);
+    while (getOl.firstChild) { // enquanto existir a primeira filha da ol:
+      getOl.removeChild(getOl.firstChild); // essa filha será removida
+      priceSum(); // chama a função de soma para atualizar o preço total
+      setItemLocalStorage(); // chama a função para atualizar o localStorage
+    }
+  });
+};
+
 window.onload = () => {
   listProducts();
   buttonCart();
   getItemLocalStorage();
+  priceSum();
+  buttonEmptyCart();
 };
