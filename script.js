@@ -44,36 +44,45 @@ const fetchItemID = async (id) => {
 
 const key = 'shopping-cart';
 
-const saveCartItems = (item) => {
-  const myStorage = localStorage;
-  
+const saveCartItems = (items) => {
+  const storage = localStorage;
+  storage.setItem(key, items);
 };
 
 const removeItem = (item) => {
-  const myStorage = localStorage;
-  myStorage.removeItem(key);
   item.remove();
-};
-
-const loadCartItems = () => {
-  const myStorage = localStorage;
-  myStorage.getItem('shopping-cart');
 };
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   const ol = document.querySelector('.cart__items');
+
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   ol.appendChild(li);
-  saveCartItems(li.innerText);
+
   li.addEventListener('click', (e) => removeItem(e.target));
+
   return li;
 }
 
+const loadCartItems = () => {
+  const myStorage = localStorage;
+
+  const items = JSON.parse(myStorage.getItem(key));
+  const cart = document.querySelector('.cart__items');
+  console.log(items);
+
+  if (!items) return false;
+
+  items.forEach((item) => {
+    const eachItem = createCartItemElement(item);
+    cart.appendChild(eachItem);
+  });
+};
+
 const populateList = (results) => { 
   const section = document.querySelector('.items');
-
   results.forEach((result) => {
     const item = createProductItemElement(result);
     section.appendChild(item);
@@ -82,11 +91,15 @@ const populateList = (results) => {
 
 const handleClick = () => {
   const buttons = document.querySelectorAll('.item__add');
+  const items = JSON.parse(localStorage.getItem(key)) || []; 
+
   buttons.forEach((button) => {
     button.addEventListener('click', async (e) => {
       const parent = e.target.parentNode.firstChild;
-      const element = await fetchItemID(parent.innerText);
-      createCartItemElement(element);
+      const item = await fetchItemID(parent.innerText);
+      items.push(item);
+      saveCartItems(JSON.stringify(items));
+      createCartItemElement(item);
     });
   });
 };
@@ -100,4 +113,5 @@ const createItemList = async () => {
 
 window.onload = () => {
   createItemList();
+  loadCartItems();
 };
