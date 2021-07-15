@@ -93,11 +93,19 @@ const load = () => {
     creatLi.addEventListener('click', cartItemClickListener);
     document.querySelector('.cart__items').appendChild(creatLi);
   });
-}
+};
 
 const cleanAll = () => {
   document.querySelectorAll('li').forEach((li) => li.remove());
   localStorage.clear();
+};
+
+const saveItemsOnLoad = () => {
+  document.querySelector('.items').addEventListener('click', (event) => {
+    if (event.target.className === 'item__add') { 
+      adicionaClick(event.target.parentNode.id);
+    }
+  });
 };
 
 window.onload = () => {
@@ -106,10 +114,6 @@ window.onload = () => {
     if (objects && Object.values(objects).length > 0) load();
   }
   search('computador');
-  document.querySelector('.items').addEventListener('click', (event) => {
-    if (event.target.className === 'item__add') { 
-      adicionaClick(event.target.parentNode.id);
-    }
-  });
+  saveItemsOnLoad();
   document.querySelector('.empty-cart').addEventListener('click', cleanAll);
 };
