@@ -67,6 +67,19 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
  }
 
+ // Requisito 7 de loading, foi feito com base nesse link: 
+ // https://dev.to/vaishnavme/displaying-loading-animation-on-fetch-api-calls-1e5m
+  const displayLoading = (loader) => {
+   loader.classList.add('display');
+   setTimeout(() => {
+     loader.classList.remove('display');
+   }, 5000);
+ };
+
+ const hideLoading = (loader, cart) => {
+  cart.removeChild(loader);
+ };
+
 const fetchComputerId = (id) => {
   fetch(`https://api.mercadolibre.com/items/${id}`)
   .then((response) => {
@@ -99,9 +112,13 @@ function addCart(event) {
 }
 
 const fetchComputerML = () => {
+  const cart = document.querySelector('.cart');
+  const loader = document.querySelector('.loading');
+  displayLoading(loader);
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
   .then((response) => {
     response.json().then((data) => {
+      hideLoading(loader, cart);
       addItems(data.results);
       const buttonAdd = document.querySelectorAll('.item__add');
       buttonAdd.forEach((button) => {
