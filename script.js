@@ -46,7 +46,7 @@ function getSkuFromProductItem(item) {
 // const divdiv =() => {
 //   const div = document.querySelector('')
 // }
-  
+
 // desafio4
 const local = () => {
   const ol = document.querySelector(string);
@@ -58,10 +58,10 @@ const salva = (() => {
   const ol = document.querySelector(string);
   ol.innerHTML = localStorage.getItem('lista');
   // console.log(ol.children);
-  ol.addEventListener('click', (event) => { 
-  if (event.target.className === 'cart__item') {
-    event.target.remove();
-  }
+  ol.addEventListener('click', (event) => {
+    if (event.target.className === 'cart__item') {
+      event.target.remove();
+    }
   });
 });
 
@@ -79,20 +79,25 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-// resolve desafio 1 e parte do 2 - (com ajuda da Aline Hoshino)
-const mercadoLivre = ((query) => {
-  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
-    .then((resposta) => {
-      resposta.json().then((data) => {
-        addProducts(data.results);
-      });
+// desafio 2 ajuda de Gabriel
+const funcFetch = (query) => {
+  fetch(`https://api.mercadolibre.com/items/${query}`)
+    .then((response) => response.json())
+    .then((data) => {
+      const li = createCartItemElement(data);
+      const ol = document.querySelector(string);
+      ol.appendChild(li);
+      local();
     });
-});
+};
 
+// faz parte do desafio 2. ficou aqui para passar no lint
 const getId = (event) => {
   const idElement = getSkuFromProductItem(event.target.parentElement);
   funcFetch(idElement);
 };
+
+// resolve desafio 1 e parte do 2 - (com ajuda da Aline Hoshino)
 const addProducts = (itens) => {
   itens.forEach((item) => {
     const product = createProductItemElement(item);
@@ -105,17 +110,15 @@ const addProducts = (itens) => {
   });
 };
 
-// desafio 2 ajuda de Gabriel
-const funcFetch = (query) => {
-  fetch(`https://api.mercadolibre.com/items/${query}`)
-    .then((response) => response.json())
-    .then((data) => {
-      const li = createCartItemElement(data);
-      const ol = document.querySelector(string);
-      ol.appendChild(li);
-      local();
+// resolve desafio 1 - (com ajuda da Aline Hoshino)
+const mercadoLivre = ((query) => {
+  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
+    .then((resposta) => {
+      resposta.json().then((data) => {
+        addProducts(data.results);
+      });
     });
-};
+});
 
 window.onload = () => {
   mercadoLivre('computador');
