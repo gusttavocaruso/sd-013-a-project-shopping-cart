@@ -1,3 +1,4 @@
+// Cria a imagem de todos os produtos da lista;
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -12,8 +13,9 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function cartItemClickListener() {
-  
+// Remove o elemento do carrinho ao ser clicado;
+function cartItemClickListener(event) {
+  event.target.remove();
 }
 
 // Cria a lista de elementos para ser adicionada ao carrinho;
