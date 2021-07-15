@@ -46,7 +46,7 @@ const addItensToSection = (items) => {
     const section = document.querySelector('.items');
     section.appendChild(itemElement);
   });
-}
+};
 
 const fetchML = (query) => { // query = pesquisa
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`) // o que o fetch retorna? uma PROMISE
