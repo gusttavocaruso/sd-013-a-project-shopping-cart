@@ -90,7 +90,7 @@ const addClick = (id) => {
 
 const load = () => {
   const object = JSON.parse(localStorage.getItem('item'));
-  Object.values(object).forEach((liContent) => {
+  object.item.forEach((liContent) => {
     const creatLi = document.createElement('li');
     creatLi.textContent = liContent;
     creatLi.addEventListener('click', cartItemClickListener);
