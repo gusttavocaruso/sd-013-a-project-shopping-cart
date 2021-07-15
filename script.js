@@ -42,7 +42,12 @@ const fetchItemID = async (id) => {
   return data;
 };
 
+/* variaveis globais das chaves do storage */
+
 const key = 'shopping-cart';
+const storageItems = '.cart__items';
+
+/* fim da chaves globais do storage */
 
 const saveCartItems = (items) => {
   const storage = localStorage;
@@ -65,13 +70,12 @@ const sumTotalPrice = async () => {
     .map((item) => item.price)
     .reduce((acc, curr) => acc + curr, 0);
 
-  console.log(prices);
   totalSpan.innerText = prices;
 };
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
-  const ol = document.querySelector('.cart__items');
+  const ol = document.querySelector(storageItems);
 
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -89,7 +93,7 @@ const loadCartItems = () => {
   const myStorage = localStorage;
 
   const items = JSON.parse(myStorage.getItem(key));
-  const cart = document.querySelector('.cart__items');
+  const cart = document.querySelector(storageItems);
 
   if (!items) return false;
 
@@ -126,7 +130,7 @@ const handleClick = () => {
 
 const clearButton = () => {
   const emptyCartButton = document.querySelector('.empty-cart');
-  const cartItems = document.querySelector('.cart__items');
+  const cartItems = document.querySelector(storageItems);
   const totalSpan = document.querySelector('.total-price');
   const storage = localStorage;
   emptyCartButton.addEventListener('click', () => {
@@ -137,9 +141,19 @@ const clearButton = () => {
   });
 };
 
+const loading = async () => {
+  const p = document.createElement('p');
+  p.classList.add('loading');
+  p.innerText = 'loading...';
+
+  return p.innerText;
+};
+
 const createItemList = async () => {
   const { results } = await fetchProducts();
-
+  const randomLoad = Math.round(Math.random() * 5000);
+  const itemSection = document.querySelector('.items');
+  
   populateList(results);
   handleClick();
 };
