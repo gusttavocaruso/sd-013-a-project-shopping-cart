@@ -1,13 +1,13 @@
-const fetchComputers = () => {
-  return fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+const fetchComputers = () => (
+  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json())
-    .then((data) => data.results); // retorno disso é um array
-};
+    .then((data) => data.results) // retorno disso é um array
+);
 
-const fetchItemById = (itemID) => {
-  return fetch(`https://api.mercadolibre.com/items/${itemID}`)
-    .then((response) => response.json());
-}
+const fetchItemById = (itemID) => (
+  fetch(`https://api.mercadolibre.com/items/${itemID}`)
+    .then((response) => response.json())
+);
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -40,23 +40,30 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  if (event.target.classList.contains('item__add')) {
-    const cartItemsOl = document.querySelector('.cart__items');
-    // const id = event.target.parentElement.firstElementChild.textContent;
-    const id = getSkuFromProductItem(event.target.parentElement);
-    console.log(id)
-    fetchItemById(id)
-      .then((object) => cartItemsOl.appendChild(createCartItemElement(object)));
+  if (event.target.classList.contains('cart__item')) {
+    event.target.remove();
   }
 }
 
 function createCartItemElement({ id, title, price }) {
   const li = document.createElement('li');
+  // const formatedPrice = price.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
   li.className = 'cart__item';
   li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
+
+const addItemToCart = (event) => {
+  if (event.target.classList.contains('item__add')) {
+    const cartItemsOl = document.querySelector('.cart__items');
+    // const id = event.target.parentElement.firstElementChild.textContent;
+    const id = getSkuFromProductItem(event.target.parentElement);
+    // console.log(id)
+    fetchItemById(id)
+      .then((object) => cartItemsOl.appendChild(createCartItemElement(object)));
+  }
+};
 
 const createItems = (section) => {
   fetchComputers()
@@ -65,9 +72,13 @@ const createItems = (section) => {
     .catch((error) => console.log(error));
 };
 
-document.addEventListener('click', cartItemClickListener);
+const listenersHandler = () => {
+  document.addEventListener('click', addItemToCart);
+  document.addEventListener('click', cartItemClickListener);
+};
 
 window.onload = () => { 
+  listenersHandler();
   const itemsSection = document.querySelector('.items');
   createItems(itemsSection);
 };
