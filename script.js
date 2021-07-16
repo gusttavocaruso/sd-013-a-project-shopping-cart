@@ -1,11 +1,3 @@
-// Requisitando a fetch lista de produtos:
-const fetchCart = (pesquisa) => {
-  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${pesquisa}`)
-    .then((response) => response.json())
-    .then((data) => appendData(data.results))
-    .catch((error) => (error, 'error'));
-};
-
 // Criando os elementos:
 const appendData = (results) => {
   results.forEach((result) => {
@@ -13,6 +5,14 @@ const appendData = (results) => {
     const itemList = document.querySelector(".items");
     itemList.appendChild(createItem);
   });
+};
+
+// Requisitando a fetch lista de produtos:
+const fetchCart = (pesquisa) => {
+  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${pesquisa}`)
+    .then((response) => response.json())
+    .then((data) => appendData(data.results))
+    .catch((error) => (error))
 };
 
 function createProductImageElement(imageSource) {
