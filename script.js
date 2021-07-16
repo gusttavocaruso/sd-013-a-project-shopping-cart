@@ -38,7 +38,7 @@ const addTotal = (sum) => {
   h3.textContent = `${sum}`;
   document.querySelector('.cart').appendChild(section);
   document.querySelector('.total-price').appendChild(h3);
-}
+};
 
 const operationSum = () => {
   let sum = 0;
