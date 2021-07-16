@@ -1,3 +1,7 @@
+// variaveis
+
+const itemsCart = '.cart__items'; // atribui as tags <ol> na variavel
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -24,14 +28,37 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+// Requisito 4
+
+const setLocalStorageItems = () => {
+  const listaOrdenada = document.querySelector(itemsCart); 
+  const textoCarrinho = listaOrdenada.innerHTML;
+  localStorage.setItem('lista', '');
+  localStorage.setItem('lista', JSON.stringify(textoCarrinho));
+};
+
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// funcao remove o item ao clicar sobre ele no carrinho
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
+  setLocalStorageItems(); // Requisito 4
 }
+
+// Requisito 4
+const getLocalSto = () => {
+  const getStorage = JSON.parse(localStorage.getItem('lista'));
+  const ordenadaList = document.querySelector(itemsCart);
+  ordenadaList.innerHTML = getStorage;
+  ordenadaList.addEventListener('click', (ev) => {
+    if (ev.target.className === 'cart__item') {
+      cartItemClickListener(ev);
+    }
+  });
+};
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -58,28 +85,36 @@ const fetchML = (query) => {
     });
 };
 
-function addProduto(idItems) {
+// Requisito 2 
+// funcao retorna uma fetch que busca o ids da API e lidamos com ela usando o .then para retornar o Objeto 
+function addProdutos(idItems) {
   return fetch(`https://api.mercadolibre.com/items/${idItems}`)
     .then((response) => response.json())
     .then((data) => data);
 }
 
+// requisito 2 continuacao ...
+// funcao guarda na variavel allProducts todos os itens que contem a classe .items
+// adicionamos um evento de clique assincrono no botao adiciona se o mesmo possuir a classe item__add
 const btnAdicionaProdut = () => {
   const allProducts = document.querySelector('.items');
 
   allProducts.addEventListener('click', async (addclick) => {
     if (addclick.target.className === 'item__add') {
-      const paiElement = addclick.target.parentElement;
-      const retornaId = getSkuFromProductItem(paiElement);
-      const retornaFuncAddProduto = await addProduto(retornaId);
-      const adicionaLi = createCartItemElement(retornaFuncAddProduto);
-      document.querySelector('.cart__items').appendChild(adicionaLi);
+      const paiElement = addclick.target.parentElement; // atribui o elemento pai a variavel
+      console.log(paiElement);
+      const retornaId = getSkuFromProductItem(paiElement); // atribui 
+      const retornaFuncAddProdutos = await addProdutos(retornaId);
+      const adicionaLi = createCartItemElement(retornaFuncAddProdutos);
+      document.querySelector(itemsCart).appendChild(adicionaLi);
+      setLocalStorageItems();
     }
   });
 };
 
 window.onload = () => {
   fetchML('computador');
-  // addProduto('MLB1341706310')
-  btnAdicionaProdut();
+  // addProdutos('MLB1341706310')
+  btnAdicionaProdut(); 
+  getLocalSto(); // Requisito 4
 };
