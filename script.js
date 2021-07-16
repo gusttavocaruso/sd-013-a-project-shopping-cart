@@ -1,4 +1,4 @@
-const olLista = document.querySelector('.cart__items');
+const olLista = '.cart__items';
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
@@ -83,7 +83,7 @@ const fetchItemId = (botao) => {
   .then((response) => response.json())
   .then((data) => {
     const criarLi = createCartItemElement(data);
-    const addOl = document.querySelector('.cart__items');
+    const addOl = document.querySelector(olLista);
     addOl.appendChild(criarLi);
     salvar();
   });
@@ -92,8 +92,8 @@ const fetchItemId = (botao) => {
 const limparCarrinho = () => {
   const btnLimpar = document.querySelector('.empty-cart');
   btnLimpar.addEventListener('click', () => {
-    //document.location.reload();
-    const ol = document.querySelector('.cart__items');
+    // document.location.reload();
+    const ol = document.querySelector(olLista);
     const lis = document.querySelectorAll('.cart__item');
     lis.forEach((elements) => ol.removeChild(elements));
     localStorage.clear();
@@ -106,6 +106,6 @@ window.onload = () => {
   limparCarrinho();
 
   if (localStorage.lista) {
-    document.querySelector('.cart__items').innerHTML = localStorage.lista;
+    document.querySelector(olLista).innerHTML = localStorage.lista;
   }
 };
