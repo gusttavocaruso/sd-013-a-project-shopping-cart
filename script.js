@@ -47,8 +47,16 @@ function getSkuFromProductItem(item) {
   return item.querySelector("span.item__sku").innerText;
 }
 
+
+const salvar = () => {
+  const ol = document.querySelector('.cart__items')
+  localStorage.setItem('lista', ol.innerHTML)
+  
+}
+
 function cartItemClickListener(event) {
   event.target.remove();
+  salvar();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -80,10 +88,27 @@ const fetchItemId = (botao) => {
     const criarLi = createCartItemElement(data)
     const addOl = document.querySelector('.cart__items')
     addOl.appendChild(criarLi)
+    salvar();
+  })
+}
+
+const limparCarrinho = () => {
+  const btnLimpar = document.querySelector('.empty-cart')
+  btnLimpar.addEventListener('click', () => {
+    //document.location.reload();
+    const ol = document.querySelector('.cart__items')
+    const lis = document.querySelectorAll('.cart__item')
+    lis.forEach((elements) => ol.removeChild(elements))
+    localStorage.clear()
   })
 }
 
 window.onload = () => {
   fetchCart("computador");
   btnAddCart();
+  limparCarrinho();
+
+  if (localStorage.lista) {
+    document.querySelector('.cart__items').innerHTML = localStorage.lista
+  }
 };
