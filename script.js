@@ -36,12 +36,11 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 
 const removeItemFromLocalStorage = (idDeletedItem) => {
   console.log(idDeletedItem);
-  
 };
 
 function cartItemClickListener(event) {
-  let texto = event.target.innerText;
-  let split = texto.split(' ');
+  const texto = event.target.innerText;
+  const split = texto.split(' ');
   const idDeletedItem = split[1];
   removeItemFromLocalStorage(idDeletedItem);
   event.target.remove('li');
