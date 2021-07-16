@@ -122,11 +122,24 @@ const loadCart = () => {
   localStorage.clear(); // para limpar o carrinho de compras depois de atualizar a pagina
 };
 
+const clearCart = () => {
+  const itemClear = document.querySelector('.cart__items');
+  itemClear.innerHTML = '';
+  localStorage.clear();
+  updatePrice();
+};
+
+const clearAll = () => {
+  const clear = document.querySelector('.empty-cart');
+  clear.addEventListener('click', clearCart);
+};
+
 window.onload = () => {
   itemList('computador');
   eventWithItem();
   loadCart();
   updatePrice();
+  clearAll();
 };
 
 // Requisito 1 - Havia feito dentro de uma função só, mas ficou bem melhor quando dividi o código fazendo semelhante a forma como o tio Jack fez;
