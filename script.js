@@ -1,3 +1,7 @@
+const itemsSection = document.querySelector('.items');
+const cartItems = document.querySelector('.cart__items');
+const totalPrice = document.querySelector('.total-price');
+
 const fetchComputers = () => (
   fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json())
@@ -40,32 +44,27 @@ function getSkuFromProductItem(item) {
 }
 
 const saveCartItemsInLocalStorage = () => {
-  const cartItems = document.querySelectorAll('.cart__item');
-  const items = []; 
+  localStorage.setItem('cartItems', cartItems.innerHTML);
+};
 
-  cartItems.forEach((item) => items.push(item.innerText));
-  localStorage.setItem('items', JSON.stringify(items));
+const subtractTotalPrice = ({ price }) => {
+  const latestPrice = parseFloat(totalPrice.innerText);
+  totalPrice.innerText = (latestPrice - price);
 };
 
 function cartItemClickListener(event) {
   if (event.target.classList.contains('cart__item')) {
+    const liContent = event.target.innerText;
+    const liId = liContent.slice(5, 18);
+    fetchItemById(liId)
+      .then((object) => subtractTotalPrice(object));
     event.target.remove();
     saveCartItemsInLocalStorage();
   }
 }
 
 const loadCartItems = () => {
-  const items = JSON.parse(localStorage.getItem('items'));
-  const cartItemsOl = document.querySelector('.cart__items');
-
-// Com forEach o cypress tava dando erro
-  for (let index = 0; index < items.length; index += 1) {
-    const li = document.createElement('li');
-    li.className = 'cart__item';
-    li.innerText = items[index];
-    li.addEventListener('click', cartItemClickListener);
-    cartItemsOl.appendChild(li);
-  }
+  cartItems.innerHTML = localStorage.getItem('cartItems');
 };
 
 function createCartItemElement({ id, title, price }) {
@@ -73,19 +72,23 @@ function createCartItemElement({ id, title, price }) {
   // const formatedPrice = price.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
   li.className = 'cart__item';
   li.innerText = `SKU: ${id} | NAME: ${title} | PRICE: $${price}`;
-  li.addEventListener('click', cartItemClickListener);
+  // li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
+const sumTotalPrice = ({ price }) => { 
+  const latestPrice = parseFloat(totalPrice.innerText);
+  totalPrice.innerText = (latestPrice + price);
+};
+
 const addItemToCart = (event) => {
   if (event.target.classList.contains('item__add')) {
-    const cartItemsOl = document.querySelector('.cart__items');
     // const id = event.target.parentElement.firstElementChild.textContent;
     const id = getSkuFromProductItem(event.target.parentElement);
-    // console.log(id)
     fetchItemById(id)
       .then((object) => {
-        cartItemsOl.appendChild(createCartItemElement(object));
+        cartItems.appendChild(createCartItemElement(object));
+        sumTotalPrice(object);
         saveCartItemsInLocalStorage();
       });
   }
@@ -100,11 +103,11 @@ const createItems = (section) => {
 
 const listenersHandler = () => {
   document.addEventListener('click', addItemToCart);
+  document.addEventListener('click', cartItemClickListener);
 };
 
 window.onload = () => { 
   listenersHandler();
-  const itemsSection = document.querySelector('.items');
   createItems(itemsSection);
   loadCartItems();
 };
