@@ -146,5 +146,4 @@ window.onload = () => {
   esvaziarCarrinho(); // Requisito 6;
 };
 
-
-// No requisito 4 encontrei muitas dificuldades e dei algumas olhadas em outros PRs para entender a linha de raciocionio dos amigos, e estudar `a parte minhas duvidas e dificuldades do requisito em questão.
+// Em alguns requisito e principalmente no 4, encontrei muitas dificuldades e dei algumas olhadas em outros PRs para entender a linha de raciocionio dos amigos, e estudar `a parte minhas duvidas e dificuldades do requisito em questão.
