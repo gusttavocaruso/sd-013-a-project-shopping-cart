@@ -1,6 +1,6 @@
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
-  const section = document.createElement("section");
-  section.className = "item";
+  const section = document.createElement('section');
+  section.className = 'item';
 
   section.appendChild(createCustomElement("span", "item__sku", sku));
   section.appendChild(createCustomElement("span", "item__title", name));
@@ -16,7 +16,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 const appendData = (results) => {
   results.forEach((result) => {
     const createItem = createProductItemElement(result);
-    const itemList = document.querySelector(".items");
+    const itemList = document.querySelector('.items');
     itemList.appendChild(createItem);
   });
 };
