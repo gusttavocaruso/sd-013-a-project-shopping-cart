@@ -13,6 +13,14 @@ const somarPreco = () => {
   precoTotal.innerHTML = `${(Math.round((preco * 100)) / 100)}`;
 };
 
+const esvaziarCarrinho = () => {
+  const btnEsvaziar = document.querySelector('.empty-cart');
+  btnEsvaziar.addEventListener('click', () => {
+    const tagOL = document.querySelector(itemsCart);
+    tagOL.innerHTML = '';
+  });
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -131,4 +139,5 @@ window.onload = () => {
   btnAdicionaProdut(); 
   getLocalSto(); // Requisito 4
   somarPreco(); // Requisito 5
+  esvaziarCarrinho(); // Requisito 6;
 };
