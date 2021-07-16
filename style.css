@@ -100,3 +100,14 @@
   -webkit-animation: spin 2s linear infinite; /* Safari */
   animation: spin 2s linear infinite;
 }
+
+.total-price {
+  background-color: green;
+  border: 5;
+  cursor: pointer;
+  margin: 0;
+  padding: 5px;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+}
