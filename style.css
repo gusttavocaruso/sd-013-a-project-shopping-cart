@@ -78,3 +78,7 @@
 .loading {
   display: block;
 }
+
+.total-price {
+  margin: 0 auto;
+}
