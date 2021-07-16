@@ -1,7 +1,7 @@
 const ol = document.querySelector('.cart__items');
 const olPrice = document.querySelector('.total-price');
 const eraseButton = document.querySelector('.empty-cart');
-const storageList = JSON.parse(localStorage.getItem('valor'));
+// const storageList = JSON.parse(localStorage.getItem('valor'));
 let startCart = 0;
 
 function createProductImageElement(imageSource) {
