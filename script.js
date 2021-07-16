@@ -17,8 +17,8 @@ function createCustomElement(element, className, innerText) {
 function sumPrice() {
   const totalPrice = document.querySelector('.total-price');
   let price = 0;
-  const AllLi = document.querySelectorAll('li');
-  AllLi.forEach((item) => {
+  const itemsToSum = document.querySelectorAll('li');
+  itemsToSum.forEach((item) => {
   const computer = item.innerText.split('$');
   price += Number(computer[1]);
   });
@@ -35,7 +35,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   return section;
 }
-
 
 const itemsLink = async () => {
   const loading = document.querySelector('.loading');
@@ -104,7 +103,6 @@ const addToCart = () => {
     }
   });
 };
-
 
 const removeItems = () => {
   const buttonRemove = document.querySelector('.empty-cart');
