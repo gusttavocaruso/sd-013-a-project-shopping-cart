@@ -158,7 +158,7 @@ function initialRenderization() {
     });
   }
   if (localStorage.getItem(totalValue) === null) {
-    localStorage.setItem(totalValue, JSON.stringify([]));
+    localStorage.setItem(totalValue, JSON.stringify(0));
   } else {
     const totalPrice = localStorage.getItem(totalValue);
     showTotalPrice(totalPrice);
