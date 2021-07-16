@@ -142,7 +142,6 @@ function getMblPromise(item) {
       response.json().then((jsonMbl) => {
         // console.log(jsonMbl.results);
         jsonMbl.results.forEach((result) => {
-          // console.log(result)
           const list = document.getElementsByClassName('items');
           // console.log(createProductItemElement(result));
           list[0].appendChild(createProductItemElement(result));
