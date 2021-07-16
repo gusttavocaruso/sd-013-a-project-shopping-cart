@@ -55,9 +55,6 @@ const clearCart = document.querySelector('button.empty-cart');
 clearCart.addEventListener('click', cleanCart);
 
 // Req 2, 4, 5 e 7
-const fetchItem = (id) => fetch(`https://api.mercadolibre.com/items/${id}`)
-  .then((r) => r.json());
-
 const addToCart = (item) => {
   const newObj = { sku: item.id, name: item.title, salePrice: item.price };
   const cart = document.querySelector('.cart__items');
@@ -66,6 +63,9 @@ const addToCart = (item) => {
   cartVal().innerHTML = Math.round(newVal * 100) / 100;
   localStorage.cart = cartContainer.innerHTML;
 };
+
+const fetchItem = (id) => fetch(`https://api.mercadolibre.com/items/${id}`)
+  .then((r) => r.json());
 
 const getItem = (e) => {
   const item = e.target.parentElement;
@@ -85,22 +85,35 @@ const createProductList = (arr) => {
   addButtons.forEach((i) => i.addEventListener('click', getItem));
 };
 
-// Código usando async/await:
+// Código tratando erro diretamenta na função:
 const fetchML = async () => {
   const SEARCH_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-  const apiReturn = await fetch(SEARCH_URL);
-  const json = await apiReturn.json();
-  createProductList(json.results);
+  try {
+    const response = await fetch(SEARCH_URL);
+    if (!response.ok) {
+      throw new Error('Couldnt fetch API');
+    }
+    const json = await response.json();
+    createProductList(json.results);
+  } catch (e) {
+    console.error(e);
+  }
 };
 
-// Código usando .then:
-// const SEARCH_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-// const fetchML = () => fetch(SEARCH_URL)
-//   .then((r) => r.json())
-//   .then((r) => createProductList(r.results));
+// Código tratando erro junto da execução (linha 122):
+// const fetchML = async () => {
+//   const SEARCH_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+//   const response = await fetch(SEARCH_URL);
+//   if (!response.ok) {
+//     throw new Error(`Couldnt fetch API`)
+//   }
+//   const json = await response.json();
+//   createProductList(json.results);
+// };
 
 // Executores
 fetchML();
+  // .catch(e => {console.error(e)})
 
 if (localStorage.cart) {
   cartContainer.innerHTML = localStorage.cart;
