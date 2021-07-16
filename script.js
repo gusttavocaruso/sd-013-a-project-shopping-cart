@@ -1,3 +1,6 @@
+const getClearButton = document.querySelector('.empty-cart');
+const getOrderListCart = document.querySelector('ol.cart__items');
+
 // Cria a imagem de todos os produtos da lista;
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -6,6 +9,7 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+// Cria os elementos da lista a partir do fetch;
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -13,9 +17,22 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// Cria o botão que limpa a lista de itens do carrinho;
+const clearButton = () => {
+  getClearButton.addEventListener('click', () => {
+    getOrderListCart.innerHTML = '';
+  });
+};
+
+// Salva Itens do carrinho no Local Storage;
+const saveCartItems = () => {
+  localStorage.setItem('products', getOrderListCart.innerText);
+};
+
 // Remove o elemento do carrinho ao ser clicado;
 function cartItemClickListener(event) {
   event.target.remove();
+  saveCartItems();
 }
 
 // Cria a lista de elementos para ser adicionada ao carrinho;
@@ -34,8 +51,8 @@ const fetchOneItem = (productId) => {
   fetch(`https://api.mercadolibre.com/items/${productId}`)
     .then((response) => response.json())
     .then((results) => {
-      const getOrderListCart = document.querySelector('.cart__items');
       getOrderListCart.appendChild(createCartItemElement(results));
+      saveCartItems();
     });
 };
 
@@ -62,10 +79,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
-
 // Faz a requisição na API do Mercado Livre;
 const returnFetch = (query) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
@@ -74,6 +87,17 @@ const returnFetch = (query) => {
     .then((results) => results.forEach((result) => createProductItemElement(result))));
 };
 
+// Carrega os produtos do carrinho a partir do Local Storage;
+const loadCartFromLocalStorage = () => {
+  getOrderListCart.innerHTML = localStorage.getItem('products');
+  getOrderListCart.addEventListener('click', (event) => {
+    event.target.remove();
+    localStorage.removeItem('products');
+  });
+};
+
 window.onload = () => {
   returnFetch('computador');
+  clearButton();
+  loadCartFromLocalStorage();
 };
