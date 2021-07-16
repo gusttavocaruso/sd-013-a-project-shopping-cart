@@ -75,3 +75,25 @@
   text-align: center;
 }
 
+.style-price {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.style-price > h3 {
+  color: green;
+  max-width: 45%;
+  margin-top: 30px;
+}
+
+.total-price {
+  display: flex;
+  max-width: 45%;
+  font-size: 25px;
+  text-align: center;
+  color: rgb(201, 67, 67);
+  font-weight: bold;
+  list-style: none;
+  margin-bottom: 15px;
+}
