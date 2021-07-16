@@ -1,3 +1,4 @@
+// Requisitando a fetch lista de produtos:
 const fetchCart = (pesquisa) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${pesquisa}`)
     .then((response) => response.json())
@@ -5,15 +6,15 @@ const fetchCart = (pesquisa) => {
     .catch((error) => (error, 'error'));
 };
 
+// Criando os elementos:
 const appendData = (results) => {
   results.forEach((result) => {
     const createItem = createProductItemElement(result);
-    const section = document.querySelector(".items");
-    section.appendChild(createItem);
+    const itemList = document.querySelector(".items");
+    itemList.appendChild(createItem);
   });
 };
 
-// Meu código acima:
 function createProductImageElement(imageSource) {
   const img = document.createElement("img");
   img.className = "item__image";
@@ -46,11 +47,11 @@ function getSkuFromProductItem(item) {
   return item.querySelector("span.item__sku").innerText;
 }
 
-function cartItemClickListener(event) {
+function cartItemClickListener() {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement("li");
   li.className = "cart__item";
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -58,6 +59,31 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
+// Adicionar ao carrinho:
+const btnAddCart = () => {
+  const section = document.querySelector('.items')
+  section.addEventListener('click', (event) => {
+    if (event.target.className === 'item__add') {
+      fetchItemId(event)
+    }
+  })
+}
+
+// Adicionando na lista:
+const fetchItemId = (botao) => {
+  const elementoBotao = botao.target;
+  const elementoPai = elementoBotao.parentElement;
+  const pegarId = elementoPai.firstChild.innerText;
+  fetch(`https://api.mercadolibre.com/items/${pegarId}`)
+  .then((response) => response.json())
+  .then((data) => {
+    const criarLi = createCartItemElement(data)
+    const addOl = document.querySelector('.cart__items')
+    addOl.appendChild(criarLi)
+  })
+}
+
 window.onload = () => {
   fetchCart("computador");
+  btnAddCart();
 };
