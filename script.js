@@ -39,11 +39,34 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const saveCartItemsInLocalStorage = () => {
+  const cartItems = document.querySelectorAll('.cart__item');
+  const items = []; 
+
+  cartItems.forEach((item) => items.push(item.innerText));
+  localStorage.setItem('items', JSON.stringify(items));
+};
+
 function cartItemClickListener(event) {
   if (event.target.classList.contains('cart__item')) {
     event.target.remove();
+    saveCartItemsInLocalStorage();
   }
 }
+
+const loadCartItems = () => {
+  const items = JSON.parse(localStorage.getItem('items'));
+  const cartItemsOl = document.querySelector('.cart__items');
+
+// Com forEach o cypress tava dando erro
+  for (let index = 0; index < items.length; index += 1) {
+    const li = document.createElement('li');
+    li.className = 'cart__item';
+    li.innerText = items[index];
+    li.addEventListener('click', cartItemClickListener);
+    cartItemsOl.appendChild(li);
+  }
+};
 
 function createCartItemElement({ id, title, price }) {
   const li = document.createElement('li');
@@ -61,7 +84,10 @@ const addItemToCart = (event) => {
     const id = getSkuFromProductItem(event.target.parentElement);
     // console.log(id)
     fetchItemById(id)
-      .then((object) => cartItemsOl.appendChild(createCartItemElement(object)));
+      .then((object) => {
+        cartItemsOl.appendChild(createCartItemElement(object));
+        saveCartItemsInLocalStorage();
+      });
   }
 };
 
@@ -74,11 +100,11 @@ const createItems = (section) => {
 
 const listenersHandler = () => {
   document.addEventListener('click', addItemToCart);
-  document.addEventListener('click', cartItemClickListener);
 };
 
 window.onload = () => { 
   listenersHandler();
   const itemsSection = document.querySelector('.items');
   createItems(itemsSection);
+  loadCartItems();
 };
