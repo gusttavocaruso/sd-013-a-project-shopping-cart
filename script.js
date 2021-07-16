@@ -5,6 +5,14 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+const sumTotalPrice = () => {
+  const spanPrice = document.querySelector('.total-price');
+  const items = JSON.parse(localStorage.getItem('cart'));
+  const sum = items.map((item) => item.price)
+  .reduce((acc, item) => acc + item, 0);
+  spanPrice.innerText = sum;
+};
+
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -12,8 +20,13 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
   // remove itens
-function cartItemClickListener(event) {
-  event.target.remove();
+
+function cartItemClickListener(element, id) {
+  element.remove();
+  const items = JSON.parse(localStorage.getItem('cart'));
+  const filteredItems = items.filter((item) => item.id !== id);
+  localStorage.setItem('cart', JSON.stringify(filteredItems));
+  console.log(filteredItems);
 }
 
   // cria o carrinho de compras
@@ -25,7 +38,10 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   list.appendChild(li);
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', (event) => {
+    cartItemClickListener(event.target, sku);
+    sumTotalPrice();
+  });
   
   return li;
 }
@@ -42,16 +58,17 @@ async function insertId(productId) {
   return data;
 }
 
-const handleClick = () => {
+const handleClick = async () => {
   const buttons = document.querySelectorAll('.item__add');
-  const items = JSON.parse(localStorage.getItem('cart')) || [];
   buttons.forEach((button) => {
     button.addEventListener('click', async (event) => {
+      const items = JSON.parse(localStorage.getItem('cart')) || [];
       const target = event.target.parentNode.firstChild;
       const SKU = await insertId(target.innerText);
       items.push(SKU);
       createCartItemElement(SKU);
       saveItemKartElement(JSON.stringify(items));
+      await sumTotalPrice();
     });
   });
 };
