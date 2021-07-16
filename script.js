@@ -2,6 +2,17 @@
 
 const itemsCart = '.cart__items'; // atribui as tags <ol> na variavel
 
+const somarPreco = () => {
+  const precoTotal = document.querySelector('.total-price');
+  let preco = 0;
+  const listas = document.querySelectorAll('li');
+  listas.forEach((lista) => {
+    const produto = lista.innerText.split('$');
+    preco += Number(produto[1]);
+  });
+  precoTotal.innerHTML = `${(Math.round((preco * 100)) / 100)}`;
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -44,8 +55,9 @@ function getSkuFromProductItem(item) {
 // funcao remove o item ao clicar sobre ele no carrinho
 function cartItemClickListener(event) {
   // coloque seu código aqui
-  event.target.remove();
+  event.target.remove(); // requisito 3
   setLocalStorageItems(); // Requisito 4
+  somarPreco(); // Requisito 5
 }
 
 // Requisito 4
@@ -107,7 +119,8 @@ const btnAdicionaProdut = () => {
       const retornaFuncAddProdutos = await addProdutos(retornaId);
       const adicionaLi = createCartItemElement(retornaFuncAddProdutos);
       document.querySelector(itemsCart).appendChild(adicionaLi);
-      setLocalStorageItems();
+      setLocalStorageItems(); // Requisito 4 
+      somarPreco(); // Requisito 5 
     }
   });
 };
@@ -117,4 +130,5 @@ window.onload = () => {
   // addProdutos('MLB1341706310')
   btnAdicionaProdut(); 
   getLocalSto(); // Requisito 4
+  somarPreco(); // Requisito 5
 };
