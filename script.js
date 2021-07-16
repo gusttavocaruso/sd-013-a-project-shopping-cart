@@ -28,6 +28,34 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const addTotal = (sum) => {
+  const searchS = document.querySelector('.total-price');
+  if (searchS) searchS.remove();
+  const section = document.createElement('section');
+  section.className = 'total-price';
+  const h3 = document.createElement('h3');
+  h3.className = 'h3';
+  h3.textContent = `${sum}`;
+  document.querySelector('.cart').appendChild(section);
+  document.querySelector('.total-price').appendChild(h3);
+}
+
+const operationSum = () => {
+  let sum = 0;
+  let position = ''; 
+  let concat = '';
+  document.querySelectorAll('li').forEach((li) => {
+    position = li.textContent.indexOf('$') + 1;
+    for (position; position < li.textContent.length; position += 1) {
+      concat += li.textContent[position];
+    }
+    concat = Number(concat).toFixed(2);
+    sum += Number(concat);
+    concat = '';
+  });
+  addTotal(sum);
+};
+
 const deletFromStorage = (idItem) => {
   const lists = document.querySelectorAll('li');
   const newObject = { item: [] };
@@ -40,6 +68,7 @@ const deletFromStorage = (idItem) => {
 function cartItemClickListener(event) {
   event.target.remove();
   deletFromStorage(event.target.id);
+  operationSum();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -81,6 +110,7 @@ const adicionaClick = (id) => {
       const newProduct = createCartItemElement(data);
       document.querySelector('.cart__items').appendChild(newProduct);
       saveContent();
+      operationSum();
     });
   });
 };
@@ -98,6 +128,7 @@ const load = () => {
 const cleanAll = () => {
   document.querySelectorAll('li').forEach((li) => li.remove());
   localStorage.clear();
+  operationSum();
 };
 
 const saveItemsOnLoad = () => {
@@ -109,6 +140,7 @@ const saveItemsOnLoad = () => {
 };
 
 window.onload = () => {
+  operationSum();
   if (Storage) {
     const objects = JSON.parse(localStorage.getItem('item'));
     if (objects && Object.values(objects).length > 0) load();
@@ -116,4 +148,5 @@ window.onload = () => {
   search('computador');
   saveItemsOnLoad();
   document.querySelector('.empty-cart').addEventListener('click', cleanAll);
+  operationSum();
 };
