@@ -58,11 +58,11 @@ const fetchML = (query) => {
     });
 };
 
-const addProduto = (idItems) => {
-  fetch(`https://api.mercadolibre.com/items/${idItems}`)
+function addProduto(idItems) {
+  return fetch(`https://api.mercadolibre.com/items/${idItems}`)
     .then((response) => response.json())
     .then((data) => data);
-};
+}
 
 const btnAdicionaProdut = () => {
   const allProducts = document.querySelector('.items');
