@@ -95,12 +95,6 @@ function eventHandler() {
   clearCartBtn.addEventListener('click', emptyCartListener);
 }
 
-function loadingItens(active) {
-  if (active) document.querySelector('body').prepend(loading); 
-  else setTimeout(1000); document.querySelector('body').removeChild(loading);
-
-}
-
 window.onload = () => { 
   // loadingItens(1);
   eventHandler();
