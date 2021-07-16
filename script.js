@@ -1,7 +1,7 @@
 const sumPrice = async () => {
   const itensStorage = await JSON.parse(localStorage.getItem('itens')) || [];
   // localStorage.removeItem('itens');
-  const price = document.querySelector('.price-value');
+  const price = document.querySelector('.total-price');
   const precoTotal = itensStorage
   .map((itens) => itens.price)
   .reduce((acc, current) => acc + current, 0);
@@ -110,6 +110,7 @@ const fetchSearchApi = (produto) => {
  const clearList = () => {
   const listCart = document.getElementsByClassName('cart__item');
   localStorage.removeItem('itens');
+ // listCart.forEach((item) => item.remove());
   for (let i = 0; i < listCart.length; i += 0) {
    listCart[i].remove(); 
   }
