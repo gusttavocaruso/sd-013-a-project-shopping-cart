@@ -12,6 +12,11 @@ function saveCart() {
   localStorage.setItem('cartItens', cartItens.innerHTML);
 }
 
+function emptyCartListener() {
+  cartItens.innerHTML = '';
+  saveCart();
+}
+
 function cartItemClickListener(event) {
   const thisCartItem = event.target;
   thisCartItem.parentNode.removeChild(thisCartItem);
@@ -79,11 +84,15 @@ const loadItensToPage = async (product, property) => {
     const item = createProductItemElement({ sku: id, name: title, image: thumbnail });
     itemSection.appendChild(item);
   });
-  // loadCart();
 };
 
+function eventHandler() {
+  const clearCartBtn = document.querySelector('.empty-cart');
+  clearCartBtn.addEventListener('click', emptyCartListener);
+}
+
 window.onload = () => { 
-  // loadCart();
   loadItensToPage('computador', 'results');
   loadCart();
+  eventHandler();
 };

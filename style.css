@@ -78,3 +78,15 @@
 .body {
   background-color: bisque;
 }
+
+.empty-cart {
+  background-color: rgb(207, 22, 22);
+  color: rgb(245, 245, 245);
+  border-radius: 10px;
+  border: 0px;
+  padding: 5px 15px 5px 15px;
+  margin-left: 74px ;
+  margin-top: 7px;
+  font-size: 15px;
+  font-weight: 900 ; 
+}
