@@ -87,26 +87,30 @@ const results = (items) => {
 };
 
 const status = (control) => {
+  let returnFalse;
   const searchP = document.querySelector('.loading');
   if ((!searchP) && (control === true)) {
     const h1 = document.createElement('h1');
     h1.classList = 'loading';
     h1.textContent = 'loading';
     document.querySelector('.items').appendChild(h1);
+    setTimeout(() => {
+      returnFalse = false;
+    }, 3000);
+    return returnFalse;
   }
-  if ((searchP) && (control === false)) document.querySelector('.loading').remove();
 };
 
 const searches = (query) => {
-  try {
+  status(true);
+  setTimeout(() => {
+    document.querySelector('.loading').remove();
     fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => response.json())
     .then((jsonBody) => {
-      results(jsonBody.results);
+        results(jsonBody.results);
     });
-  } catch (error) {
-    alert(error);
-  }
+  }, 600);
 };
 
 const saveCar = () => {
