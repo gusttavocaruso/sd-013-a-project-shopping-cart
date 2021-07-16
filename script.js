@@ -3,6 +3,7 @@ const olPrice = document.querySelector('.total-price');
 const eraseButton = document.querySelector('.empty-cart');
 // const storageList = JSON.parse(localStorage.getItem('valor'));
 let startCart = 0;
+const totalValue = 'valor total';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -34,15 +35,30 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // //   return item.querySelector('span.item__sku').innerText;
 // // }
 
-const removeItemFromLocalStorage = (idDeletedItem) => {
-  console.log(idDeletedItem);
+const removeItemFromLocalStorage = (indexDeletedItem) => {
+  const test = JSON.parse(localStorage.getItem('valor'));
+  if (test !== null) {
+    test.splice(indexDeletedItem, 1);//  Ajudado pela Bianca turma 8
+    localStorage.setItem('valor', JSON.stringify(test));
+  }
+};
+
+const subValueDeletedItem = (value) => {
+  const test = document.querySelector('.price');
+  const test2 = test.innerHTML - value;
+  test.innerHTML = test2;
+  localStorage.setItem(totalValue, test2);
 };
 
 function cartItemClickListener(event) {
+  const test5 = document.querySelectorAll('.cart__item');
+  const getIndex = Array.from(test5).indexOf(event.target);
+  removeItemFromLocalStorage(getIndex);
+
   const texto = event.target.innerText;
-  const split = texto.split(' ');
-  const idDeletedItem = split[1];
-  removeItemFromLocalStorage(idDeletedItem);
+  const split = texto.split('$');
+  const deletedItemValue = (split[1]);
+  subValueDeletedItem(deletedItemValue);
   event.target.remove('li');
 }
 
@@ -71,18 +87,18 @@ const createItens = (itens) => {
 
 const showTotalPrice = (totalPrice) => {
   const createLi = document.createElement('li');
-  createLi.className = 'total-price';
+  createLi.className = 'price';
 
   olPrice.innerText = '';
-  createLi.innerHTML = `$${totalPrice}`;
+  createLi.innerHTML = totalPrice;
   olPrice.appendChild(createLi);
 };
 
 const sumAll = (price) => {
   startCart += price;
 
-  const round = Math.floor(startCart);
-
+  const round = Number((startCart).toFixed(2));
+  localStorage.setItem(totalValue, round);
   showTotalPrice(round);
 };
 
@@ -139,6 +155,12 @@ function initialRenderization() {
       const test = createCartItemElement(item);
       ol.appendChild(test);
     });
+  }
+  if (localStorage.getItem(totalValue) === null) {
+    localStorage.setItem(totalValue, JSON.stringify([]));
+  } else {
+    const totalPrice = localStorage.getItem(totalValue);
+    showTotalPrice(totalPrice);
   }
 }
 
