@@ -2,12 +2,17 @@ const itemsSection = document.querySelector('.items');
 const cartItems = document.querySelector('.cart__items');
 const totalPrice = document.querySelector('.total-price');
 const clearCart = document.querySelector('.empty-cart');
+const loadingMessage = document.querySelector('.loading');
 
-const fetchComputers = () => (
-  fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
+const fetchComputers = () => {
+  loadingMessage.innerText = 'loading';
+  return fetch('https://api.mercadolibre.com/sites/MLB/search?q=computador')
     .then((response) => response.json())
-    .then((data) => data.results) // retorno disso é um array
-);
+    .then((data) => {
+      loadingMessage.remove();
+      return data.results;
+    }); // retorno disso é um array
+};
 
 const fetchItemById = (itemID) => (
   fetch(`https://api.mercadolibre.com/items/${itemID}`)
