@@ -1,5 +1,6 @@
 // Resolvidos com call em grupo Mateus, Leonardo, Douglas e Luisa
 const loading = document.querySelector('.loading');
+// const string = '.cart__items';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -41,7 +42,15 @@ function getSkuFromProductItem(item) {
 
 function cartItemClickListener(li) {
   li.target.remove();
+  // saveLocal();
+  // pullDiv();
 }
+
+// const saveLocal = () => {
+//   const ol = document.querySelector(string);
+//   const htmlText = ol.innerHTML;
+//   localStorage.setItem('lista', htmlText);
+// };
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -82,6 +91,22 @@ function click() {
   });
 }
 
+// const sumItems = () => {
+//   const ol = document.querySelector(String);
+//   const olChildren = [...ol.children];
+//   const priceOl = olChildren.reduce((acc, li) => {
+//     let acumulador = acc;
+//     acumulador += Number(li.innerText.aplit('$')[1]);
+//     return acumulador;
+//   }, 0);
+//   return priceOl;
+// };
+
+// const pullDiv = () => {
+//   const div = document.querySelector('.total-price');
+//   div.innerText = `${Math.round(sumItens() * 100) / 100}`;
+// };
+
 function salvarLocal() {
   if (localStorage.li) {
     document.querySelector('.cart__items').innerHTML = localStorage.li;
@@ -101,4 +126,5 @@ window.onload = () => {
   click();
   salvarLocal();
   esvaziarCarrinho();
+  // pullDiv();
  };
