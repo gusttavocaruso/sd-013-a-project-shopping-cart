@@ -1,6 +1,5 @@
 const sumPrice = async () => {
   const itensStorage = await JSON.parse(localStorage.getItem('itens')) || [];
-  // localStorage.removeItem('itens');
   const price = document.querySelector('.total-price');
   const precoTotal = itensStorage
   .map((itens) => itens.price)
@@ -57,9 +56,15 @@ function cartItemClickListener(event, sku) {
 }
 
 const fetchCartApi = (id) => {
+  const loading = document.querySelector('.cart');
+  const h1 = document.createElement('h1');
+  h1.className = 'loading';
+  h1.innerText = 'Loading...';
+  loading.appendChild(h1);
   fetch(`https://api.mercadolibre.com/items/${id}`)
   .then((response) => response.json())
   .then(async (data) => {
+    h1.remove();
     const localStorageData = await JSON.parse(localStorage.getItem('itens')) || [];
     const objectData = { id: data.id, title: data.title, price: data.price };
     localStorageData.push(objectData);
@@ -99,9 +104,15 @@ const addItensToSection = (items) => {
 };
 
 const fetchSearchApi = (produto) => {
+  const loading = document.querySelector('.cart');
+  const h1 = document.createElement('h1');
+  h1.className = 'loading';
+  h1.innerText = 'Loading...';
+  loading.appendChild(h1);
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${produto}`)
   .then((response) => { 
     response.json().then((data) => {
+      h1.remove();
       addItensToSection(data.results);
       });
   });
