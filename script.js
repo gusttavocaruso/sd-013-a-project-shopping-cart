@@ -12,7 +12,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -24,7 +24,7 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
+/* function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
@@ -38,6 +38,29 @@ function createCartItemElement({ sku, name, salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
-}
+} */
 
-window.onload = () => { };
+const adComputer = (compItem) => {
+  compItem.forEach((item) => {
+    const element = createProductItemElement(item);
+    const section = document.querySelector('.items');
+    section.appendChild(element);
+  });
+};
+
+/* Fazendo a requisição da API
+Link de apoio para o requisito: https://www.youtube.com/watch?v=m3K8DP4kVXQ&t=24s&ab_channel=hcode
+Vídeo feito durante o fechamento pelo especialista Jackson Pires */
+const fetchComputer = () => {
+  const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+
+  fetch(url)
+    .then((response) => response.json())
+    .then((computer) => {
+      adComputer(computer.results);
+  });
+};
+
+window.onload = () => {
+  fetchComputer();
+};
