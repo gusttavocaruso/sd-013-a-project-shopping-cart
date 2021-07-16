@@ -74,3 +74,25 @@
   font-size: 16pt;
   text-align: center;
 }
+
+.loading {
+  background-color: rgb(61, 128, 22);
+  border: 3px solid green;
+  color: aliceblue;
+  font-size: 20px;
+  margin-top: 30%;
+  padding: 10px;
+  text-align: center;
+}
+
+.empty-cart {
+  background-color: rgb(61, 128, 22);
+  color: aliceblue;
+  font-size: 20px;
+  padding: 10px;
+  text-align: center;
+}
+
+.empty-cart:hover {
+  background-color: rgb(41, 83, 18);
+}

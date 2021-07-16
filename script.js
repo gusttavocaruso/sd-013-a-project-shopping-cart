@@ -89,13 +89,24 @@ const addItensToSection = (items) => {
   });
 };
 
+const loading = () => {
+  const h1 = document.createElement('h1');
+  h1.className = 'loading';
+  h1.textContent = 'loading ...';
+  document.querySelector('.items').appendChild(h1);
+};
+
 const fetchML = (query) => {
-  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
+  loading();
+  setTimeout(() => {
+    document.querySelector('.loading').remove();
+    fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => {
       response.json().then((data) => {
         addItensToSection(data.results);
       });
     });
+  }, 3000);
 };
 
 const storageSave = () => {
