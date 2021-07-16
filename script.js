@@ -62,6 +62,15 @@ const fetchItemId = (botao) => {
   });
 };
 
+// Criando os elementos:
+const appendData = (results) => {
+  results.forEach((result) => {
+    const createItem = createProductItemElement(result);
+    const itemList = document.querySelector('.items');
+    itemList.appendChild(createItem);
+  });
+};
+
 // Requisitando a fetch lista de produtos:
 const fetchCart = (pesquisa) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${pesquisa}`)
@@ -77,15 +86,6 @@ const btnAddCart = () => {
     if (event.target.className === 'item__add') {
       fetchItemId(event);
     }
-  });
-};
-
-// Criando os elementos:
-const appendData = (results) => {
-  results.forEach((result) => {
-    const createItem = createProductItemElement(result);
-    const itemList = document.querySelector('.items');
-    itemList.appendChild(createItem);
   });
 };
 
