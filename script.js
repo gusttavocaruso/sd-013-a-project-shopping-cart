@@ -88,12 +88,23 @@ const results = (items) => {
   });
 };
 
+const loadingApi = () => {
+  const h1 = document.createElement('h1');
+  h1.className = 'loading';
+  h1.textContent = 'loading';
+  document.querySelector('.items').appendChild(h1);
+};
+
 const search = (query) => {
-  const tests = fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
+  loadingApi();
+  setTimeout(() => {
+    document.querySelector('.loading').remove();
+    const tests = fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => response.json())
     .then((body) => {
       results(body.results);
     });
+  }, 3000);
 };
 
 const saveContent = () => {
