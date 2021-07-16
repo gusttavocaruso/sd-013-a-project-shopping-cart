@@ -1,33 +1,5 @@
 const olLista = '.cart__items';
 
-function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
-  const section = document.createElement('section');
-  section.className = 'item';
-
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-  return section;
-}
-
-// Criando os elementos:
-const appendData = (results) => {
-  results.forEach((result) => {
-    const createItem = createProductItemElement(result);
-    const itemList = document.querySelector('.items');
-    itemList.appendChild(createItem);
-  });
-};
-
-// Requisitando a fetch lista de produtos:
-const fetchCart = (pesquisa) => {
-  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${pesquisa}`)
-    .then((response) => response.json())
-    .then((data) => appendData(data.results))
-    .catch((error) => (error));
-};
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -42,9 +14,20 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
+  const section = document.createElement('section');
+  section.className = 'item';
+
+  section.appendChild(createCustomElement('span', 'item__sku', sku));
+  section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createProductImageElement(image));
+  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  return section;
 }
+
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 const salvar = () => {
   const ol = document.querySelector(olLista);
@@ -64,16 +47,6 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-// Adicionar ao carrinho:
-const btnAddCart = () => {
-  const section = document.querySelector('.items');
-  section.addEventListener('click', (event) => {
-    if (event.target.className === 'item__add') {
-      fetchItemId(event);
-    }
-  });
-};
-
 // Adicionando na lista:
 const fetchItemId = (botao) => {
   const elementoBotao = botao.target;
@@ -86,6 +59,33 @@ const fetchItemId = (botao) => {
     const addOl = document.querySelector(olLista);
     addOl.appendChild(criarLi);
     salvar();
+  });
+};
+
+// Requisitando a fetch lista de produtos:
+const fetchCart = (pesquisa) => {
+  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${pesquisa}`)
+    .then((response) => response.json())
+    .then((data) => appendData(data.results))
+    .catch((error) => (error));
+};
+
+// Adicionar ao carrinho:
+const btnAddCart = () => {
+  const section = document.querySelector('.items');
+  section.addEventListener('click', (event) => {
+    if (event.target.className === 'item__add') {
+      fetchItemId(event);
+    }
+  });
+};
+
+// Criando os elementos:
+const appendData = (results) => {
+  results.forEach((result) => {
+    const createItem = createProductItemElement(result);
+    const itemList = document.querySelector('.items');
+    itemList.appendChild(createItem);
   });
 };
 
