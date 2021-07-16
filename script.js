@@ -1,7 +1,6 @@
 const ol = document.querySelector('.cart__items');
 const olPrice = document.querySelector('.total-price');
 const eraseButton = document.querySelector('.empty-cart');
-// const storageList = JSON.parse(localStorage.getItem('valor'));
 let startCart = 0;
 const totalValue = 'valor total';
 
@@ -31,28 +30,24 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// // function getSkuFromProductItem(item) {
-// //   return item.querySelector('span.item__sku').innerText;
-// // }
-
 const removeItemFromLocalStorage = (indexDeletedItem) => {
-  const test = JSON.parse(localStorage.getItem('valor'));
-  if (test !== null) {
-    test.splice(indexDeletedItem, 1);//  Ajudado pela Bianca turma 8
-    localStorage.setItem('valor', JSON.stringify(test));
+  const getLocalStorageToUpdate = JSON.parse(localStorage.getItem('valor'));
+  if (getLocalStorageToUpdate !== null) {
+    getLocalStorageToUpdate.splice(indexDeletedItem, 1);//  Ajudado pela Bianca turma 8
+    localStorage.setItem('valor', JSON.stringify(getLocalStorageToUpdate));
   }
 };
 
 const subValueDeletedItem = (value) => {
-  const test = document.querySelector('.price');
-  const test2 = test.innerHTML - value;
-  test.innerHTML = test2;
-  localStorage.setItem(totalValue, test2);
+  const getTotalPrice = document.querySelector('.price');
+  const updateTotalPrice = getTotalPrice.innerHTML - value;
+  getTotalPrice.innerHTML = updateTotalPrice;
+  localStorage.setItem(totalValue, updateTotalPrice);
 };
 
 function cartItemClickListener(event) {
-  const test5 = document.querySelectorAll('.cart__item');
-  const getIndex = Array.from(test5).indexOf(event.target);
+  const getCartItens = document.querySelectorAll('.cart__item');
+  const getIndex = Array.from(getCartItens).indexOf(event.target);
   removeItemFromLocalStorage(getIndex);
 
   const texto = event.target.innerText;
@@ -63,10 +58,14 @@ function cartItemClickListener(event) {
 }
 
 const addLocalStorage = (data) => {
-  const oldStorage = JSON.parse(localStorage.getItem('valor'));
-  const valor = data;
-  oldStorage.push(valor);
-  localStorage.setItem('valor', JSON.stringify(oldStorage));
+  if (localStorage.getItem('valor') === null) {
+    localStorage.setItem('valor', JSON.stringify([]));
+  } else {
+    const oldStorage = JSON.parse(localStorage.getItem('valor'));
+    const valor = data;
+    oldStorage.push(valor);
+    localStorage.setItem('valor', JSON.stringify(oldStorage));
+  }
 };
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -144,6 +143,8 @@ eraseButton.addEventListener('click', () => {
   ol.innerHTML = '';
   olPrice.innerText = '';
   startCart = 0;
+  localStorage.removeItem('valor');
+  localStorage.removeItem(totalValue);
 });
 
 function initialRenderization() {
