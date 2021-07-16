@@ -18,6 +18,8 @@ const esvaziarCarrinho = () => {
   btnEsvaziar.addEventListener('click', () => {
     const tagOL = document.querySelector(itemsCart);
     tagOL.innerHTML = '';
+    localStorage.removeItem('lista');
+    document.querySelector('.total-price').innerText = 'R$: 0';
   });
 };
 
@@ -97,10 +99,12 @@ const addItensToSection = (items) => {
 };
 
 const fetchML = (query) => {
+  const msgLoading = document.querySelector('.loading');
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=$${query}`)
     .then((response) => { // response traz todas a informações porem de formato de bytes
       response.json().then((data) => {
         addItensToSection(data.results);
+        msgLoading.remove();
       });
     });
 };
