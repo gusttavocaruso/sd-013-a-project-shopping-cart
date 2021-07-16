@@ -24,21 +24,22 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
 
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+  event.target.remove();
+}
 
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
 
 const addItensToSection = (items) => {
   items.forEach((item) => {
@@ -57,6 +58,28 @@ const fetchML = (query) => {
     });
 };
 
- window.onload = () => { 
-   fetchML('computador');
- };
+const addProduto = (idItems) => {
+  fetch(`https://api.mercadolibre.com/items/${idItems}`)
+    .then((response) => response.json())
+    .then((data) => data);
+};
+
+const btnAdicionaProdut = () => {
+  const allProducts = document.querySelector('.items');
+
+  allProducts.addEventListener('click', async (addclick) => {
+    if (addclick.target.className === 'item__add') {
+      const paiElement = addclick.target.parentElement;
+      const retornaId = getSkuFromProductItem(paiElement);
+      const retornaFuncAddProduto = await addProduto(retornaId);
+      const adicionaLi = createCartItemElement(retornaFuncAddProduto);
+      document.querySelector('.cart__items').appendChild(adicionaLi);
+    }
+  });
+};
+
+window.onload = () => {
+  fetchML('computador');
+  // addProduto('MLB1341706310')
+  btnAdicionaProdut();
+};
