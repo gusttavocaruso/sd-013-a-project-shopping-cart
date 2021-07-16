@@ -1,3 +1,5 @@
+const olLista = document.querySelector('.cart__items');
+
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -47,11 +49,10 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-
 const salvar = () => {
-  const ol = document.querySelector('.cart__items');
+  const ol = document.querySelector(olLista);
   localStorage.setItem('lista', ol.innerHTML);
-}
+};
 
 function cartItemClickListener(event) {
   event.target.remove();
@@ -71,10 +72,10 @@ const btnAddCart = () => {
   const section = document.querySelector('.items');
   section.addEventListener('click', (event) => {
     if (event.target.className === 'item__add') {
-      fetchItemId(event)
+      fetchItemId(event);
     }
-  })
-}
+  });
+};
 
 // Adicionando na lista:
 const fetchItemId = (botao) => {
@@ -88,8 +89,8 @@ const fetchItemId = (botao) => {
     const addOl = document.querySelector('.cart__items');
     addOl.appendChild(criarLi);
     salvar();
-  })
-}
+  });
+};
 
 const limparCarrinho = () => {
   const btnLimpar = document.querySelector('.empty-cart');
@@ -99,8 +100,8 @@ const limparCarrinho = () => {
     const lis = document.querySelectorAll('.cart__item');
     lis.forEach((elements) => ol.removeChild(elements));
     localStorage.clear();
-  })
-}
+  });
+};
 
 window.onload = () => {
   fetchCart('computador');
