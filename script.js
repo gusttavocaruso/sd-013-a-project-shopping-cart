@@ -29,6 +29,34 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+const createTotal = (sum) => {
+  const searchSection = document.querySelector('.total-price');
+  if (searchSection) searchSection.remove();
+  const section = document.createElement('section');
+  section.className = 'total-price';
+  const h3 = document.createElement('h3');
+  h3.className = 'h3';
+  h3.textContent = `${sum}`;
+  document.querySelector('.cart').appendChild(section);
+  document.querySelector('.total-price').appendChild(h3);
+};
+
+const priceSum = () => {
+  let sum = 0;
+  let position = '';
+  let concatenar = '';
+  document.querySelectorAll('li').forEach((li) => {
+    position = li.textContent.indexOf('$') + 1;
+    for (position; position < li.textContent.length; position += 1) {
+      concatenar += li.textContent[position];
+    }
+    concatenar = Number(concatenar).toFixed(2);
+    sum += Number(concatenar);
+    concatenar = '';
+  });
+  createTotal(sum);
+};
+
 const deletar = (idItem) => {
   const produtos = document.querySelectorAll('li');
   const newObjeto = { item: [] };
@@ -41,6 +69,7 @@ const deletar = (idItem) => {
 function cartItemClickListener(event) {
   event.target.remove();
   deletar(event.target.id);
+  priceSum();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -82,8 +111,10 @@ const addClick = (id) => {
     .then((response) => {
       response.json().then((data) => {
         const novoProduto = createCartItemElement(data);
+        console.log(data);
         document.querySelector('.cart__items').appendChild(novoProduto);
         save();
+        priceSum();
       });
     });
 };
@@ -102,15 +133,19 @@ const clearList = () => {
   localStorage.clear();
 };
 
-window.onload = () => {
-  if (Storage) {
-    const object = JSON.parse(localStorage.getItem('item'));
-    if (object) load();
-  }
-  fetchML('computador');
+const haha = () => {
   document.querySelector('.items').addEventListener('click', (event) => {
     if (event.target.className === 'item__add') addClick(event.target.parentNode.id);
   });
+};
 
+window.onload = () => {
+  if (Storage) {
+    const object = JSON.parse(localStorage.getItem('item'));
+    if (object && Object.values(object).length > 0) load();
+  }
+  haha();
+  fetchML('computador');
   document.querySelector('.empty-cart').addEventListener('click', clearList);
+  priceSum();
 };
