@@ -33,15 +33,15 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 }
 
 // REQUISITO 1 =================================================================================
-const listProducts = () => {
-  const getLoading = document.querySelector('.loading');
-  getLoading.innerText = 'loading...';
+const listProducts = () => { // REQUISITO 7 ====================================================
+  const getLoading = document.querySelector('.loading'); // pega o elemento P criado no HTML para colocar o loading
+  getLoading.innerText = 'loading...'; // acrescenta o texto loading
   const url = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
   const getSection = document.querySelector('.items');
   
   fetch(url)
     .then((response) => {
-      getLoading.remove();
+      getLoading.remove(); // remove o loading... antes dos elementos computadores serem colocados na tela
       return response.json();
     })
     .then((data) => data.results.forEach((computer) => 
