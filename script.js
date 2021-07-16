@@ -26,6 +26,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+// PARTE QUESTÃO 2
 function createSection(itens) {
   itens.forEach((item) => {
     const createItem = createProductItemElement(item);
@@ -34,10 +35,12 @@ function createSection(itens) {
   });
 }
 
+// PARTE QUESTÃO 2
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// QUESTÃO 3
 function cartItemClickListener(li) {
   li.target.remove();
 }
@@ -50,6 +53,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
+// PARTE QUESTÃO 2 COM 7 INCLUSA
 const lista = (query) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
   .then((response) => response.json()
@@ -59,6 +63,7 @@ const lista = (query) => {
   }));
 };
 
+// QUESTÃO 1
 const fetchId = (event) => {
   const elementoPai = event.target.parentElement;
   const idElement = getSkuFromProductItem(elementoPai);
@@ -72,6 +77,7 @@ const fetchId = (event) => {
   });
 };
 
+// QUESTÃO 2
 function escutarClick() {
   const itemList = document.querySelector('.items');
   itemList.addEventListener('click', (event) => {
@@ -81,12 +87,14 @@ function escutarClick() {
   });
 }
 
+// PARTE QUESTÃO 4
 function salvarLocal() {
   if (localStorage.li) {
     document.querySelector('.cart__items').innerHTML = localStorage.li;
   }
 }
-
+ 
+// QUESTÃO 6
 function esvaziarCarrinho() {
   const buttn = document.querySelector('.empty-cart');
   buttn.addEventListener('click', () => {
@@ -99,6 +107,7 @@ window.onload = () => {
   lista('computador');
   escutarClick();
   salvarLocal();
+  // pullDiv();
   esvaziarCarrinho();
  };
 

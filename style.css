@@ -1,3 +1,9 @@
+.titulo {
+  font-size: 30px;
+  height: 60px;
+  text-align: center;
+}
+
 .top-bar {
   align-items: center;
   display: flex;
@@ -31,7 +37,7 @@
 }
 
 .item {
-  border: 2px solid blue;
+  border: 2px solid rgb(26, 26, 27);
   border-radius: 5px;
   box-sizing: border-box;
   display: flex;
@@ -56,7 +62,7 @@
 }
 
 .item .item__add {
-  background-color: green;
+  background-color: rgb(255, 152, 241);
   border: 0;
   cursor: pointer;
   margin: 0;
@@ -73,4 +79,8 @@
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+}
+
+.empty-cart {
+  background-color: rgb(255, 152, 241);
 }
