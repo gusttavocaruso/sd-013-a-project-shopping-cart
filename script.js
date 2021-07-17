@@ -1,12 +1,66 @@
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
+let array = [];
+let total = 0;
+const URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
+
+const arrayPush = (item) => array.push(item);
+const appendTotal = (number) => {
+  const priceElement = document.querySelector('.total-price');
+  priceElement.style.textAlign = 'center';
+  priceElement.innerText = `${number}`;
+  return priceElement;
+};
+
+// requisito 5
+const totalValue = () => {
+  total = 0;
+  const cartItems = document.querySelectorAll('li');
+  const arrayItems = Array.from(cartItems);
+  arrayItems.forEach((item) => {
+    const textItem = item.innerText;
+    const textItemSplit = textItem.split('$');
+    const price = parseFloat(textItemSplit[1]);
+    total += price;
+  });
+  return appendTotal(total);
+};
+
+// requisito 4
+
+const saveToLocalStorage = () => {
+  localStorage.setItem('savedCarts', JSON.stringify(array));
+};
+
+function cartItemClickListener(event) {
+  const index = Array.from(document.querySelectorAll('li')).indexOf(event.target);
+  console.log(index);
+  array.splice(index, 1);
+  event.target.remove();
+  saveToLocalStorage();
+  totalValue();
 }
 
-function createProductImageElement(imageSource) {
-  const img = document.createElement('img');
-  img.className = 'item__image';
-  img.src = imageSource;
-  return img;
+function createCartItemElement({ sku, name, salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+const getLocalStorage = () => {
+  const ol = document.querySelector('ol');
+  const info = JSON.parse(localStorage.getItem('savedCarts'));
+  if (info) {
+    array = info;
+    info.forEach((item) => {
+      const element = createCartItemElement(item);
+      ol.appendChild(element);
+    });
+  }
+};
+
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
 }
 
 function createCustomElement(element, className, innerText) {
@@ -14,6 +68,13 @@ function createCustomElement(element, className, innerText) {
   e.className = className;
   e.innerText = innerText;
   return e;
+}
+
+function createProductImageElement(imageSource) {
+  const img = document.createElement('img');
+  img.className = 'item__image';
+  img.src = imageSource;
+  return img;
 }
 
 function createProductItemElement({ sku, name, image }) {
@@ -26,27 +87,16 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function cartItemClickListener(event) {
-  event.target.remove();
-}
-
-function createCartItemElement({ sku, name, salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
-
-// requisito 4 // a função deve ser declarada antes da sua execução na linha 92
-function saveCart() {
-  const info = document.querySelector('ol').innerHTML;
-  const obj = {
-    dados: 'itemsList',
-    content: info,
-  };
-  if (info) localStorage.setItem(obj.dados, obj.content);
-}
+const display = (value) => {
+  const sectionItems = document.querySelector('.items');
+  if (value === 'on') {
+    const p = document.createElement('p');
+    p.className = 'loading';
+    p.innerText = 'Loading...';
+    return sectionItems.appendChild(p);
+  }
+  return document.querySelector('.loading').remove();
+};
 
 // requisito 1
 const fetchItems = async (url) => {
@@ -56,10 +106,10 @@ const fetchItems = async (url) => {
 };
 
 const appendProducts = async () => {
-  const p = document.querySelector('.loading');
   const items = document.querySelector('.items');
-  const products = await fetchItems('https://api.mercadolibre.com/sites/MLB/search?q=computador');
-  if (products) p.remove(); // requisito 7;
+  display('on');
+  const products = await fetchItems(URL);
+  display('off');
   products.forEach((element) => items.append((createProductItemElement({
     sku: element.id,
     name: element.title,
@@ -74,52 +124,26 @@ const fetchItem = async (item) => {
   return itemAdded;
 };
 
+const appendCart = async (id) => {
+  const ol = document.querySelector('ol');
+  const data = await fetchItem(id);
+  const item = { sku: data.id, name: data.title, salePrice: data.price };
+  const cart = createCartItemElement(item);
+  ol.appendChild(cart);
+  arrayPush(item);
+  saveToLocalStorage();
+  totalValue();
+};
+
 const addButtonListener = () => {
   const items = document.querySelector('.items');
   for (let i = 0; i < items.children.length; i += 1) {
     const element = items.children[i];
     const id = getSkuFromProductItem(element);
-    const button = element.getElementsByClassName('item__add')[0];
-    button.addEventListener('click', async () => {
-      const data = await fetchItem(id);
-      const cart = createCartItemElement({
-        sku: data.id,
-        name: data.title,
-        salePrice: data.price,
-      });
-      const ol = document.querySelector('ol');
-      ol.appendChild(cart);
-      saveCart(); // a função deve ser chamada aqui pois é quando a li é criada.
-    });
+    const button = element.querySelector('button.item__add');
+    button.addEventListener('click', () => appendCart(id));
   }
 };
-
-// requisito 4
-function getSavedCart() {
-  const getInfo = localStorage.getItem('itemsList');
-  document.querySelector('ol').innerHTML = getInfo;
-}
-
-// requisito 5
-// const sumItensValue = async () => {
-//   const items = await document.querySelector('.cart__items').children; // seleciona todos os filhos da da section.cart__items
-//   console.log(items);
-//   const htmlArray = Array.from(items, (item) => (item.innerText.split('$'))); // cria uma array com os elementos HTML dos itens filhos
-//   console.log(htmlArray);
-//   const pricesArray = htmlArray.map((item) => parseInt(item[1])); // cria um array com os  nomes e valores de cada item
-//   //console.log(pricesArray);
-//   const total = pricesArray.reduce((acc, crr) => acc + crr, 0);
-//   console.log(total);
-//   return total;
-// };
-
-// const appendTotalElement = async () => {
-//   const sectionCart = document.querySelector('.cart');
-//   const span = document.createElement('span');
-//   span.style.textAlign = 'center';
-//   span.innerText = await `Total: ${sumItensValue()}`;
-//   sectionCart.appendChild(span);
-// };
 
 // requisito 6
 const wipeCart = () => {
@@ -127,14 +151,16 @@ const wipeCart = () => {
   const ol = document.querySelector('ol');
   button.addEventListener('click', () => {
     ol.innerHTML = '';
+    localStorage.clear();
+    totalValue();
   });
 };
 
 window.onload = async () => {
-  await fetchItems('https://api.mercadolibre.com/sites/MLB/search?q=computador');
+  await fetchItems(URL);
   await appendProducts();
+  getLocalStorage();
   addButtonListener();
-  // await appendTotalElement();
-  getSavedCart();
+  totalValue();
   wipeCart();
 };
