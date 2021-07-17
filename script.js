@@ -125,8 +125,21 @@ const mercadoLivre = ((query) => {
     });
 });
 
+// desafio 6
+const limparCarrinho = () => {
+const butao = document.querySelector('.empty-cart');
+
+butao.addEventListener('click', () => {
+  const ol = document.querySelector(string);
+  ol.innerHTML = '';
+  divdiv();
+  addStorage();
+});
+};
+
 window.onload = () => {
   mercadoLivre('computador');
   retornaValor();
   divdiv();
+  limparCarrinho();
 };
