@@ -78,3 +78,20 @@
 .cart__item {
 list-style-type: square;
 }
+
+.loading {
+  text-align: center;
+}
+
+ /* .loading {
+  border: 8px solid rgba(0, 0, 0, .1);
+  border-left-color: #22a6b3;
+  height: 45px;
+  width: 45px;
+  border-radius: 50%;
+  animation: spin 1s infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(1turn); }
+} */
