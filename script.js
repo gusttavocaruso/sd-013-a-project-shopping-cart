@@ -39,22 +39,24 @@ const returnfetch = async (query) => {
 const mercadJson = await rFetch.json();
 mercadJson.results.forEach((element) => createProductItemElement(element));
 };
-// resolve o requisito 3 remove o alvo clicado
 
-// resolve o requisito 2 onde li é colocado como filho da class cart items
-// e desestrutura algumas chaves do paramentro 
-// 2a
+function sumPrice() {
+  const total = document.querySelector('.total-price');
+  const price = document.querySelectorAll('.cart__item');
+  let preco = 0;
+  price.forEach((textprice) => {
+    const separaPreco = textprice.innerText.split('$'); // aqui é separado o texto antes e depois de cifrao, onde é colocado dentro de um array pelo metodo split.(oque precisamos é o depois do cifrao que é o preço que iremos usar)
+    preco += Number(separaPreco[1]);// aqui eu chamo o preço e transformo em numero e coloco dentro da variavel preco
+  });
 
-// 2b
-
-// pega o id que vai ser usado na fetch da funçao realizarRequis
-//
+  total.innerHTML = `${(Math.round((preco * 100)) / 100)}`; // Aqui serve para arrendondar os numeros e deixar legivel em duas casas decimais
+}
 
 function salvaLocalSto() {
   const cart = document.querySelector('.cart__items');
   localStorage.setItem('cart', JSON.stringify(cart.innerHTML));
+  sumPrice();
 }
-
 function apagarCarrinho() {
 const botao = document.querySelector('.empty-cart');
 botao.addEventListener('click', () => {
@@ -79,13 +81,14 @@ function carrinhoClient() {
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const li = document.createElement('li');
+ const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`; 
   li.addEventListener('click', cartItemClickListener);
   
   return li;
 }
+// const total = arrPrice.reduce((acc, cV) => acc + cV, 0);
 
 const realizarRequis = async (itemId) => {
   // const cart = document.querySelector('ol.cart__items');
@@ -109,7 +112,7 @@ const getSkuFromProductItem = (click) => {
 } */
 
 function eventos() {
-  // productItemClickListener();
+  // p  
   document.addEventListener('click', getSkuFromProductItem);
 }
 
@@ -118,6 +121,7 @@ window.onload = () => {
   eventos();
   carrinhoClient();
   apagarCarrinho();
+  sumPrice();
   // createCartItemElement(); 
   // TESTreturnfetch("MLB1341706310");
   // createCartItemElement();
