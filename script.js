@@ -1,4 +1,11 @@
 const classCartItems = '.cart__items';
+let valueObj = {
+  products: [],
+};
+const sumProducts = {
+  total: 0,
+};
+const priceKey = 'total-price';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -16,6 +23,7 @@ function createCustomElement(element, className, innerText) {
 
 function removeAllProducts() {
   document.querySelector(classCartItems).innerText = '';
+  localStorage.clear();
 }
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
@@ -31,24 +39,27 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-let valueObj = {
-  products: [],
-};
-
 function setStorage(li) {
   valueObj.products.push(li);
   localStorage.setItem('purchase', JSON.stringify(valueObj));
+  document.querySelector('.total-price')
+  .innerText = Math.floor(sumProducts.total * 100) / 100;
 }
 
 async function cartItemClickListener(event) {
   if (event.target.closest(classCartItems)) {
+    let subPrice = event.target.innerText.slice(-5);
+    if (subPrice.indexOf('$') !== -1) {
+      subPrice = subPrice.substring(1);
+    } 
+    sumProducts.total -= Number(subPrice);
+    localStorage.setItem(priceKey, JSON.stringify(sumProducts.total));
     document.querySelector(classCartItems).removeChild(event.target);
     valueObj = {
       products: [],
     };
     setStorage(document.querySelectorAll('.cart__item')
     .forEach((product) => {
-      console.log(product.innerText);
       setStorage(product.innerText);
     }));
   }
@@ -58,8 +69,9 @@ function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  console.log(`SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`);
   document.querySelector(classCartItems).addEventListener('click', cartItemClickListener);
+  sumProducts.total += salePrice;
+  localStorage.setItem('total-price', JSON.stringify(sumProducts.total));
   return li;
 }
 
@@ -74,14 +86,16 @@ function localCart() {
   if (localStorage.length !== 0) {
      const getObjLStorage = JSON.parse(localStorage.getItem('purchase'));
      localStorage.setItem('purchase', localStorage.getItem('purchase'));
+     sumProducts.total = JSON.parse(localStorage.getItem(priceKey));
+     console.log('variável', sumProducts.total);
+     localStorage.setItem(priceKey, JSON.stringify(sumProducts.total));
+     document.querySelector('.total-price').innerText = Math.floor(sumProducts.total * 100) / 100;
      getObjLStorage.products.forEach((cartItem) => {
-      console.log(cartItem); 
       createStorageitems(cartItem);
+      document.querySelector(classCartItems).addEventListener('click', cartItemClickListener);
       });
   }
 }
-
-// const fetch = require('node-fetch');
 
 const addProducts = (products) => {
   products.forEach((product) => {
@@ -112,11 +126,21 @@ const addItemtoCart = () => {
   });
 };
 
+async function loading() {
+  const li = document.createElement('li');
+  li.innerText = 'loading...';
+  li.className = 'loading';
+  document.querySelector(classCartItems).appendChild(li);
+}
+
 const fetchAPI = async (search) => {
   try {
     return fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`)
     .then((response) => {
+      loading();
       response.json().then((value) => {
+        document.querySelector(classCartItems).innerText = '';
+        localCart();
         addProducts(value.results);
         addItemtoCart();
     });
@@ -128,5 +152,4 @@ const fetchAPI = async (search) => {
 
 window.onload = () => {
   fetchAPI('magiccubes');
-  localCart();
  };
