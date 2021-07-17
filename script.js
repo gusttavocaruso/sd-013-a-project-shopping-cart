@@ -1,3 +1,9 @@
+//Queria agradecer aos trybees, em especial Matheus Duarte pela força ^^!
+//============== Variáveis globais ==============
+const getCartOl = document.querySelector('.cart__items');
+//==============                   ==============
+
+//============== Começo do código ==============
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -12,7 +18,8 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
+  const items = document.querySelector('.items')
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -20,8 +27,12 @@ function createProductItemElement({ sku, name, image }) {
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+  section.lastElementChild.addEventListener('click', (callback) => {
+    const getId = callback.target.parentElement.firstElementChild.innerText;
+    setItemOnCart(getId);
+  })
 
-  return section;
+  items.appendChild(section);
 }
 
 function getSkuFromProductItem(item) {
@@ -32,7 +43,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -40,4 +51,22 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+function getSiteApi() {
+  fetch("https://api.mercadolibre.com/sites/MLB/search?q=computador")
+    .then((result) => {result.json()
+    .then((another) => another.results.forEach((element) => {
+      createProductItemElement(element)
+    }))
+  })
+    .catch(() => console.log('Error'));
+}
+
+function setItemOnCart(itemId) {
+  const product = fetch(`https://api.mercadolibre.com/items/${itemId}`)
+  .then((result) => result.json())
+  // .catch(() => alert('Erro: Alguma coisa fora do comum aconteceu :c'));
+  createCartItemElement(product);
+}
+
+
+window.onload = () => { getSiteApi() };
