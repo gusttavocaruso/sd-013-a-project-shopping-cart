@@ -1,3 +1,5 @@
+const ol = document.querySelector('.cart__items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -24,27 +26,53 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
+function cartItemClickListener(event) {
+  event.target.remove(); // (REQUISITO 3)
+}
 
-// function cartItemClickListener(event) {
-//   // coloque seu código aqui
-// }
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
 
-// function createCartItemElement({ sku, name, salePrice }) {
-//   const li = document.createElement('li');
-//   li.className = 'cart__item';
-//   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-//   li.addEventListener('click', cartItemClickListener);
-//   return li;
-// }
+// REQUISITO 2: =====================================
+
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
+const appendItem = ($ItemID) => {
+  fetch(`https://api.mercadolibre.com/items/${$ItemID}`)
+    .then((response) => {
+      response.json().then((data) => {
+        ol.appendChild(createCartItemElement(data));
+      });
+    });
+};
+
+const getProductId = (event) => {
+  const getId = getSkuFromProductItem(event.target.parentNode); // para pegar o id    
+  appendItem(getId);
+};
+
+const addToCart = () => {
+  const addButton = document.querySelectorAll('.item__add');
+  addButton.forEach((button) => {
+    button.addEventListener('click', (getProductId));
+  });
+};
+
+// REQUISITO 1: =====================================
 
 const addItemsToSection = (items) => {
   items.forEach((item) => {
-    const itemElement = createProductItemElement(item); //  item == produto
+    const itemElement = createProductItemElement(item); //  item === produto
     const section = document.querySelector('.items');
     section.appendChild(itemElement);
+    addToCart();
   });
 };
 
