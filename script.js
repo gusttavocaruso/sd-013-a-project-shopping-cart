@@ -135,9 +135,9 @@ async function loading() {
 
 const fetchAPI = async (search) => {
   try {
+    loading();
     return fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${search}`)
     .then((response) => {
-      loading();
       response.json().then((value) => {
         document.querySelector(classCartItems).innerText = '';
         localCart();
