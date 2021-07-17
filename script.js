@@ -1,4 +1,22 @@
 const string = '.cart__items';
+
+// desafio5
+const sum = () => {
+  const ol = document.querySelector(string);
+  const divs = [...ol.children];
+  const sumPrice = divs.reduce((acc, li) => {
+    let acumulador = acc;
+    acumulador += Number(li.innerText.split('$')[1]);
+    return acumulador;
+  }, 0);
+  return sumPrice;
+};
+
+const divdiv = () => {
+  const div = document.querySelector('.total-price');
+  div.innerText = `${Math.round(sum() * 100) / 100}`;
+};
+
 // função para exercico 1: cria imagens
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -32,29 +50,21 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-// desafio5
-// const sum = () => {
-//   const ol = document.querySelector(string);
-//   const divs = [...ol.children];
-//   divs.reduce((acc, li) => {
-//   let acc = acc;
-//   acc += number(li.innerText.split('$')[1]
-//   return acc
-//   }, 0);
-//   return divs;
-// };
-// const divdiv =() => {
-//   const div = document.querySelector('')
-// }
-
 // desafio4
-const local = () => {
+const addStorage = () => {
   const ol = document.querySelector(string);
   const olol = ol.innerHTML;
   localStorage.setItem('lista', olol);
 };
 
-const salva = (() => {
+// desafio3
+function cartItemClickListener(event) {
+  event.target.remove();
+  addStorage();
+  divdiv();
+}
+
+const retornaValor = (() => {
   const ol = document.querySelector(string);
   ol.innerHTML = localStorage.getItem('lista');
   // console.log(ol.children);
@@ -64,12 +74,6 @@ const salva = (() => {
     }
   });
 });
-
-// desafio3
-function cartItemClickListener(event) {
-  event.target.remove();
-  local();
-}
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -87,7 +91,8 @@ const funcFetch = (query) => {
       const li = createCartItemElement(data);
       const ol = document.querySelector(string);
       ol.appendChild(li);
-      local();
+      addStorage();
+      divdiv();
     });
 };
 
@@ -122,5 +127,6 @@ const mercadoLivre = ((query) => {
 
 window.onload = () => {
   mercadoLivre('computador');
-  salva();
+  retornaValor();
+  divdiv();
 };
