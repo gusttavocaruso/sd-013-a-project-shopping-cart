@@ -121,6 +121,8 @@ const mercadoLivre = ((query) => {
     .then((resposta) => {
       resposta.json().then((data) => {
         addProducts(data.results);
+        const loading = document.querySelector('.loading');
+        loading.remove();
       });
     });
 });
