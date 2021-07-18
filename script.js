@@ -26,9 +26,33 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+// REQUISITO 4: =====================================
+
+// Função que salva produtos da ol no Local Storage:
+const saveToLocalStorage = () => {
+  const olInnerHTML = ol.innerHTML; // pega todas as lis que tem dentro da ol
+  localStorage.setItem('cartProducts', ''); // localStorage.setItem('CHAVE'*, 'VALOR'*); // feito por padrão, não necessário
+  localStorage.setItem('cartProducts', JSON.stringify(olInnerHTML)); // O local storage só aceita string
+};
+
 function cartItemClickListener(event) {
   event.target.remove(); // (REQUISITO 3)
+  saveToLocalStorage(); // salva as lis que restaram, ou seja, atualiza a parada
 }
+// CONTINUAÇÃO DO REQUISITO 4 =========================
+
+const retrieveLocalStorage = () => {
+  const retrieveStorage = JSON.parse(localStorage.getItem('cartProducts'));// chama de volta o item e transforma com o parse o que ele era antes. exe: era objeto virou string, dae volta a ser objeto
+
+  ol.innerHTML = retrieveStorage;
+  ol.addEventListener('click', (event) => {
+    if (event.target.className === 'cart__item') { // se evento for no filho- li 
+      cartItemClickListener(event); // chama o evento de remover as lis , porque ao recuperar precisa poder clicar e apagar de novo as lis.
+    }
+  });
+};
+
+// REQUISITO 2: =====================================
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -37,8 +61,6 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
-// REQUISITO 2: =====================================
 
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
@@ -49,6 +71,7 @@ const appendItem = ($ItemID) => {
     .then((response) => {
       response.json().then((data) => {
         ol.appendChild(createCartItemElement(data));
+        saveToLocalStorage(); // salva as lis atuais (incluindo a que acabou de ser adicionada), ou seja, atualiza a parada
       });
     });
 };
@@ -88,4 +111,5 @@ const fetchML = (query) => {
 
 window.onload = () => {
   fetchML('computador');
+  retrieveLocalStorage();
 };
