@@ -1,6 +1,8 @@
+// Requisitos 4 a 7 desenvolvidos com ajuda da Aline Hoshino
+
 const ol = document.querySelector('.cart__items');
 
-// REQUISITO 5: =====================================
+// REQUISITO 5: ======================================================
 
 const totalPrice = () => {
   const spanOfTotalPrice = document.querySelector('.total-price');
@@ -18,9 +20,9 @@ const totalPrice = () => {
   spanOfTotalPrice.innerHTML = `${(Math.round((price * 100)) / 100)}`;// arredonda o preço (os centavos) 
 };
 
-// REQUISITO 4: =====================================
+// REQUISITO 4: ======================================================
 
-// Função que salva produtos da ol no Local Storage:
+// Função que SALVA os produtos da ol no Local Storage:
 const saveToLocalStorage = () => {
   const olInnerHTML = ol.innerHTML; // pega todas as lis que tem dentro da ol
   localStorage.setItem('cartProducts', ''); // localStorage.setItem('CHAVE'*, 'VALOR'*); // feito por padrão, não necessário
@@ -33,10 +35,12 @@ function cartItemClickListener(event) {
   saveToLocalStorage(); // salva as lis que restaram, ou seja, atualiza a parada
 }
 
+// Função que RESGATA os produtos salvos no Local Storage:
 const retrieveLocalStorage = () => {
   const retrieveStorage = JSON.parse(localStorage.getItem('cartProducts'));// chama de volta o item e transforma com o parse o que ele era antes (ex: era objeto e virou string, dae volta a ser objeto)
 
   ol.innerHTML = retrieveStorage;
+
   ol.addEventListener('click', (event) => {
     if (event.target.className === 'cart__item') { // se evento for no filho- li 
       cartItemClickListener(event); // chama o evento de remover as lis , porque ao recuperar precisa poder clicar e apagar de novo as lis.
@@ -44,7 +48,7 @@ const retrieveLocalStorage = () => {
   });
 };
 
-// REQUISITO 2: =====================================
+// REQUISITO 2: ======================================================
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -81,7 +85,7 @@ const addToCart = () => {
   });
 };
 
-// REQUISITO 1: =====================================
+// REQUISITO 1: ======================================================
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -131,7 +135,7 @@ const fetchML = (query) => {
     });
 };
 
-// REQUISITO 6: =====================================
+// REQUISITO 6: ======================================================
 
 const eraseAll = () => {
   ol.innerHTML = '';
@@ -145,7 +149,7 @@ const emptyCart = () => {
   emptyCartButton.addEventListener('click', eraseAll);
 };
 
-// ==================================================
+// ======================================================
 
 window.onload = () => {
   fetchML('computador');
