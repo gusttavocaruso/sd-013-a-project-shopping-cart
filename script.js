@@ -88,7 +88,7 @@ function createProductItemElement({ sku, name, image }) {
 }
 
 const display = (value) => {
-  const sectionItems = document.querySelector('.container');
+  const sectionItems = document.querySelector('.cart');
   if (value === 'on') {
     const p = document.createElement('p');
     p.className = 'loading';
