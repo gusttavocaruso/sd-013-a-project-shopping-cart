@@ -58,8 +58,8 @@ function chamarFetchId(id) {
             const resultado = respostajson;
             resolve(resultado);
           });
+        });
       });
-  });
 }
 
 function createCartItemElement({
@@ -79,17 +79,30 @@ function enviarItem() {
   for (let index = 0; index < botoes.length; index += 1) {
     botoes[index].addEventListener('click', function () {
       const botaoAtual = botoes[index].parentNode.firstElementChild.innerHTML;
+      // const loading = document.createElement('li')
+      // loading.className = 'loading'
+      // listaDeItens.appendChild(loading)
       chamarFetchId(botaoAtual).then((value) => {
         document.querySelector('.cart__items')
           .appendChild(createCartItemElement((value)));
       });
+      // loading.remove()
     });
   }
 }
 
+const body = document.querySelector('body');
+
 async function jogarItens() {
   try {
+    const loading = document.createElement('li');
+    loading.className = 'loading';
+    // loading.innerText = 'Itens'
     const itens = await getJsonFromProduct();
+    body.appendChild(loading);
+    setTimeout(() => {
+      loading.remove();
+    }, 500);
     itens.forEach((cadaItem) => {
       document.querySelector('.items').appendChild(createProductItemElement(cadaItem));
     });
@@ -102,13 +115,13 @@ async function jogarItens() {
 jogarItens();
 
 const botaoEsvaziar = document.querySelector('button.empty-cart');
-const listaDeItens = document.querySelector('ol.cart__items')
+const listaDeItens = document.querySelector('ol.cart__items');
 
-function apagarItens () {
-  listaDeItens.innerHTML = ''
+function apagarItens() {
+  listaDeItens.innerHTML = '';
 }
 
-botaoEsvaziar.addEventListener('click', apagarItens)
+botaoEsvaziar.addEventListener('click', apagarItens);
 
 window.onload = () => {
   
