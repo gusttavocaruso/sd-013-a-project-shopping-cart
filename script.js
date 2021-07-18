@@ -24,13 +24,14 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-// Função que busca ID do computador selecionado
+// Função que busca ID do computador selecionado.
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// Requisito 3 remover item do carrinho ao clicar nele.
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  return event.target.remove('li');
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -41,7 +42,8 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-/* Requisito 1
+/* 
+Requisito 1
 Step 2
 Alocando cada computador em um elemento HTML criado pela função createProductItemElement */
 const adComputer = (compItem) => {
