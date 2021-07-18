@@ -36,8 +36,8 @@ function createCustomElement(element, className, innerText) {
 function totalPrice() {
   const getTotalPrice = document.querySelector('.total-price'); // acessamos o elemento que criamos no html chamando ele pela classe
   let price = 0; // iniciamos nosso preço total em 0
-  const AllLi = document.querySelectorAll('li'); // selecionamos todas as lis
-  AllLi.forEach((item) => { // para cada item da li
+  const allLi = document.querySelectorAll('li'); // selecionamos todas as lis
+  allLi.forEach((item) => { // para cada item da li
   const computer = item.innerText.split('$'); // vamos até o código do HTML e fazemos um split, que vai separar tudo do preço que vinha com $0000 (preço)
   price += Number(computer[1]); // indicamos a partir do número, sem o $, que é onde vamos acessar apenas os números para fazer a soma // obs: Number converte a string de preço em numero
   });
@@ -99,6 +99,23 @@ const setItemsLocalStorage = () => {
 };
 
   // Chamar função do Requisito 5 dentro da função do Requisito 3, que apaga tudo
+
+// ==============================================
+
+// Requisito 7 - Crie um loading que apareça enquanto a API está sendo buscada
+// Feito com a ajuda da Pessoa Estudante Pedro Delicolli da Turma 13A
+
+// ==============================================
+
+const createLoading = async () => { // criando o "loading" durante a requisição
+  const getLoading = document.querySelector('.loading'); // acessando a classe .loading
+  const api = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computadores'); // acessando api
+  const apiJson = await api.json(); // acessando arquivo json()
+  const arrayResultsJson = apiJson.results; // acessa exatamente os results do json que é onde iremos trabalhar
+  getLoading.remove(); // retirando a classe .loading
+  arrayResultsJson.forEach((product) => document.querySelector('.items') // percorrer cada computador que contenha a classe .items e injetar a função que cria os elementos no html
+    .appendChild(createProductItemElement(product))); // criar o elemento que só vai aparecer enquanto o link da API carrega
+};
 
 // ==============================================
 
@@ -181,7 +198,7 @@ const buttonAddCart = () => {
   const parent = document.querySelector('.items'); // acessamos a classe que possui os 50 computadores
   parent.addEventListener('click', async (event) => {
     if (event.target.className === 'item__add') { // se o click no botão do Add carrinho for feito
-      const buttonParent = event.target.parentElement; // acessar CADA botão dos computadores
+      const buttonParent = event.target.parentElement; // acessa o botão do carrinho e procura pelo pai dele (através do parentElement)
       const buttonId = getSkuFromProductItem(buttonParent);
       const buttonData = await getCartComputer(buttonId); // acessa o link de cada computador
       const createComputer = createCartItemElement(buttonData); // cria no formato id, nome e preço as lis de acordo com os dados do json que foram específicados na função createCartItemElement
@@ -221,4 +238,5 @@ window.onload = () => {
   getItemsLocalStorage();
   totalPrice();
   buttonRemoveAll();
+  createLoading();
 };
