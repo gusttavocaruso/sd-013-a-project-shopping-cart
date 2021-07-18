@@ -1,31 +1,5 @@
 const ol = document.querySelector('.cart__items');
 
-function createProductImageElement(imageSource) {
-  const img = document.createElement('img');
-  img.className = 'item__image';
-  img.src = imageSource;
-  return img;
-}
-
-function createCustomElement(element, className, innerText) {
-  const e = document.createElement(element);
-  e.className = className;
-  e.innerText = innerText;
-  return e;
-}
-
-function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
-  const section = document.createElement('section');
-  section.className = 'item';
-
-  section.appendChild(createCustomElement('span', 'item__sku', sku));
-  section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
-  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
-
-  return section;
-}
-
 // REQUISITO 5: =====================================
 
 const totalPrice = () => {
@@ -59,10 +33,8 @@ function cartItemClickListener(event) {
   saveToLocalStorage(); // salva as lis que restaram, ou seja, atualiza a parada
 }
 
-// CONTINUAÇÃO DO REQUISITO 4 =========================
-
 const retrieveLocalStorage = () => {
-  const retrieveStorage = JSON.parse(localStorage.getItem('cartProducts'));// chama de volta o item e transforma com o parse o que ele era antes. exe: era objeto virou string, dae volta a ser objeto
+  const retrieveStorage = JSON.parse(localStorage.getItem('cartProducts'));// chama de volta o item e transforma com o parse o que ele era antes (ex: era objeto e virou string, dae volta a ser objeto)
 
   ol.innerHTML = retrieveStorage;
   ol.addEventListener('click', (event) => {
@@ -111,9 +83,35 @@ const addToCart = () => {
 
 // REQUISITO 1: =====================================
 
+function createProductImageElement(imageSource) {
+  const img = document.createElement('img');
+  img.className = 'item__image';
+  img.src = imageSource;
+  return img;
+}
+
+function createCustomElement(element, className, innerText) {
+  const e = document.createElement(element);
+  e.className = className;
+  e.innerText = innerText;
+  return e;
+}
+
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
+  const section = document.createElement('section');
+  section.className = 'item';
+
+  section.appendChild(createCustomElement('span', 'item__sku', sku));
+  section.appendChild(createCustomElement('span', 'item__title', name));
+  section.appendChild(createProductImageElement(image));
+  section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
+
+  return section;
+}
+
 const addItemsToSection = (items) => {
   items.forEach((item) => {
-    const itemElement = createProductItemElement(item); //  item === produto
+    const itemElement = createProductItemElement(item); // item === produto
     const section = document.querySelector('.items');
     section.appendChild(itemElement);
     addToCart();
@@ -121,14 +119,14 @@ const addItemsToSection = (items) => {
 };
 
 const fetchML = (query) => {
-  const loading = document.querySelector('.loading');
+  const loading = document.querySelector('.loading'); // (REQUISITO 7)
 
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => { //  response traz todas as informações
       response.json().then((data) => {
         console.log(data.results);
         addItemsToSection(data.results);
-        loading.remove();
+        loading.remove(); // (REQUISITO 7)
       });
     });
 };
@@ -146,6 +144,8 @@ const emptyCart = () => {
   const emptyCartButton = document.querySelector('.empty-cart');
   emptyCartButton.addEventListener('click', eraseAll);
 };
+
+// ==================================================
 
 window.onload = () => {
   fetchML('computador');
