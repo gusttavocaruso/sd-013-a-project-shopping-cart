@@ -1,5 +1,6 @@
 const botaoEsvaziar = document.querySelector('button.empty-cart');
 const listaDeItens = document.querySelector('ol.cart__items');
+const preco = document.querySelector('p.total-price')
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -13,6 +14,14 @@ function createCustomElement(element, className, innerText) {
   e.className = className;
   e.innerText = innerText;
   return e;
+}
+
+function mostrarZero() {
+  if (preco.innerHTML === '0') {
+    preco.style.display = 'none';
+  } else {
+    preco.style.display = 'block';
+  }
 }
 
 function createProductItemElement({
@@ -31,8 +40,19 @@ function createProductItemElement({
   return section;
 }
 
+function removerValor(string, valor1, valor2) {
+  const stringNova = parseFloat(string.slice(valor1 + 1, valor2));
+  console.log(stringNova);
+  localStorage.preco = parseFloat(preco.innerHTML) - stringNova;
+  preco.innerHTML = localStorage.preco;
+}
+
 function cartItemClickListener(event) {
   event.target.remove();
+  const text = event.target.innerHTML;
+  const cifrao = /[$]/g;
+  const search = text.search(cifrao);
+  removerValor(text, search, text.length);
   localStorage.carrinho = listaDeItens.innerHTML;
 }
 
@@ -62,6 +82,12 @@ function chamarFetchId(id) {
       });
 }
 
+function adicionarPreco(valor) {
+  const total = parseFloat(preco.innerText) + valor;
+  localStorage.preco = parseFloat(preco.innerText) + valor;
+  return total;
+}
+
 function createCartItemElement({
   id: sku,
   title: name,
@@ -71,8 +97,8 @@ function createCartItemElement({
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  // localStorage.carrinho = listaDeItens.innerHTML;
-  // console.log(localStorage.carrinho);
+  preco.innerText = adicionarPreco(salePrice);
+  mostrarZero();
   return li;
 }
 
@@ -115,18 +141,24 @@ jogarItens();
 function apagarItens() {
   listaDeItens.innerHTML = '';
   localStorage.clear();
+  preco.innerHTML = '0';
+  mostrarZero();
 }
 
 botaoEsvaziar.addEventListener('click', apagarItens);
 
 if (localStorage.carrinho) {
   listaDeItens.innerHTML = localStorage.carrinho;
-  console.log(localStorage.carrinho);
   document.querySelectorAll('.cart__item').forEach((item) => {
     item.addEventListener('click', cartItemClickListener);
   });
 }
 
-window.onload = () => {
+if (localStorage.preco) {
+  preco.innerHTML = localStorage.preco;
+}
 
+mostrarZero();
+
+window.onload = () => {
 };
