@@ -48,7 +48,6 @@ const getJson = async (query) => {
 //   return li;
 // }
 
-
 window.onload = () => {
   getJson('computador');
 };
