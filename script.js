@@ -15,7 +15,7 @@ function totalPrice() {
   const allLi = document.querySelectorAll('.cart__item');// chamando as li pela classe
   allLi.forEach((item) => {
   const inner = item.innerText;// pegando o texto da li
-  const arrayofLi = inner.split('$'); // posição 0- é tudo que vem antes do cifrão que é isso aqui SKU: MLB1218701240 | NAME: Computador Pc Completo Intel 8gb Hd 500gb Monitor 18 Wind 10 | PRICE:, posição 1: 1269(preço)
+  const arrayofLi = inner.split('$');// posição 0- é tudo que vem antes do cifrão que é isso aqui SKU: MLB1218701240 | NAME: Computador Pc Completo Intel 8gb Hd 500gb Monitor 18 Wind 10 | PRICE:, posição 1: 1269(preço)
   price += Number(arrayofLi[1]);// só o price
   });
   span.innerHTML = `${(Math.round((price * 100)) / 100)}`;// arredondar os centavos 
@@ -62,9 +62,9 @@ const getComputertoCart = async (id) => { // ao pegar o id da função sku, cham
 };
 
 // requisito 4
-const addLocalStorage = () => { // só salva no local storage , chama a funcao para pegar o item salvo na linha 63
-  const ListOl = document.querySelector(cart);
-  const olHtml = ListOl.innerHTML;
+const addLocalStorage = () => { // só salva no local storage 
+  const ListOl = document.querySelector(cart);// chamei ol
+  const olHtml = ListOl.innerHTML;// peguei tudo que tem na ol
   localStorage.setItem('cartList', '');
   localStorage.setItem('cartList', JSON.stringify(olHtml));// local storage só aceita string
 };
