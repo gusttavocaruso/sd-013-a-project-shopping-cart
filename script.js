@@ -28,9 +28,19 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-function cartItemClickListener(event) { // função que cria o evento de click, para remover item da lista
+// Requisot 6 Função que apaga tudo
+const removeItemsCart = () => {
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', () => {
+  const li = document.querySelectorAll('.cart__item');
+    li.forEach((item) => item.parentNode.removeChild(item));
+  });
+};
+
+// Requisito 3
+// função que cria o evento de click, para remover item da lista
+function cartItemClickListener(event) {
   event.target.remove();
-  // coloque seu código aqui
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -53,9 +63,9 @@ const productML = (itemId) =>
 
 // Função que cria o evento de click no botão para adicionar o item ao carrinho quando clicar no botão.
 const addEventBtn = () => {
-  const btn = document.getElementsByClassName('item__add');
-    for (let i = 0; i < btn.length; i += 1) {
-      btn[i].addEventListener('click', (event) => {
+  const button = document.getElementsByClassName('item__add');
+    for (let i = 0; i < button.length; i += 1) {
+      button[i].addEventListener('click', (event) => {
       const itemId = getSkuFromProductItem(event.target.parentElement);
       productML(itemId);
       });
@@ -79,7 +89,8 @@ const mercadoLivre = (query) => {
   .then((data) => {
     addItensTo(data.results); // Chama a função que adiciona Itens ao elemeneto HTML.
     addEventBtn(); // Chama a função com evento de click no botão, que adiciona os itens ao html
-    });
+    removeItemsCart();
+  });
   });
 };
 
