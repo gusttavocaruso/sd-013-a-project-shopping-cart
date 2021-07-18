@@ -88,16 +88,16 @@ const fetchML = async () => {
   try {
     const response = await fetch(SEARCH_URL);
     if (!response.ok) {
-      throw new Error(`Couldnt fetch API`)
+      throw new Error('Couldnt fetch API');
     }
     const json = await response.json();
     createProductList(json.results);
-  } catch(e) {
+  } catch (e) {
     console.error(e);
   }
 };
 
-//Código tratando erro junto da execução (linha 122):
+// Código tratando erro junto da execução (linha 122):
 // const fetchML = async () => {
 //   const SEARCH_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 //   const response = await fetch(SEARCH_URL);
@@ -109,7 +109,7 @@ const fetchML = async () => {
 // };
 
 // Executores
-fetchML()
+fetchML();
   // .catch(e => {console.error(e)})
 
 if (localStorage.cart) {
