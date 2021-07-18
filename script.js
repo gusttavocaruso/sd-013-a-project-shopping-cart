@@ -14,13 +14,13 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-const updateLocalStorage = (item) => {
-  localStorage.cart = item;
+const updateLocalStorage = () => {
+  localStorage.cart = ol.innerHTML;
 };
 
 function cartItemClickListener(event) {
   event.target.remove();
-  updateLocalStorage(ol.innerHTML);
+  updateLocalStorage();
   // const ol = document.querySelector('.cart__items');
   // const li = document.querySelector()
   // ol.removeChild(li);
@@ -32,7 +32,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   ol.appendChild(li);
-  updateLocalStorage(ol.innerHTML);   
+  updateLocalStorage();   
 }
 
 const fetchCartItem = async (item) => {
@@ -77,14 +77,13 @@ const fetchProductAsync = async (query) => {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-// const emptyCartClickListener = () => {
+const emptyCartClickListener = () => {
+  ol.innerHTML = '';
+  updateLocalStorage();
+};
 
-// };
-
-// const emptyCart = () => {
-//   const emptyCartButton = document.querySelector('.empty-cart');
-//   emptyCartButton.addEventListener('click', emptyCartClickListener);
-// };
+const emptyCartButton = document.querySelector('.empty-cart');
+emptyCartButton.addEventListener('click', emptyCartClickListener);
 
 // window.onload = () => {
   fetchProductAsync('computador');
