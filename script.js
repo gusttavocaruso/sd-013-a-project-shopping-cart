@@ -1,6 +1,6 @@
 const botaoEsvaziar = document.querySelector('button.empty-cart');
 const listaDeItens = document.querySelector('ol.cart__items');
-const preco = document.querySelector('p.total-price')
+const preco = document.querySelector('p.total-price');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
