@@ -121,11 +121,14 @@ const addItemsToSection = (items) => {
 };
 
 const fetchML = (query) => {
+  const loading = document.querySelector('.loading');
+
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => { //  response traz todas as informações
       response.json().then((data) => {
         console.log(data.results);
         addItemsToSection(data.results);
+        loading.remove();
       });
     });
 };
@@ -136,6 +139,7 @@ const eraseAll = () => {
   ol.innerHTML = '';
   const spanOfTotalPrice = document.querySelector('.total-price');
   spanOfTotalPrice.innerText = 0.00;
+  saveToLocalStorage();
 };
 
 const emptyCart = () => {
