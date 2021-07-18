@@ -36,7 +36,7 @@ function cartItemClickListener(event) {
   localStorage.cart = cartContainer.innerHTML;
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -56,21 +56,18 @@ clearCart.addEventListener('click', cleanCart);
 
 // Req 2, 4, 5 e 7
 const addToCart = (item) => {
-  const newObj = { sku: item.id, name: item.title, salePrice: item.price };
   const cart = document.querySelector('.cart__items');
-  cart.appendChild(createCartItemElement(newObj));
+  cart.appendChild(createCartItemElement(item));
   const newVal = parseFloat(cartVal().innerHTML) + parseFloat(item.price);
   cartVal().innerHTML = Math.round(newVal * 100) / 100;
   localStorage.cart = cartContainer.innerHTML;
 };
 
-const fetchItem = (id) => fetch(`https://api.mercadolibre.com/items/${id}`)
-  .then((r) => r.json());
-
-const getItem = (e) => {
+const getItem = async (e) => {
   const item = e.target.parentElement;
   const sku = item.firstChild.innerHTML;
-  fetchItem(sku).then((r) => addToCart(r));
+  const itemJson = await (await fetch(`https://api.mercadolibre.com/items/${sku}`)).json();
+  addToCart(itemJson);
 };
 
 // Req 1
@@ -91,16 +88,16 @@ const fetchML = async () => {
   try {
     const response = await fetch(SEARCH_URL);
     if (!response.ok) {
-      throw new Error('Couldnt fetch API');
+      throw new Error(`Couldnt fetch API`)
     }
     const json = await response.json();
     createProductList(json.results);
-  } catch (e) {
+  } catch(e) {
     console.error(e);
   }
 };
 
-// Código tratando erro junto da execução (linha 122):
+//Código tratando erro junto da execução (linha 122):
 // const fetchML = async () => {
 //   const SEARCH_URL = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
 //   const response = await fetch(SEARCH_URL);
@@ -112,7 +109,7 @@ const fetchML = async () => {
 // };
 
 // Executores
-fetchML();
+fetchML()
   // .catch(e => {console.error(e)})
 
 if (localStorage.cart) {
