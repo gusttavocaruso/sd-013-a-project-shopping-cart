@@ -1,3 +1,6 @@
+const botaoEsvaziar = document.querySelector('button.empty-cart');
+const listaDeItens = document.querySelector('ol.cart__items');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -28,12 +31,9 @@ function createProductItemElement({
   return section;
 }
 
-// function getSkuFromProductItem(item) {
-//   return item.querySelector('span.item__sku').innerText;
-// }
-
 function cartItemClickListener(event) {
   event.target.remove();
+  localStorage.carrinho = listaDeItens.innerHTML;
 }
 
 function getJsonFromProduct() {
@@ -71,6 +71,8 @@ function createCartItemElement({
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
+  // localStorage.carrinho = listaDeItens.innerHTML;
+  // console.log(localStorage.carrinho);
   return li;
 }
 
@@ -79,14 +81,11 @@ function enviarItem() {
   for (let index = 0; index < botoes.length; index += 1) {
     botoes[index].addEventListener('click', function () {
       const botaoAtual = botoes[index].parentNode.firstElementChild.innerHTML;
-      // const loading = document.createElement('li')
-      // loading.className = 'loading'
-      // listaDeItens.appendChild(loading)
       chamarFetchId(botaoAtual).then((value) => {
         document.querySelector('.cart__items')
           .appendChild(createCartItemElement((value)));
+          localStorage.carrinho = listaDeItens.innerHTML;
       });
-      // loading.remove()
     });
   }
 }
@@ -97,7 +96,6 @@ async function jogarItens() {
   try {
     const loading = document.createElement('li');
     loading.className = 'loading';
-    // loading.innerText = 'Itens'
     const itens = await getJsonFromProduct();
     body.appendChild(loading);
     setTimeout(() => {
@@ -114,15 +112,21 @@ async function jogarItens() {
 
 jogarItens();
 
-const botaoEsvaziar = document.querySelector('button.empty-cart');
-const listaDeItens = document.querySelector('ol.cart__items');
-
 function apagarItens() {
   listaDeItens.innerHTML = '';
+  localStorage.clear();
 }
 
 botaoEsvaziar.addEventListener('click', apagarItens);
 
+if (localStorage.carrinho) {
+  listaDeItens.innerHTML = localStorage.carrinho;
+  console.log(localStorage.carrinho);
+  document.querySelectorAll('.cart__item').forEach((item) => {
+    item.addEventListener('click', cartItemClickListener);
+  });
+}
+
 window.onload = () => {
-  
+
 };
