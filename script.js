@@ -101,6 +101,15 @@ async function jogarItens() {
 
 jogarItens();
 
+const botaoEsvaziar = document.querySelector('button.empty-cart');
+const listaDeItens = document.querySelector('ol.cart__items')
+
+function apagarItens () {
+  listaDeItens.innerHTML = ''
+}
+
+botaoEsvaziar.addEventListener('click', apagarItens)
+
 window.onload = () => {
   
 };
