@@ -26,6 +26,24 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+// REQUISITO 5: =====================================
+
+const totalPrice = () => {
+  const spanOfTotalPrice = document.querySelector('.total-price');
+
+  let price = 0;
+
+  const allComputerLis = document.querySelectorAll('.cart__item'); // chama as lis pela classe
+
+  allComputerLis.forEach((commputerLi) => {
+    const textOfComputerLi = commputerLi.innerText;// pega o texto da li do computador
+    const arrayOfStrings = textOfComputerLi.split('$');// posição 0 - é tudo que vem antes do cifrão que é isso aqui ---> SKU: MLB1218701240 | NAME: Computador Pc Completo Intel 8gb Hd 500gb Monitor 18 Wind 10 | PRICE:, posição 1: 1269(preço)
+
+    price += Number(arrayOfStrings[1]);// só o price do arrayOfStrings
+  });
+  spanOfTotalPrice.innerHTML = `${(Math.round((price * 100)) / 100)}`;// arredonda o preço (os centavos) 
+};
+
 // REQUISITO 4: =====================================
 
 // Função que salva produtos da ol no Local Storage:
@@ -37,8 +55,10 @@ const saveToLocalStorage = () => {
 
 function cartItemClickListener(event) {
   event.target.remove(); // (REQUISITO 3)
+  totalPrice(); // soma os preços dos computadores restantes
   saveToLocalStorage(); // salva as lis que restaram, ou seja, atualiza a parada
 }
+
 // CONTINUAÇÃO DO REQUISITO 4 =========================
 
 const retrieveLocalStorage = () => {
@@ -72,6 +92,7 @@ const appendItem = ($ItemID) => {
       response.json().then((data) => {
         ol.appendChild(createCartItemElement(data));
         saveToLocalStorage(); // salva as lis atuais (incluindo a que acabou de ser adicionada), ou seja, atualiza a parada
+        totalPrice();
       });
     });
 };
@@ -109,7 +130,22 @@ const fetchML = (query) => {
     });
 };
 
+// REQUISITO 6: =====================================
+
+const eraseAll = () => {
+  ol.innerHTML = '';
+  const spanOfTotalPrice = document.querySelector('.total-price');
+  spanOfTotalPrice.innerText = 0.00;
+};
+
+const emptyCart = () => {
+  const emptyCartButton = document.querySelector('.empty-cart');
+  emptyCartButton.addEventListener('click', eraseAll);
+};
+
 window.onload = () => {
   fetchML('computador');
   retrieveLocalStorage();
+  totalPrice();
+  emptyCart();
 };
