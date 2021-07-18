@@ -26,6 +26,15 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// Requisito 6 - Feito com a ajuda do Notion da turma
+const removeItemsCart = () => {
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', () => {
+    const getLi = document.querySelectorAll('.cart__item');
+    getLi.forEach((item) => item.parentNode.removeChild(item));
+  });
+};
+
 // Requisito 3
 function cartItemClickListener(event) { // função que cria o evento de click, para remover item da lista
   event.target.remove();
@@ -88,6 +97,7 @@ const fetchML = (query) => { // query = pesquisa
       response.json().then((data) => { // o json também retorna uma PROMISE
         addItensToSection(data.results);
         adicionaItem(); // Função do requisito 2
+        removeItemsCart();
       });
     });
 };
