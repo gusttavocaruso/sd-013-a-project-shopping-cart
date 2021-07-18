@@ -88,11 +88,11 @@ function createProductItemElement({ sku, name, image }) {
 }
 
 const display = (value) => {
-  const sectionItems = document.querySelector('.items');
+  const sectionItems = document.querySelector('.container');
   if (value === 'on') {
     const p = document.createElement('p');
     p.className = 'loading';
-    p.innerText = 'Loading...';
+    p.innerText = 'loading...';
     return sectionItems.appendChild(p);
   }
   return document.querySelector('.loading').remove();
