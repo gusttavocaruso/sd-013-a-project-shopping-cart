@@ -85,7 +85,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 }
 
 const addCartItem = (jsonItem) => {
-  const cart = document.querySelector('.cart__items');
+  const cart = document.querySelector(nameClass);
   const addLiCart = createCartItemElement(jsonItem); 
   cart.appendChild(addLiCart);
   saveLocalStorage();
@@ -108,7 +108,7 @@ const btnClicked = () => {
 const clearCart = () => {
   const btnClearCart = document.querySelector('.empty-cart');
   btnClearCart.addEventListener('click', () => {
-    const ol = document.querySelector('.cart__items');
+    const ol = document.querySelector(nameClass);
     ol.innerHTML = '';
     totalPrice();
     saveLocalStorage();
