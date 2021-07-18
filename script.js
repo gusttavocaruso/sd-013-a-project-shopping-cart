@@ -105,9 +105,20 @@ const btnClicked = () => {
   });
 };
 
+const clearCart = () => {
+  const btnClearCart = document.querySelector('.empty-cart');
+  btnClearCart.addEventListener('click', () => {
+    const ol = document.querySelector('.cart__items');
+    ol.innerHTML = '';
+    totalPrice();
+    saveLocalStorage();
+  });
+};
+
 window.onload = () => {
   fetchInitial('computador');
   btnClicked();
   localStorageHTML();
   totalPrice();
+  clearCart();
 };
