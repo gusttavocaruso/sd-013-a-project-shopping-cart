@@ -71,6 +71,8 @@ const fetchProductAsync = async (query) => {
   resultado.forEach((product) => {
     document.querySelector('.items').appendChild(createProductItemElement(product));    
   });
+  const loading = document.querySelector('.loading');
+  loading.remove();
 };
 
 // function getSkuFromProductItem(item) {
