@@ -48,6 +48,19 @@ const addItemsToSection = (items) => {
     });
 };
 
+const saveStorage = () => {
+  const cartItems = document.getElementsByClassName('cart__items')[0];
+  localStorage.setItem('cartList', cartItems.innerHTML);
+};
+
+const storage = () => new Promise((resolve) => {
+  if (localStorage.getItem('cartList')) {
+    const cartItems = document.getElementsByClassName('cart__items')[0];
+    cartItems.innerHTML = localStorage.getItem('cartList');
+    resolve();
+  }
+});
+
 const fetchML = (query) => new Promise((resolve) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
   .then((response) => {
@@ -67,9 +80,10 @@ const addToCartClicked = (event) => new Promise((resolve) => {
     .then((response) => {
     response.json().then((data) => {
       document.querySelector('.cart__items').appendChild(createCartItemElement(data));
-        resolve();
-        });
+      saveStorage();
     });
+  });
+  resolve();
 });
 
 const addToCart = () => new Promise((resolve) => {
@@ -95,6 +109,7 @@ const fetchPromise = async () => {
     await fetchML('smartphone');
     await addToCart();
     await clearCart();
+    await storage();
   } catch (error) {
     console.log(error);
   }
