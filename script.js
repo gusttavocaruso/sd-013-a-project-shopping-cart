@@ -1,4 +1,7 @@
 const addLoading = document.querySelector('.loading');
+const ol = document.querySelector('.cart__items');
+const liLocalStorage = localStorage.getItem('item-cart');
+ol.innerHTML = liLocalStorage;
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -39,12 +42,6 @@ const removeItemsCart = () => {
   });
 };
 
-// Requisto 4
-// const updateLocalStorage = () => {
-//   const ol = document.querySelector('.cart__items');
-//   localStorage.cart = ol.innerHTML;
-// };
-
 // Requisito 3
 // função que cria o evento de click, para remover item da lista
 function cartItemClickListener(event) {
@@ -64,9 +61,16 @@ const productML = (itemId) =>
    fetch(`https://api.mercadolibre.com/items/${itemId}`)
     .then((response) => response.json())
     .then((itemLi) => {
+      // const item = {
+      //   sku: itemLi.id,
+      //   name: itemLi.title,
+      //   salePrice: itemLi.price,
+      // };
+      // ol.appendChild(item);
+      localStorage.setItem('item-cart', ol.innerHTML);
       const item = createCartItemElement(itemLi);
-      const ol = document.querySelector('.cart__items');
       ol.appendChild(item);
+      localStorage.setItem('item-cart', ol.innerHTML);
     });
 
 // Função que cria o evento de click no botão para adicionar o item ao carrinho quando clicar no botão.
@@ -89,16 +93,6 @@ const addItensTo = (items) => {
   });
 };
 
-// const apiRequest = async (name) => {
-//   const api = await fetch(`https://restcountries.eu/rest/v2/name/${name}`);
-//   const data = await api.json();
-//   const firstArray = data[0];
-//   const translation = await firstArray.translations.br;
-//   const capital = await firstArray.capital;
-//   console.log(data);
-//   console.log(translation);
-//   console.log(capital);
-
 // função que efetua a requisição a API do mercado livre
 const mercadoLivre = (query) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
@@ -112,6 +106,5 @@ const mercadoLivre = (query) => {
   });
   });
 };
-
 // window.onload = () => {}
 mercadoLivre('computador');
