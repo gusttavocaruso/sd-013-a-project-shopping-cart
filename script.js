@@ -29,6 +29,16 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+/* Requisito 5 */
+function totalPrice() {
+  const priceList = document.querySelectorAll('.cart__item');
+  let soma = 0;
+  priceList.forEach(function (listOfItems) {
+    soma += parseFloat(listOfItems.innerHTML.split('$')[1]);
+  });
+  document.querySelector('.total-price').innerHTML = Math.round(soma * 100) / 100;
+}
+
 /* 
 Requisito 4
 Referências: https://developer.mozilla.org/pt-BR/docs/Web/API/Window/localStorage
@@ -42,13 +52,14 @@ const saveItemsLocally = () => {
 function cartItemClickListener(event) {
   event.target.remove('li');
   saveItemsLocally();
+  totalPrice();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}\n\n`;
-  // li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
@@ -108,6 +119,7 @@ const selectComputer = () => {
         .then((data) => {
           adList(data);
           saveItemsLocally();
+          totalPrice();
      });
     }
   });
@@ -118,14 +130,15 @@ Requisito 4
 Referências: Requisito 2 Step 1
 Step 2 */
 const loadSavedItems = () => {
-  const itemSalvo = localStorage.getItem('cart');
-  const a = document.querySelector('#cart__items');
-  a.innerHTML = itemSalvo;
-  a.addEventListener('click', (event) => {
+  const savedItem = localStorage.getItem('cart');
+  const cartSavedItem = document.querySelector('#cart__items');
+  cartSavedItem.innerHTML = savedItem;
+  cartSavedItem.addEventListener('click', (event) => {
     if (event.target.classList.contains('cart__item')) {
       cartItemClickListener(event);
     }
   });
+  totalPrice();
 };
 
 window.onload = () => {
