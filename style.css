@@ -1,3 +1,9 @@
+body {
+  background-color: rgb(68, 208, 226);
+  font-family: 'Montserrat', sans-serif;
+  color: rgb(32, 37, 26);
+}
+
 .top-bar {
   align-items: center;
   display: flex;
@@ -23,15 +29,22 @@
   width: 100%;
 }
 
+.header {
+  display: flex;
+  background-color: rgb(26, 24, 24);
+  color: rgb(197, 197, 243);
+}
+
 .items {
   display: flex;
   flex-basis: 70%;
   flex-wrap: wrap;
   justify-content: center;
+  box-shadow: rgb(12, 13, 14) 0px 5px 10px 0px;
 }
 
 .item {
-  border: 2px solid blue;
+  border: 2px solid rgb(37, 37, 82);
   border-radius: 5px;
   box-sizing: border-box;
   display: flex;
@@ -39,6 +52,11 @@
   height: auto;
   margin: 5px;
   width: 200px;
+  box-shadow: rgb(36, 28, 28) 0px 2px 8px 2px;
+}
+
+.item:hover {
+  transform: scale(1.025);
 }
 
 .item .item__sku {
