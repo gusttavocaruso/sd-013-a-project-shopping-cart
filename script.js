@@ -17,16 +17,17 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+// Salva Itens do carrinho no Local Storage;
+const saveCartItems = () => {
+  localStorage.setItem('products', getOrderListCart.innerHTML);
+};
+
 // Cria o botão que limpa a lista de itens do carrinho;
 const clearButton = () => {
   getClearButton.addEventListener('click', () => {
     getOrderListCart.innerHTML = '';
+    saveCartItems();
   });
-};
-
-// Salva Itens do carrinho no Local Storage;
-const saveCartItems = () => {
-  localStorage.setItem('products', getOrderListCart.innerText);
 };
 
 // Remove o elemento do carrinho ao ser clicado;
@@ -92,7 +93,7 @@ const loadCartFromLocalStorage = () => {
   getOrderListCart.innerHTML = localStorage.getItem('products');
   getOrderListCart.addEventListener('click', (event) => {
     event.target.remove();
-    localStorage.removeItem('products');
+    saveCartItems();
   });
 };
 
