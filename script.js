@@ -1,6 +1,8 @@
 // Queria agradecer aos trybees, em especial Matheus Duarte pela força ^^!
 //= ============= Variáveis globais ==============
-
+const getCart = document.querySelector('.cart__items');
+const getDelButton = document.querySelector('.empty-cart');
+const getTotalPrice = document.querySelector('.totalPrice')
 //= =============                   ==============
 
 //= ============= Começo do código ==============
@@ -9,6 +11,16 @@ function createProductImageElement(imageSource) {
   img.className = 'item__image';
   img.src = imageSource;
   return img;
+}
+
+function saveCart() {
+  const getCart = document.querySelector('.cart__items');
+  localStorage.setItem('produtosSalvos', getCart.innerHTML);
+}
+
+function restoreCart() {
+  const getCart = document.querySelector('.cart__items');
+  getCart.innerHTML = localStorage.getItem('produtosSalvos');
 }
 
 function createCustomElement(element, className, innerText) {
@@ -20,7 +32,17 @@ function createCustomElement(element, className, innerText) {
 
 function cartItemClickListener(event) {
   const deleteThisIl = event.target.remove();
+  saveCart();
 }
+
+function deleteAllCart() {
+  getCart.innerHTML = '';
+  saveCart();
+}
+
+getDelButton.addEventListener('click', (deleteAllCart));
+
+getCart.addEventListener('click', (cartItemClickListener))
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -39,6 +61,7 @@ const setItemOnCart = async (itemId) => {
   } catch (Error) {
     alert(Error);
   }
+  saveCart();
 };
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
@@ -51,7 +74,7 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   section.lastElementChild.addEventListener('click', (callback) => {
-    const getId = callback.target.parentElement.firstElementChild.innerText;
+    const getId = callback.target.parentElement.firstElementChild.innerHTML;
     setItemOnCart(getId);
   });
 
@@ -73,4 +96,7 @@ function getSiteApi() {
     .catch(() => console.log('Error'));
 }
 
-window.onload = () => { getSiteApi(); };
+window.onload = () => { 
+  getSiteApi(); 
+  restoreCart();
+};
