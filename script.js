@@ -1,3 +1,4 @@
+const cartItems = '.cart__items';
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -25,13 +26,29 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // function getSkuFromProductItem(item) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
+// Requisito 4 Ajuda da bianca na monitoria
+const local = () => { // Eu chamo essa função na addProductShoppingCart p/ add e na cartItemClickListener para remover
+  const ol = document.querySelector(cartItems);
+  const olHTML = ol.innerHTML;
+  localStorage.setItem('cartList', olHTML);
+  };
 // Requisito 3 
 // Referência https://catalin.red/removing-an-element-with-plain-javascript-remove-method/
 function cartItemClickListener(event) {
-  const cartItem = event.target; // Vem o elemento html que eu cliquei
+  const cartItem = event.target;
   cartItem.remove();
+  local(); 
 }
-
+// Requisito4 Ajuda da bianca na monitoria
+const getLocalStorage = () => {
+  const newOl = document.querySelector(cartItems);
+  newOl.innerHTML = localStorage.getItem('cartList');
+  newOl.addEventListener('click', (event) => {
+    if (event.target.className === 'cart__item') { // Ajuda da Lanai Conceição
+      cartItemClickListener(event); 
+    }
+  });
+};
 function createCartItemElement({ id, title, price }) { // desestruturação feita. É selecionado apenas o id, title e price.
   const li = document.createElement('li'); // criação da const 'li'
   li.className = 'cart__item'; // add classe na 'li'
@@ -56,7 +73,8 @@ const addProductShoppingCart = (event) => { // Essa função é ativada quando o
     .then((response) => { // Permissão
       response.json()
       .then((data) => { // Permissão
-        createCartItemElement(data); // Eu vou pegar esses e mandar para essa função da linha 34.
+        createCartItemElement(data); 
+        local(); // Eu vou pegar esses e mandar para essa função da linha 34.
       });
     });
 };
@@ -80,4 +98,5 @@ const productList = (product) => {
 
 window.onload = () => {
   productList('computador');
+  getLocalStorage();
 };
