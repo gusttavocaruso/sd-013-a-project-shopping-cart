@@ -32,12 +32,25 @@ const local = () => { // Eu chamo essa função na addProductShoppingCart p/ add
   const olHTML = ol.innerHTML;
   localStorage.setItem('cartList', olHTML);
   };
+// Requisito 5 // Ajuda da Lanai Conceição
+  const sumPrice = () => { // Eu chamo essa função na addProductShoppingCart p/ add e na cartItemClickListener para remover
+    const totalPrice = document.querySelector('.total-price'); // Recuperando o elemento do html
+    let currentPrice = 0; // meu primeiro preço é 0
+    const liPrice = document.querySelectorAll('.cart__item'); // Recuperando todos meus LI
+    liPrice.forEach((price) => { // Vou passar por cada LI
+      const eachPrice = price.innerText.split('$');// vai buscar todos que tenha o $
+      currentPrice += Number(eachPrice[1]); // aqui ele pega apenas o número e dispensa o $
+    });
+    totalPrice.innerHTML = currentPrice;// Aqui faço o somatório
+  };
+
 // Requisito 3 
 // Referência https://catalin.red/removing-an-element-with-plain-javascript-remove-method/
 function cartItemClickListener(event) {
   const cartItem = event.target;
   cartItem.remove();
   local(); 
+  sumPrice();
 }
 // Requisito4 Ajuda da bianca na monitoria
 const getLocalStorage = () => {
@@ -74,7 +87,8 @@ const addProductShoppingCart = (event) => { // Essa função é ativada quando o
       response.json()
       .then((data) => { // Permissão
         createCartItemElement(data); 
-        local(); // Eu vou pegar esses e mandar para essa função da linha 34.
+        local();
+        sumPrice(); // Eu vou pegar esses e mandar para essa função da linha 34.
       });
     });
 };
@@ -95,7 +109,6 @@ const productList = (product) => {
       });
     });
 };
-
 window.onload = () => {
   productList('computador');
   getLocalStorage();
