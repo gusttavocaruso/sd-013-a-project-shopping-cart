@@ -26,7 +26,6 @@
     return section;
   }
 
-  // Req 1
   const createProductList = async () => {
     const url = 'https://api.mercadolibre.com/sites/MLB/search?q=$computador';
     const section = document.querySelector('.items');
@@ -42,10 +41,23 @@
     return item.querySelector('span.item__sku').innerText;
    }
 
-   function cartItemClickListener(event) {
-       event.target.remove();
-       localStorage.setItem('cartItems', document.querySelector(cart).innerHTML);
+   function totPrice() {
+     const span = document.querySelector('.total-price');
+     const allLi = document.querySelectorAll('li');
+     let price = 0;
+     allLi.forEach((item) => {
+       const computer = item.innerText.split('$');
+       price += Number(computer[1]);
+     });
+     span.innerHTML = `${Math.round(price * 100) / 100}`;
+     localStorage.setItem('totPrice', span.innerHTML);
    }
+
+   function cartItemClickListener(event) {
+        event.target.remove();
+        localStorage.setItem('cartItems', document.querySelector(cart).innerHTML);
+        totPrice();
+      }
 
    function createCartItemElement({ id: sku, title: name, price: salePrice }) {
     const li = document.createElement('li');
@@ -61,7 +73,6 @@
     myCart.appendChild(newLi);
   };
 
-  // Req 2
   const addEventButtons = () => {
     const section = document.querySelector('.items');
     section.addEventListener('click', async (event) => {
@@ -72,11 +83,11 @@
           .then((response) => response.json());
         addProductToCart(obj);
         localStorage.setItem('cartItems', document.querySelector(cart).innerHTML);
+        totPrice();
       }
     });
   };
-  
-  // Req 4
+
   function getLocalStorage() {
     const myCart = document.querySelector(cart);
     myCart.innerHTML = localStorage.getItem('cartItems');
@@ -87,8 +98,14 @@
     });
   }
 
+  function getTotPrice() {
+    const span = document.querySelector('.total-price');
+    span.innerHTML = localStorage.getItem('totPrice');
+  }
+
   window.onload = () => {
     createProductList();
     addEventButtons();
     getLocalStorage();
+    getTotPrice();
   };
