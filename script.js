@@ -80,12 +80,21 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+// Limpa a Tag .loading após o carregamento da página;
+const clearTagLoading = () => {
+  const clearLoading = document.querySelector('.loading');
+  clearLoading.remove();
+};
+
 // Faz a requisição na API do Mercado Livre;
 const returnFetch = (query) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => response.json()
     .then((data) => data.results)
-    .then((results) => results.forEach((result) => createProductItemElement(result))));
+    .then((results) => {
+      results.forEach((result) => createProductItemElement(result));
+      clearTagLoading();
+    }));
 };
 
 // Carrega os produtos do carrinho a partir do Local Storage;
@@ -97,8 +106,8 @@ const loadCartFromLocalStorage = () => {
   });
 };
 
-window.onload = () => {
-  returnFetch('computador');
+window.onload = async () => {
+  await returnFetch('computador');
   clearButton();
   loadCartFromLocalStorage();
 };
