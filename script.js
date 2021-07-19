@@ -1,3 +1,4 @@
+// Projeto completo com 80% com ajuda do Josue Lobo.
 const cartItems = document.querySelector('.cart__items');
 const load = document.querySelector('.loading');
 const buttonClear = document.querySelector('.empty-cart');
