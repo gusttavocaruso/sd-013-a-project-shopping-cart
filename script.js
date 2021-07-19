@@ -1,3 +1,5 @@
+const addLoading = document.querySelector('.loading');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -37,6 +39,12 @@ const removeItemsCart = () => {
   });
 };
 
+// Requisto 4
+// const updateLocalStorage = () => {
+//   const ol = document.querySelector('.cart__items');
+//   localStorage.cart = ol.innerHTML;
+// };
+
 // Requisito 3
 // função que cria o evento de click, para remover item da lista
 function cartItemClickListener(event) {
@@ -53,7 +61,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 
 // Função de adicona o elemeto filho ao elemento pai quando clicar no botão "adicionar ao carrinho"
 const productML = (itemId) =>
-  fetch(`https://api.mercadolibre.com/items/${itemId}`)
+   fetch(`https://api.mercadolibre.com/items/${itemId}`)
     .then((response) => response.json())
     .then((itemLi) => {
       const item = createCartItemElement(itemLi);
@@ -81,19 +89,29 @@ const addItensTo = (items) => {
   });
 };
 
- // função que efetua a requisição a API do mercado livre
+// const apiRequest = async (name) => {
+//   const api = await fetch(`https://restcountries.eu/rest/v2/name/${name}`);
+//   const data = await api.json();
+//   const firstArray = data[0];
+//   const translation = await firstArray.translations.br;
+//   const capital = await firstArray.capital;
+//   console.log(data);
+//   console.log(translation);
+//   console.log(capital);
+
+// função que efetua a requisição a API do mercado livre
 const mercadoLivre = (query) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
   .then((response) => {
     response.json()
   .then((data) => {
     addItensTo(data.results); // Chama a função que adiciona Itens ao elemeneto HTML.
+    addLoading.remove();
     addEventBtn(); // Chama a função com evento de click no botão, que adiciona os itens ao html
     removeItemsCart();
   });
   });
 };
 
-window.onload = () => {
-  mercadoLivre('computador');
-};
+// window.onload = () => {}
+mercadoLivre('computador');
