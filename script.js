@@ -1,7 +1,21 @@
-function cartItemClickListener(event) {
-  const item = event.target;
+let pricesItemsCart = [];
 
+function sumCartTotal(itemPrice) {
+  const sectionTotalPrice = document.querySelector('.total-price');
+  pricesItemsCart.push(itemPrice);
+  const sumPrices = pricesItemsCart.reduce((acc, value) => acc + value);
+  sectionTotalPrice.innerText = sumPrices;
+  console.log(pricesItemsCart);
+}
+
+function cartItemClickListener(event, price) {
+  const item = event.target;
   item.remove();
+  // Com a ajuda do Eduardo no plantão. Para remover o valor do item do total:
+  const sectionTotalPrice = document.querySelector('.total-price');
+  pricesItemsCart = pricesItemsCart.filter((items) => items !== price);
+  const sumRemainedPrices = pricesItemsCart.reduce((acc, value) => acc + value, 0);
+  sectionTotalPrice.innerText = sumRemainedPrices;
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -9,8 +23,9 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const ol = document.querySelector('.cart__items');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  li.addEventListener('click', (event) => cartItemClickListener(event, salePrice));
   ol.appendChild(li);
+  sumCartTotal(salePrice);
 }
 // REQUISITO 2:
 function fetchItem(event) {
