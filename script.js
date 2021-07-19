@@ -101,9 +101,22 @@ const buttonAdd = () => {
   });
 };
 
+const buttonRemove = () => {
+  const getButtonRemove = document.querySelector('.empty-cart');
+  getButtonRemove.addEventListener('click', () => {
+    const ol = document.querySelector(cartItens);
+    while (ol.firstChild) {
+      ol.removeChild(ol.firstChild);
+      priceAll();
+      setItemsLocalStorage();
+    }
+  });
+};
+
 window.onload = () => {
   link('computador');
   buttonAdd();
   itensLocalStorage();
   priceAll();
+  buttonRemove();
 };
