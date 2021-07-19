@@ -9,17 +9,27 @@
   </head>
   
   <body>
+    <header class="top-bar">
+      <h1 id="store-header-title">D.Store</h1>
+    <form class="input-name-group">
+      <input id="searchField" type="text" placeholder="Digite o nome de um produto">
+      <button id="searchButton" type="button">Pesquisar</button>
+    </form>
+    </header>
     <section class="container">
       <section class="items">
+        <!-- secao que contem o loader -->
         <section class="loading">
          <section id="loading"></section>
-          <p id="loadingp">loading...</p>
+          <p id="loadingp">loading...</p> 
          </section>
       </section>
       <section class="cart">
         <span class="cart__title">Carrinho de compras</span>
         <button class="empty-cart">Esvaziar carrinho</button>
-        <section class="total-price"></section>
+        <section class="cartvalue">Valor do carrinho: R$
+          <span class="total-price"></span>
+        </section>
         <ol class="cart__items"></ol>
       </section>
     </section>

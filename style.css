@@ -1,10 +1,19 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .top-bar {
   align-items: center;
   display: flex;
   height: 100px;
-  justify-content: space-around;
-  margin-bottom: 10px;
+  justify-content: space-between;
+  margin-bottom: 30px;
   width: 100%;
+  background-color:rgb(216, 97, 81);
+  padding: 0 30px 0 30px;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.418);
 }
 
 .top-bar .input-name-group {
@@ -15,6 +24,26 @@
 .top-bar .input-terms-group {
   align-items: flex-start;
   display: flex;
+}
+
+#searchField {
+  height: 40px;
+  width: 300px;
+  border-radius: 5px;
+  border: 0;
+  margin-right: 10px;;
+}
+
+#searchButton {
+  height: 40px;
+  width: 100px;
+  border-radius: 5px;
+  border: 0;
+  box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.418);
+}
+
+#searchButton:hover {
+  background-color: rgb(200, 200, 200)
 }
 
 .container {
@@ -31,14 +60,14 @@
 }
 
 .item {
-  border: 2px solid blue;
   border-radius: 5px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   height: auto;
-  margin: 5px;
+  margin: 7px;
   width: 200px;
+  box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.418);
 }
 
 .item .item__sku {
@@ -51,32 +80,84 @@
   text-align: center;
 }
 
+.img_sec {
+  align-self: center;
+}
+
 .item .item__image {
-  width: 100%;
+  max-width: 100%;
+  max-height:150px;
 }
 
 .item .item__add {
-  background-color: green;
+  background-color: rgb(230, 100, 40);
   border: 0;
   cursor: pointer;
-  margin: 0;
-  padding: 5px;
+  margin: 20px 0 0;
+  padding: 7px;
+  border-radius: 5px;
+}
+
+.item__add:hover {
+  background-color: rgb(197, 85, 32);
 }
 
 .cart {
   display: flex;
   flex-basis: 30%;
   flex-flow: column wrap;
+  margin-left: 30px;
+  background-color: rgb(243, 243, 243);
+  margin-right: 30px;
 }
 
 .cart .cart__title {
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+  margin: 20px;
+}
+
+.empty-cart {
+  margin: 0 10px 20px;
+  height: 30px;
+  background-color: rgb(241, 67, 67);
+  border-radius: 5px;
+  color: white;
+  border: 0;
+  box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.418);
+  cursor: pointer;
+}
+
+.empty-cart:hover {
+  background-color: rgb(206, 49, 49);
+}
+
+.cartvalue {
+  text-align: right;
+  margin: 10px 20px;
+}
+
+.total-price {
+  color: rgb(241, 67, 67);
+  font-weight: 800;
 }
 
 li {
   cursor: pointer;
+  list-style-type: none;
+  margin: 0 10px 5px;
+  background-color: white;
+  padding: 10px;
+}
+
+li:hover {
+  background-color: rgb(255, 218, 218);
+  min-height: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 #loading {

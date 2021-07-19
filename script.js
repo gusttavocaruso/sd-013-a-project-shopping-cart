@@ -4,11 +4,13 @@ const carrinho = document.querySelector('.cart__items');
 const precoTotal = document.querySelector('.total-price');
 const botao = document.querySelector('.empty-cart');
 const loading = document.querySelector('.loading');
+const pesquisa = document.querySelector('#searchField');
+const srchButton = document.querySelector('#searchButton'); 
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
-  img.src = imageSource;
+  img.src = `https://http2.mlstatic.com/D_NQ_NP_${imageSource}-O.webp`;
   return img;
 }
 
@@ -27,13 +29,11 @@ botao.addEventListener('click', () => {
 const soma = (valorAtual, valorOperacao) => {
   const somaResultado = valorAtual + valorOperacao;
   precoTotal.innerHTML = Math.round(somaResultado * 100) / 100;
-  salvaCarrinho();
 };
 
  const subtracao = (valorAtual, valorOperacao) => {
   const subtracaoResultado = valorAtual - valorOperacao;
   precoTotal.innerHTML = Math.round(subtracaoResultado * 100) / 100;
-  salvaCarrinho();
 };
 
 // Resolvi em conjunto com Matheus Camilo T13-A
@@ -65,7 +65,6 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.innerHTML = `SKU: ${sku} | NAME: ${name} | PRICE: $<span>${salePrice}</span>`;
   carrinho.appendChild(li);
   calculaPrecoTotal(salePrice, '+');
-  // return li;
 }
 
 const addProdutoNoCarrinho = async (ID) => {
@@ -86,13 +85,16 @@ function createCustomElement(element, className, innerText) {
 }
 
 // Rogerio P. Silva recomendou criar a escuta do botao dentro de onde ele é criado.
-function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail_id: image }) {
   const section = document.createElement('section');
+  const sectionImg = document.createElement('section');
   section.className = 'item';
+  sectionImg.className = 'img_sec';
   
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
-  section.appendChild(createProductImageElement(image));
+  sectionImg.appendChild(createProductImageElement(image));
+  section.appendChild(sectionImg);
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   section.lastElementChild.addEventListener('click', (event) => {
     const productID = event.target.parentElement.firstElementChild.innerText;
@@ -113,9 +115,52 @@ const pegaProdutos = async (produto = 'computador') => {
   }
 };
 
+srchButton.addEventListener('click', async () => {
+  items.innerHTML = '';
+  await pegaProdutos(pesquisa.value);
+  pesquisa.value = '';
+  if (items.innerHTML === '') {
+  await pegaProdutos();
+  alert('Não encontramos o que você procurava');
+  }
+});
+
+pesquisa.addEventListener('keypress', (event) => {
+  if (event.keyCode === 13 && pesquisa.value !== '') {
+    event.preventDefault();
+    srchButton.click();
+   }
+});
+
 carrinho.addEventListener('click', (cartItemClickListener));
+carrinho.addEventListener('mouseover', (event) => {
+  if (event.target.className === 'cart__item') {
+    const atualHTML = event.target.innerHTML;
+    const spanAtual = event.target.querySelector('span').innerText;
+    const li = event.target;
+    li.innerHTML = `REMOVER DO CARRINHO<span style="display:none">${spanAtual}</span>`;
+    li.addEventListener('mouseout', (event) => {
+      if (event.target.className === 'cart__item') {
+        const newLi = event.target;
+        newLi.innerHTML = atualHTML;
+      }
+    });
+  }
+});
 
 window.onload = () => {
   pegaProdutos();
   recuperaCarrinho();
 };
+
+// const pegaProdutosThen = () => {
+//   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=computador`)
+//     .then((result) => {
+//       if (!result.ok) {
+//         throw new Error();
+//       }
+//       return result.json();
+//     })
+//     .then((json) => (json.results).forEach((computador) => createProductItemElement(computador)))
+//     .catch(() => alert('erro'));
+// };
