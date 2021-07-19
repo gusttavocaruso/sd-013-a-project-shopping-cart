@@ -48,7 +48,7 @@ const setTotalPrice = (value, operator) => {
 const setCartItem = ({ id: sku, title: name, price: salePrice }) => {
   const li = document.createElement('li');
   li.className = 'cart_item';
-  li.innerHTML = `SKU: ${sku} | NAME: ${name} | PRICE: $ <span>${salePrice}</span>`;
+  li.innerHTML = `SKU: ${sku} | NAME: ${name} | PRICE: $<span>${salePrice}</span>`;
   getCart.appendChild(li);
   setTotalPrice(salePrice, '+');
 };
