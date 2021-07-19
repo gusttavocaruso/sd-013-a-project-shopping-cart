@@ -156,7 +156,7 @@ window.onload = () => {
     if (object && Object.values(object).length > 0) load();
   }
   haha();
-  fetchML('computador');
+  fetchML('quadros');
   document.querySelector('.empty-cart').addEventListener('click', clearList);
   priceSum();
 };
