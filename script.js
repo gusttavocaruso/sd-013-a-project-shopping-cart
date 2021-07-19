@@ -1,3 +1,25 @@
+function cartItemClickListener(event) {
+  const item = event.target;
+
+  item.remove();
+}
+
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  const ol = document.querySelector('.cart__items');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  ol.appendChild(li);
+}
+// REQUISITO 2:
+function fetchItem(event) {
+  const itemID = event.target.parentNode.firstChild.innerText;
+  fetch(`https://api.mercadolibre.com/items/${itemID}`)
+    .then((response) => {
+      response.json().then((data) => createCartItemElement(data));
+    });
+}
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -34,21 +56,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
 
-function cartItemClickListener(event) {
-  const item = event.target;
-
-  item.remove();
-}
-
-function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const li = document.createElement('li');
-  const ol = document.querySelector('.cart__items');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  ol.appendChild(li);
-}
-
 // REQUISITO 1:
 function addItensToSection(items) {
   items.forEach((item) => {
@@ -65,15 +72,6 @@ function fetchML(query) {
     .then((response) => {
       response.json().then((data) => addItensToSection(data.results));
   });
-}
-
-// REQUISITO 2:
-function fetchItem(event) {
-  const itemID = event.target.parentNode.firstChild.innerText;
-  fetch(`https://api.mercadolibre.com/items/${itemID}`)
-    .then((response) => {
-      response.json().then((data) => createCartItemElement(data));
-    });
 }
 
 // Requisito 6. Consultando: https://stackoverflow.com/questions/3955229/remove-all-child-elements-of-a-dom-node-in-javascript
