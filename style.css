@@ -29,10 +29,18 @@ body {
   width: 100%;
 }
 
+.containerLabel {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
 .header {
   display: flex;
   background-color: rgb(26, 24, 24);
-  color: rgb(197, 197, 243);
+  color: rgb(255, 255, 255);
+  justify-content: space-around;
+  border-radius: 4px;
 }
 
 .items {
@@ -91,4 +99,11 @@ body {
   flex-basis: 1;
   font-size: 16pt;
   text-align: center;
+}
+
+#searchInput {
+  height: 18%;
+  width: 100%;
+  border-radius: 4px;
+  border: darkred 2px solid;
 }

@@ -2,7 +2,7 @@
 //= ============= Variáveis globais ==============
 const getCart = document.querySelector('.cart__items');
 const getDelButton = document.querySelector('.empty-cart');
-const getTotalPrice = document.querySelector('.totalPrice')
+const getTotalPrice = document.querySelector('.totalPrice');
 const loading = document.querySelector('.loading');
 //= =============                   ==============
 
@@ -15,12 +15,10 @@ function createProductImageElement(imageSource) {
 }
 
 function saveCart() {
-  const getCart = document.querySelector('.cart__items');
   localStorage.setItem('produtosSalvos', getCart.innerHTML);
 }
 
 function restoreCart() {
-  const getCart = document.querySelector('.cart__items');
   getCart.innerHTML = localStorage.getItem('produtosSalvos');
 }
 
@@ -43,14 +41,13 @@ function deleteAllCart() {
 
 getDelButton.addEventListener('click', (deleteAllCart));
 
-getCart.addEventListener('click', (cartItemClickListener))
+getCart.addEventListener('click', (cartItemClickListener));
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  const getCart = document.querySelector('.cart__items');
   getCart.appendChild(li);
 }
 
@@ -91,7 +88,8 @@ function getSiteApi() {
     .then((result) => {
  result.json()
     .then((another) => another.results.forEach((element) => {
-      createProductItemElement(element), loading.remove();
+      createProductItemElement(element);
+      loading.remove();
     }));
   })
     .catch(() => console.log('Error'));
