@@ -65,24 +65,28 @@ function getSkuFromProductItem(item) {
 }
 /* funcao do projeto porem criada */
 function cartItemClickListener(event) {
-  event.target.remove();
-  setLocal();
-  const precoDoProduto = event.target.querySelector('span').innerText;
+  if (event.target.className === 'cart__item') event.target.remove();
+  const precoDoProduto = Number(event.target.querySelector('span').innerText);
   calculaPrecoTotal(precoDoProduto, '-');
+  setLocal();
 }
+
+/* funcao criada */
+const addEventListenerToLi = () => {
+  const listOfLIs = document.querySelector('.cart__items').childNodes;
+  listOfLIs.forEach((eachLi) => {
+    eachLi.addEventListener('click', cartItemClickListener);
+  });
+};
 
 /* funcao criada */
 const getLocal = () => {
   const dad = document.querySelector(daddy);
   const content = localStorage.getItem('cartList');
-  const price = document.querySelector(total).innerHTML;
+  const price = document.querySelector(total);
   dad.innerHTML = content;
-  dad.addEventListener('click', (e) => {
-    if (e.target.className === 'cart__item') {
-      cartItemClickListener(e);
-    }
   price.innerHTML = localStorage.getItem('savePrice');
-  });
+  addEventListenerToLi();
 };
 
 /* funcao do projeto */
@@ -131,10 +135,12 @@ const createItens = (itens) => {
 
 /* funcao criada */
 const fetchSearch = (query) => {
+  const load = document.querySelector('.loading');
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=$${query}`)
     .then((response) => {
       response.json().then((data) => {
         createItens(data.results);
+        load.remove();
       });
     });
 };
@@ -147,7 +153,7 @@ const emptyBtn = () => {
       iten.parentNode.removeChild(iten);
     });
     const span = document.querySelector(total);
-    span.innerText = ' 0 ';
+    span.innerText = 0;
     setLocal();
   });
 };
