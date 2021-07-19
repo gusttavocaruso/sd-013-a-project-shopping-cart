@@ -100,8 +100,20 @@ const limparCarrinho = () => {
   });
 };
 
+const loadApi = () => {
+  const loading = document.querySelector('.items');
+  const loadingText = document.createElement('p');
+  loadingText.className = 'loading';
+  loadingText.innerHTML = 'loading...';
+  loading.appendChild(loadingText);
+  setTimeout(() => {
+    fetchCart('computador');
+    loadingText.remove();
+  }, 2000);
+};
+
 window.onload = () => {
-  fetchCart('computador');
+  loadApi();
   btnAddCart();
   limparCarrinho();
 
