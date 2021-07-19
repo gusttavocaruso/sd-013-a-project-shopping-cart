@@ -50,11 +50,12 @@ const addItemsToSection = (items) => {
 
 const fetchML = (query) => new Promise((resolve) => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
-    .then((response) => {
+  .then((response) => {
     response.json().then((data) => {
-        addItemsToSection(data.results);
-        resolve();
-        });
+      addItemsToSection(data.results);
+      document.querySelector('.loading').remove();
+      resolve();
+      });
     });
 });
 
@@ -71,25 +72,27 @@ const addToCartClicked = (event) => new Promise((resolve) => {
     });
 });
 
-const addToCart = () => {
+const addToCart = () => new Promise((resolve) => {
   const addToCartButtons = document.getElementsByClassName('item__add');
   for (let i = 0; i < addToCartButtons.length; i += 1) {
     const button = addToCartButtons[i];
     button.addEventListener('click', addToCartClicked);
   }
-};
+  resolve();
+});
 
-const clearCart = () => {
+const clearCart = () => new Promise((resolve) => {
   const btnClear = document.querySelector('.empty-cart');
   const ol = document.querySelector('.cart__items');
   btnClear.addEventListener('click', () => {
     ol.innerHTML = '';
   });
-};
+  resolve();
+});
 
 const fetchPromise = async () => {
   try {
-    await fetchML('ryzen');
+    await fetchML('smartphone');
     await addToCart();
     await clearCart();
   } catch (error) {
