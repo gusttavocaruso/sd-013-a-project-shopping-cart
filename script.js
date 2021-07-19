@@ -141,8 +141,20 @@ const loadSavedItems = () => {
   totalPrice();
 };
 
+/* Requisito 6 */
+const clear = () => {
+  const button = document.querySelector('.empty-cart');
+  const list = document.querySelector('#cart__items');
+  button.addEventListener('click', () => {
+    list.innerHTML = '';
+    saveItemsLocally();
+    totalPrice();
+  });
+};
+
 window.onload = () => {
   selectComputer();
   fetchComputer();
   loadSavedItems();
+  clear();
 };
