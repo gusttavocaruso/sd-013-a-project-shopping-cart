@@ -29,16 +29,26 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+/* 
+Requisito 4
+Referências: https://developer.mozilla.org/pt-BR/docs/Web/API/Window/localStorage
+Step 1 */
+const saveItemsLocally = () => {
+  const cartItem = document.querySelector('.cart__items').innerHTML;
+  localStorage.setItem('cart', cartItem);
+};
+
 // Requisito 3 remover item do carrinho ao clicar nele.
 function cartItemClickListener(event) {
-  return event.target.remove('li');
+  event.target.remove('li');
+  saveItemsLocally();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}\n\n`;
-  li.addEventListener('click', cartItemClickListener);
+  // li.addEventListener('click', cartItemClickListener);
   return li;
 }
 
@@ -63,7 +73,6 @@ https://www.youtube.com/watch?v=m3K8DP4kVXQ&t=24s&ab_channel=hcode
 Vídeo feito durante o fechamento pelo especialista Jackson Pires */
 const fetchComputer = () => {
   const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-
   fetch(url)
     .then((response) => response.json())
     .then((computer) => {
@@ -83,15 +92,14 @@ const adList = (list) => {
 
 /* 
 Requisito 2
+Referências: Plantão guiado Projeto Shopping Cart turma 08
 Step 1
-Função para ao clicar no botão, selecionar o computador
-Quando eu clicar num dos item da lista de classe 'items' vai gerar um evento */
+Função para ao clicar no botão, selecionar o ID do computador
+Somente se clicar no botão 'Adicionar ao carrinho!' que o evento abaixo irá ocorrer */
 const selectComputer = () => {
   const computerList = document.querySelector('.items'); // recuperando a lista de computadores
   computerList.addEventListener('click',
   (event) => {
-   /* Ao clicar vai fazer referencia ao elemento (o que possuir a classe 'item__add')
-   que disparou o evento, no caso o botão do computador selecionado */
     if (event.target.classList.contains('item__add')) {
       const parent = event.target.parentElement;
       const idItem = getSkuFromProductItem(parent);
@@ -99,12 +107,29 @@ const selectComputer = () => {
         .then((response) => response.json())
         .then((data) => {
           adList(data);
+          saveItemsLocally();
      });
     }
   });
 };
 
+/* 
+Requisito 4
+Referências: Requisito 2 Step 1
+Step 2 */
+const loadSavedItems = () => {
+  const itemSalvo = localStorage.getItem('cart');
+  const a = document.querySelector('#cart__items');
+  a.innerHTML = itemSalvo;
+  a.addEventListener('click', (event) => {
+    if (event.target.classList.contains('cart__item')) {
+      cartItemClickListener(event);
+    }
+  });
+};
+
 window.onload = () => {
-  fetchComputer();
   selectComputer();
+  fetchComputer();
+  loadSavedItems();
 };
