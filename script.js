@@ -1,14 +1,16 @@
 function createProductImageElement(imageSource) {
-  const img = document.createElement('img');
-  img.className = 'item__image';
-  img.src = imageSource;
-  return img;
+  const img = document.createElement('img'); // cria o elemento img
+  img.className = 'item__image'; // dá uma classe para cada item img
+  img.src = imageSource; // usa o parâmetro como src
+  return img; // retorna a imagem
 }
 
+// Função já existente
+// Objetivo: criar elementos, com classes e acessar o html
 function createCustomElement(element, className, innerText) {
-  const e = document.createElement(element);
-  e.className = className;
-  e.innerText = innerText;
+  const e = document.createElement(element); // cria elemento que for colocado no parâmetro element
+  e.className = className; // dá a classe que for colocada no parâmetro className
+  e.innerText = innerText; // renderiza...como assim renderiza?
   return e;
 }
 
@@ -26,7 +28,12 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-// Requisito 6 - Feito com a ajuda do Notion da turma
+// ======================================
+// Requisito 6
+// 1o passo: criar uma função que cria um botão que ao ser clicado remove todos os itens do carrinho
+// Feito com a ajuda do Notion da turma
+// ======================================
+
 const removeItemsCart = () => {
   const button = document.querySelector('.empty-cart');
   button.addEventListener('click', () => {
@@ -35,7 +42,9 @@ const removeItemsCart = () => {
   });
 };
 
+// =======================================
 // Requisito 3
+// =======================================
 function cartItemClickListener(event) { // função que cria o evento de click, para remover item da lista
   event.target.remove();
 }
@@ -77,7 +86,7 @@ const adicionaItem = () => {
 
 // ==================
 
-// Requisito 1
+// Requisito 1 - cria uma listagem de produtos
 
 // ==================
 
@@ -91,6 +100,9 @@ const addItensToSection = (items) => {
 };
 
 // Parte 1
+// Função criada
+// Objetivo: Resgatar os elementos do JSON e enviá-los para o html dinamicamente
+
 const fetchML = (query) => { // query = pesquisa
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`) // o que o fetch retorna? uma PROMISE
     .then((response) => { // response traz todas as informações
