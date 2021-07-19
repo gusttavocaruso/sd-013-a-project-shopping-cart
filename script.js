@@ -43,7 +43,17 @@ const local = () => { // Eu chamo essa função na addProductShoppingCart p/ add
     });
     totalPrice.innerHTML = currentPrice;// Aqui faço o somatório
   };
-
+// Requisito 6
+  const cleanCart = () => {
+    const empty = document.querySelector('.empty-cart'); // Recuperando botão no html
+    empty.addEventListener('click', () => { // Criei o addEventListener para clicar o botão
+      const allLi = document.querySelectorAll('.cart__item'); // Recuperei todas li
+      allLi.forEach((element) => element.remove(element)); // Vou passar por cada li e remove-las
+      const allPrice = document.querySelector('.total-price'); // recupero o elemento preço total do html
+      allPrice.innerHTML = 0; // elemento Preço total vai receber quando todos os itens forem apagados.
+    });
+  };
+  
 // Requisito 3 
 // Referência https://catalin.red/removing-an-element-with-plain-javascript-remove-method/
 function cartItemClickListener(event) {
@@ -112,4 +122,5 @@ const productList = (product) => {
 window.onload = () => {
   productList('computador');
   getLocalStorage();
+  cleanCart();
 };
