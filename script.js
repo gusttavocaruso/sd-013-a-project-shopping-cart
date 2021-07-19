@@ -32,7 +32,7 @@ function createCustomElement(element, className, innerText) {
   e.className = className;
   e.innerText = innerText;
 
-  // Com o auxílio do Zezé no plantão
+  // Com o auxílio do Zezé no plantão. Requisito 2:
   if (element === 'button') {
     e.addEventListener('click', fetchItem);
   }
@@ -68,9 +68,11 @@ function addItensToSection(items) {
 
 // REQUISITO 1:
 function fetchML(query) {
+  const loadingText = document.querySelector('.loading');
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=$${query}`)
     .then((response) => {
       response.json().then((data) => addItensToSection(data.results));
+      loadingText.remove();
   });
 }
 
@@ -84,7 +86,7 @@ function emptyCart() {
     }
   });
 }
-    
+
 window.onload = () => {
   fetchML('computador');
   emptyCart();
