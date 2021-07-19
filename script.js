@@ -1,4 +1,4 @@
-const cartItens = '.cart__items'
+const cartItens = '.cart__items';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -55,7 +55,6 @@ const itensLocalStorage = () => {
     }
   });
 };
-
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
