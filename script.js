@@ -3,6 +3,7 @@
 const getCart = document.querySelector('.cart__items');
 const getDelButton = document.querySelector('.empty-cart');
 const getTotalPrice = document.querySelector('.totalPrice')
+const loading = document.querySelector('.loading');
 //= =============                   ==============
 
 //= ============= Começo do código ==============
@@ -90,7 +91,7 @@ function getSiteApi() {
     .then((result) => {
  result.json()
     .then((another) => another.results.forEach((element) => {
-      createProductItemElement(element);
+      createProductItemElement(element), loading.remove();
     }));
   })
     .catch(() => console.log('Error'));
