@@ -1,6 +1,5 @@
 let pricesItemsCart = [];
 
-
 function saveToLocalStorage() {
   const cartItems = document.querySelector('.cart__items').innerHTML;
   const totalPrice = document.querySelector('.total-price').innerText;
