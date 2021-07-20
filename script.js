@@ -94,6 +94,21 @@ const addElementChild = (elements) => {
   });
 };
 
+// Requerimento 6
+// Inicialmente eu tinha feito foi pegar com quereselector
+// toda a childNode e aplicar o remove(), mas não estava 
+// passando no linter. Então esse requisito usou como base a
+// resolução do Filipe Candido.
+const emptyButton = document.querySelector('.empty-cart');
+
+const emptyCar = () => {
+  productAdded.innerHTML = '';
+  sumOfPrices();
+  saveShoppingCart();
+};
+
+emptyButton.addEventListener('click', emptyCar);
+
 // Requisito 1
 // 1° Passo - Função que faz requisição na API do ML
 // Resolução com base na explicação do Jack
