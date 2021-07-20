@@ -81,12 +81,10 @@ function removeLoading() {
 }
 
 async function addNewItemToCart(event) { // Questão resolvida com ajuda do amigo Rodrigo Pova.
-  loading();
   const itemSku = getSkuFromProductItem(event.target.parentElement);
   const response = await fetch(`https://api.mercadolibre.com/items/${itemSku}`);
   const data = await response.json();
   const findOl = document.querySelector('.cart__items');
-  removeLoading();
   findOl.appendChild(createCartItemElement(data));
   displayTotalPrice();
   storeCart();
