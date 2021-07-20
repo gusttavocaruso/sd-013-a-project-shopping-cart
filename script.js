@@ -108,7 +108,10 @@ const emptyCar = () => {
 };
 
 emptyButton.addEventListener('click', emptyCar);
-
+// Requerimento 7
+// A lógica aqui é adicionar o elemeto html na página
+// accesar o mesmo e dentro da requisição, removê-lo.
+const loadRequest = document.querySelector('.loading');
 // Requisito 1
 // 1° Passo - Função que faz requisição na API do ML
 // Resolução com base na explicação do Jack
@@ -118,6 +121,7 @@ const pullItemML = (query) => {
       response.json().then((data) => {
         addElementChild(data.results);
       });
+      loadRequest.remove();
     });
 };
 
