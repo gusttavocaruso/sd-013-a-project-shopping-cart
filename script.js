@@ -1,5 +1,21 @@
 const olLista = '.cart__items';
 
+const somaCarrinho = () => {
+  const ol = document.querySelector(olLista);
+  const olChildren = [...ol.children];
+  const olPrice = olChildren.reduce((acc, li) => {
+    let acumulador = acc;
+    acumulador += parseFloat(li.innerText.split('$')[1]);
+    return acumulador;
+  }, 0);
+  return olPrice;
+};
+
+const precoTotal = () => {
+  const precoElement = document.querySelector('.total-price');
+  precoElement.innerText = `${somaCarrinho()}`;
+};
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -36,6 +52,7 @@ const salvar = () => {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  precoTotal();
   salvar();
 }
 
@@ -58,6 +75,7 @@ const fetchItemId = (botao) => {
     const criarLi = createCartItemElement(data);
     const addOl = document.querySelector(olLista);
     addOl.appendChild(criarLi);
+    precoTotal();
     salvar();
   });
 };
@@ -97,6 +115,8 @@ const limparCarrinho = () => {
     const lis = document.querySelectorAll('.cart__item');
     lis.forEach((elements) => ol.removeChild(elements));
     localStorage.clear();
+    precoTotal();
+    salvar();
   });
 };
 
@@ -115,8 +135,9 @@ const loadApi = () => {
 window.onload = () => {
   loadApi();
   btnAddCart();
+  precoTotal();
   limparCarrinho();
-
+  
   if (localStorage.lista) {
     document.querySelector(olLista).innerHTML = localStorage.lista;
   }
