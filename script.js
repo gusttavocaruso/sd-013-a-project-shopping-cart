@@ -28,9 +28,24 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+// Recursos necessários - Requisito 4
+const productAdded = document.querySelector('.cart__items');
+
+const saveShoppingCart = () => {
+  // setItem('key','value') Salva os produtos
+  // no LocalStorage
+  localStorage.setItem('Product', productAdded.innerHTML);
+};
+
+// Recupera os produtos salvos no localstorage
+const recoverProductLS = () => {
+  productAdded.innerHTML = localStorage.getItem('Product');
+};
+
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
+  // saveShoppingCart();
 }
 
 // Esta função cria os componentes HTML refentes aos produtos 
@@ -53,6 +68,7 @@ const addElementChild = (elements) => {
     const itemElement = createProductItemElement(element);
     const addToSection = document.querySelector('.items');
     addToSection.appendChild(itemElement);
+    // saveShoppingCart();
   });
 };
 
@@ -76,6 +92,7 @@ const addProductInCart = (data) => {
   const receiveLi = createCartItemElement(data);
   const accessOlCart = document.querySelector('.cart__items');
   accessOlCart.appendChild(receiveLi);
+  saveShoppingCart();
 };
 
 // Requisito 2
@@ -107,4 +124,5 @@ const buttonEvent = () => {
 window.onload = () => {
   pullItemML('computador');
   buttonEvent();
+  recoverProductLS();
 };// Boa prática.
