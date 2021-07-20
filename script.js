@@ -8,8 +8,19 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+const addStorage = () => {
+  localStorage.setItem('data', cartItems.innerHTML);
+};
+
+const getStorage = () => {
+  if (cartItems.innerHTML !== null) {
+    cartItems.innerHTML = localStorage.getItem('data');
+  }
+};
+
 function cartItemClickListener(event) {
   event.target.remove();
+  addStorage();
 }
 
 function createCustomElement(element, className, innerText) {
@@ -19,11 +30,11 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {     
   const li = document.createElement('li');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;     
+  li.addEventListener('click', cartItemClickListener);     
   cartItems.appendChild(li);
   return li;
 }
@@ -33,6 +44,7 @@ const cartItemPromise = async (itemCart) => {
     const getCartItem = await fetch(`https://api.mercadolibre.com/items/${itemCart}`);
     const productCart = await getCartItem.json();
     createCartItemElement(productCart);
+    addStorage();
   } catch (error) {
     alert(error);  
   }
@@ -46,7 +58,8 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   section.appendChild(createProductImageElement(image));
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   section.lastElementChild.addEventListener('click', (event) => {
-    cartItemPromise(event.target.parentElement.firstElementChild.innerText);
+    const productId = event.target.parentElement.firstElementChild.innerText;
+    cartItemPromise(productId);
   });
   return section;
 }
@@ -77,6 +90,9 @@ const getFetch = async () => {
   await getItemsPromises('computador');
 };
 
+cartItems.addEventListener('click', cartItemClickListener);
+
 window.onload = () => { 
   getFetch();  
+  getStorage();
 };
