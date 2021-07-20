@@ -8,9 +8,8 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-function cartItemClickListener() {
-  // coloque seu código aqui
-  console.log('event');
+function cartItemClickListener(event) {
+  event.target.remove();
 }
 
 function createCustomElement(element, className, innerText) {
