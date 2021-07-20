@@ -1,11 +1,18 @@
 let pricesItemsCart = [];
 
+
+function saveToLocalStorage() {
+  const cartItems = document.querySelector('.cart__items').innerHTML;
+  const totalPrice = document.querySelector('.total-price').innerText;
+  localStorage.setItem('cartItems', cartItems);
+  localStorage.setItem('totalPrice', totalPrice);
+}
+
 function sumCartTotal(itemPrice) {
   const sectionTotalPrice = document.querySelector('.total-price');
   pricesItemsCart.push(itemPrice);
   const sumPrices = pricesItemsCart.reduce((acc, value) => acc + value);
   sectionTotalPrice.innerText = sumPrices;
-  console.log(pricesItemsCart);
 }
 
 function cartItemClickListener(event, price) {
@@ -16,6 +23,7 @@ function cartItemClickListener(event, price) {
   pricesItemsCart = pricesItemsCart.filter((items) => items !== price);
   const sumRemainedPrices = pricesItemsCart.reduce((acc, value) => acc + value, 0);
   sectionTotalPrice.innerText = sumRemainedPrices;
+  saveToLocalStorage();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -26,6 +34,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', (event) => cartItemClickListener(event, salePrice));
   ol.appendChild(li);
   sumCartTotal(salePrice);
+  saveToLocalStorage();
 }
 // REQUISITO 2:
 function fetchItem(event) {
@@ -105,4 +114,6 @@ function emptyCart() {
 window.onload = () => {
   fetchML('computador');
   emptyCart();
+  document.querySelector('.cart__items').innerHTML = localStorage.getItem('cartItems');
+  document.querySelector('.total-price').innerText = localStorage.getItem('totalPrice');
  };
