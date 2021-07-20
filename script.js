@@ -30,22 +30,43 @@ function getSkuFromProductItem(item) {
 
 // Recursos necessários - Requisito 4
 const productAdded = document.querySelector('.cart__items');
+const amount = document.querySelector('.total-price');
 
 const saveShoppingCart = () => {
   // setItem('key','value') Salva os produtos
   // no LocalStorage
   localStorage.setItem('Product', productAdded.innerHTML);
+  localStorage.setItem('Price', amount.innerHTML);
 };
 
 // Recupera os produtos salvos no localstorage
 const recoverProductLS = () => {
   productAdded.innerHTML = localStorage.getItem('Product');
+  amount.innerHTML = localStorage.getItem('Price');
+};
+
+// Requisito 5
+// Resolução baseada no code review do Filipe Cândido.
+const sumOfPrices = async () => {
+  let totalPrice = 0;
+// Buscar todos os produtos adicionados ao carrinho.
+  const cartItems = productAdded.childNodes;
+  cartItems.forEach((item) => {
+    const getPriceItem = item.innerText.split('$');
+// O .split('$') retorna um array com duas posições. Na segunda [1] posição
+// está o preço do produto no formato string. É preciso converter esse
+// valor em número. O Number(), faz essa tarefa. Em seguida é so somar 
+// cada valor convertido, dando o preço total.
+    totalPrice += Number(getPriceItem[1]);
+  });
+  amount.innerHTML = `${Math.round((totalPrice * 100)) / 100}`;
 };
 
 function cartItemClickListener(event) {
   // coloque seu código aqui
   event.target.remove();
   // saveShoppingCart();
+  sumOfPrices();
 }
 
 // Esta função cria os componentes HTML refentes aos produtos 
@@ -69,6 +90,7 @@ const addElementChild = (elements) => {
     const addToSection = document.querySelector('.items');
     addToSection.appendChild(itemElement);
     // saveShoppingCart();
+    sumOfPrices();
   });
 };
 
@@ -93,6 +115,7 @@ const addProductInCart = (data) => {
   const accessOlCart = document.querySelector('.cart__items');
   accessOlCart.appendChild(receiveLi);
   saveShoppingCart();
+  sumOfPrices();
 };
 
 // Requisito 2
