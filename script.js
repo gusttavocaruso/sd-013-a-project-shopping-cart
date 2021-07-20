@@ -45,7 +45,7 @@ const getItemsPromises = async (item) => {
 };
 
 const getFetch = async () => {
-  await getItemsPromises('Smartphone');
+  await getItemsPromises('computador');
 };
   
 // function getSkuFromProductItem(item) {
