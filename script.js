@@ -87,15 +87,13 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-/* function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-} */
-
 const addItensToSection = (items) => {
+  const getLoading = document.querySelector('.loading');
   items.forEach((item) => {
     const itemElement = createProductItemElement(item);
     const section = document.querySelector('.items');
     section.appendChild(itemElement);
+    getLoading.remove(); // retirando a classe .loading
   });
 };
 
@@ -108,6 +106,10 @@ const fetchML = (query) => {
     });
 };
 
+/* function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+} */
+
 window.onload = () => {
-  fetchML('pc');
+  fetchML();
 };
