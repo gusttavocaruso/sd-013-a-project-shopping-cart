@@ -28,24 +28,31 @@ const setTotalPrice = () => {
   renderTotalPrice(allPrices.reduce((accumulator, current) => accumulator + current, 0));
 };
 
-const saveInLocalStorage = () => {
-  const allCartItems = document.querySelectorAll('.cart__item');
-  const arrayAllCart = [];
+const cartItems = '.cart__items';
 
-  allCartItems.forEach((currentCart) => {
-    const split = currentCart.innerText.split(' ');
-    arrayAllCart.push({
-      cartClass: currentCart.classList,
-      id: split[1],
-    });
-  });
-  localStorage.setItem('cart', JSON.stringify(arrayAllCart));
+const setItemsLocalStorage = () => {
+  const ol = document.querySelector(cartItems); // resgatando ol
+  const text = ol.innerHTML; // acessar html
+  localStorage.setItem('cartList', ''); // limpando o que tinha antes
+  localStorage.setItem('cartList', JSON.stringify(text)); // pegar todo o texto de dentro da variável e transforma no formato JSON // obs: localStorage.setItem('cartList', ol.innerHTML);
 };
 
 function cartItemClickListener(event) {
   event.target.remove();
+  setItemsLocalStorage();
   setTotalPrice();
 }
+
+const getItemsLocalStorage = () => {
+  const getLocalStorage = JSON.parse(localStorage.getItem('cartList')); // recupera o item criado no requisito 4 // obs: recuperar ol, ol.innerHTML = localStorage.getItem('nomeDaChave')
+  const ol = document.querySelector(cartItems); // pegar onde tem os itens
+  ol.innerHTML = getLocalStorage; // e colocar os itens que já tinham sido salvos
+  ol.addEventListener('click', (event) => { // se algum elemento da ol for clicado
+    if (event.target.className === 'cart__item') { // e contiver a classe cart__item
+      cartItemClickListener(event); // será apagado (usando a função do requisito 3)
+    }
+  });
+};
 
 function createCartItemElement({ sku, name, salePrice }) {
   const li = document.createElement('li');
@@ -60,10 +67,9 @@ const addToCart = (id) => {
     .then((response) => {
       response.json().then((obj) => {
       const { id: sku, title: name, price: salePrice } = obj;
-
       const cartSection = document.querySelector('.cart__items');
       cartSection.appendChild(createCartItemElement({ sku, name, salePrice }));
-      saveInLocalStorage();
+      setItemsLocalStorage();
       setTotalPrice();
       });
     });
@@ -113,4 +119,5 @@ const fetchML = (query) => {
 
 window.onload = () => {
   fetchML();
+  getItemsLocalStorage();
 };
