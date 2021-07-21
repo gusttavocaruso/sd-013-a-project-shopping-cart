@@ -42,8 +42,9 @@ const saveInLocalStorage = () => {
   localStorage.setItem('cart', JSON.stringify(arrayAllCart));
 };
 
-function cartItemClickListener(/* event */) {
-  // coloque seu código aqui
+function cartItemClickListener(event) {
+  event.target.remove();
+  
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
