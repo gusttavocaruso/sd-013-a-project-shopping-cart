@@ -113,9 +113,9 @@ const fetchML = (query) => {
     });
 };
 
-function getSkuFromProductItem(item) {
+/* function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-}
+} */
 
 const buttonRemoveAll = () => {
   const getButtonRemoveAll = document.querySelector('.empty-cart'); 
