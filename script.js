@@ -31,10 +31,10 @@ const setTotalPrice = () => {
 const cartItems = '.cart__items';
 
 const setItemsLocalStorage = () => {
-  const ol = document.querySelector(cartItems); // resgatando ol
-  const text = ol.innerHTML; // acessar html
-  localStorage.setItem('cartList', ''); // limpando o que tinha antes
-  localStorage.setItem('cartList', JSON.stringify(text)); // pegar todo o texto de dentro da variável e transforma no formato JSON // obs: localStorage.setItem('cartList', ol.innerHTML);
+  const ol = document.querySelector(cartItems); 
+  const text = ol.innerHTML; 
+  localStorage.setItem('cartList', ''); 
+  localStorage.setItem('cartList', JSON.stringify(text)); // obs: localStorage.setItem('cartList', ol.innerHTML);
 };
 
 function cartItemClickListener(event) {
@@ -44,12 +44,12 @@ function cartItemClickListener(event) {
 }
 
 const getItemsLocalStorage = () => {
-  const getLocalStorage = JSON.parse(localStorage.getItem('cartList')); // recupera o item criado no requisito 4 // obs: recuperar ol, ol.innerHTML = localStorage.getItem('nomeDaChave')
-  const ol = document.querySelector(cartItems); // pegar onde tem os itens
-  ol.innerHTML = getLocalStorage; // e colocar os itens que já tinham sido salvos
-  ol.addEventListener('click', (event) => { // se algum elemento da ol for clicado
-    if (event.target.className === 'cart__item') { // e contiver a classe cart__item
-      cartItemClickListener(event); // será apagado (usando a função do requisito 3)
+  const getLocalStorage = JSON.parse(localStorage.getItem('cartList')); 
+  const ol = document.querySelector(cartItems); 
+  ol.innerHTML = getLocalStorage; 
+  ol.addEventListener('click', (event) => { 
+    if (event.target.className === 'cart__item') { 
+      cartItemClickListener(event); 
     }
   });
 };
@@ -113,11 +113,24 @@ const fetchML = (query) => {
     });
 };
 
-/* function getSkuFromProductItem(item) {
+function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
-} */
+}
+
+const buttonRemoveAll = () => {
+  const getButtonRemoveAll = document.querySelector('.empty-cart'); 
+  getButtonRemoveAll.addEventListener('click', () => { 
+    const ol = document.querySelector(cartItems); 
+    while (ol.firstChild) { 
+      ol.removeChild(ol.firstChild); 
+      setTotalPrice(); 
+      setItemsLocalStorage(); 
+    }
+  });
+};
 
 window.onload = () => {
   fetchML();
   getItemsLocalStorage();
+  buttonRemoveAll();
 };
