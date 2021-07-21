@@ -44,6 +44,7 @@ const saveInLocalStorage = () => {
 
 function cartItemClickListener(event) {
   event.target.remove();
+  setTotalPrice();
 }
 
 function createCartItemElement({ sku, name, salePrice }) {
