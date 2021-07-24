@@ -2,6 +2,7 @@ const addLoading = document.querySelector('.loading');
 const ol = document.querySelector('.cart__items');
 const liLocalStorage = localStorage.getItem('item-cart');
 ol.innerHTML = liLocalStorage;
+const totalPrice = document.querySelector('.total-price');
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -40,12 +41,18 @@ const removeItemsCart = () => {
   const li = document.querySelectorAll('.cart__item');
     li.forEach((item) => item.parentNode.removeChild(item));
   });
+  localStorage.setItem('item-cart', ol.innerHTML);
 };
 
 // Requisito 3
 // função que cria o evento de click, para remover item da lista
 function cartItemClickListener(event) {
+  const textoLi = event.target.innerText;
+  const priceLi = parseFloat(textoLi.split('$')[1]);
+  const total = parseFloat(totalPrice.innerHTML) - priceLi;
+  totalPrice.innerHTML = Math.round(total * 100) / 100;
   event.target.remove();
+  localStorage.setItem('item-cart', ol.innerHTML);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -61,12 +68,8 @@ const productML = (itemId) =>
    fetch(`https://api.mercadolibre.com/items/${itemId}`)
     .then((response) => response.json())
     .then((itemLi) => {
-      // const item = {
-      //   sku: itemLi.id,
-      //   name: itemLi.title,
-      //   salePrice: itemLi.price,
-      // };
-      // ol.appendChild(item);
+      const total = parseFloat(totalPrice.innerHTML) + itemLi.price;
+      totalPrice.innerHTML = Math.round(total * 100) / 100; // teste
       localStorage.setItem('item-cart', ol.innerHTML);
       const item = createCartItemElement(itemLi);
       ol.appendChild(item);
