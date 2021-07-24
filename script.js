@@ -1,4 +1,5 @@
 const olCart = document.querySelector('.cart__items');
+const loading = document.querySelector('.loading');
 
 const btnClear = document.querySelector('.empty-cart');
 
@@ -93,6 +94,7 @@ const fetchML = (query) => {
     .then((response) => {
       response.json().then((data) => {
         productComponent(data.results);
+        loading.remove();
       });
     });
 };
