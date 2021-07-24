@@ -1,16 +1,20 @@
+const addLoading = document.querySelector('.loading');
+const ol = document.querySelector('.cart__items');
+const liLocalStorage = localStorage.getItem('item-cart');
+ol.innerHTML = liLocalStorage;
+const totalPrice = document.querySelector('.total-price');
+
 function createProductImageElement(imageSource) {
-  const img = document.createElement('img'); // cria o elemento img
-  img.className = 'item__image'; // dá uma classe para cada item img
-  img.src = imageSource; // usa o parâmetro como src
-  return img; // retorna a imagem
+  const img = document.createElement('img');
+  img.className = 'item__image';
+  img.src = imageSource;
+  return img;
 }
 
-// Função já existente
-// Objetivo: criar elementos, com classes e acessar o html
 function createCustomElement(element, className, innerText) {
-  const e = document.createElement(element); // cria elemento que for colocado no parâmetro element
-  e.className = className; // dá a classe que for colocada no parâmetro className
-  e.innerText = innerText; // renderiza...como assim renderiza?
+  const e = document.createElement(element);
+  e.className = className;
+  e.innerText = innerText;
   return e;
 }
 
@@ -28,32 +32,26 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
-// ======================================
-// Requisito 6
-// 1o passo: criar uma função que cria um botão que ao ser clicado remove todos os itens do carrinho
-// Feito com a ajuda do Notion da turma
-// ======================================
-
+// Requisot 6 Função que apaga tudo
 const removeItemsCart = () => {
   const button = document.querySelector('.empty-cart');
   button.addEventListener('click', () => {
-    const getLi = document.querySelectorAll('.cart__item');
-    getLi.forEach((item) => item.parentNode.removeChild(item));
+  const li = document.querySelectorAll('.cart__item');
+    li.forEach((item) => item.parentNode.removeChild(item));
   });
+  localStorage.setItem('item-cart', ol.innerHTML);
 };
 
-// =======================================
 // Requisito 3
-// =======================================
-function cartItemClickListener(event) { // função que cria o evento de click, para remover item da lista
+// função que cria o evento de click, para remover item da lista
+function cartItemClickListener(event) {
+  const textoLi = event.target.innerText;
+  const priceLi = parseFloat(textoLi.split('$')[1]);
+  const total = parseFloat(totalPrice.innerHTML) - priceLi;
+  totalPrice.innerHTML = Math.round(total * 100) / 100;
   event.target.remove();
+  localStorage.setItem('item-cart', ol.innerHTML);
 }
-
-// =====================
-
-// Requisito 2
-
-// =====================
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -64,57 +62,51 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
 }
 
 // Função de adicona o elemeto filho ao elemento pai quando clicar no botão "adicionar ao carrinho"
-const fetchId = (itemId) =>
-  fetch(`https://api.mercadolibre.com/items/${itemId}`)
+const productML = (itemId) =>
+   fetch(`https://api.mercadolibre.com/items/${itemId}`)
     .then((response) => response.json())
-    .then((data) => {
-      const createLi = createCartItemElement(data);
-      const recuperateOl = document.querySelector('.cart__items');
-      recuperateOl.appendChild(createLi);
-    });
+    .then((itemLi) => {
+      const total = parseFloat(totalPrice.innerHTML) + itemLi.price;
+      totalPrice.innerHTML = Math.round(total * 100) / 100; // teste
+      localStorage.setItem('item-cart', ol.innerHTML);
+      const item = createCartItemElement(itemLi);
+      ol.appendChild(item);
+      localStorage.setItem('item-cart', ol.innerHTML);
+});
 
 // Função que cria o evento de click no botão para adicionar o item ao carrinho quando clicar no botão.
-const adicionaItem = () => {
-  const getButton = document.getElementsByClassName('item__add');
-    for (let index = 0; index < getButton.length; index += 1) {
-      getButton[index].addEventListener('click', (event) => {
+const addEventBtn = () => {
+  const button = document.getElementsByClassName('item__add');
+    for (let i = 0; i < button.length; i += 1) {
+      button[i].addEventListener('click', (event) => {
       const itemId = getSkuFromProductItem(event.target.parentElement);
-      fetchId(itemId);
+      productML(itemId);
       });
     }
 };
 
-// ==================
-
-// Requisito 1 - cria uma listagem de produtos
-
-// ==================
-
-// Parte 2
-const addItensToSection = (items) => {
+// Função que adiciona ao HTML, os itens trazidos da requisição feita pela função mercadoLivre
+const addItensTo = (items) => {
   items.forEach((item) => {
-    const itemElement = createProductItemElement(item); // item == produto
-    const section = document.querySelector('.items');
-    section.appendChild(itemElement);
+   const createItem = createProductItemElement(item);
+   const addItemSection = document.querySelector('.items');
+   addItemSection.appendChild(createItem);
   });
 };
 
-// Parte 1
-// Função criada
-// Objetivo: Resgatar os elementos do JSON e enviá-los para o html dinamicamente
-
-const fetchML = (query) => { // query = pesquisa
-  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`) // o que o fetch retorna? uma PROMISE
-    .then((response) => { // response traz todas as informações
-      response.json().then((data) => { // o json também retorna uma PROMISE
-        addItensToSection(data.results);
-        adicionaItem(); // Função do requisito 2
-        removeItemsCart();
-      });
-    });
+// função que efetua a requisição a API do mercado livre
+const mercadoLivre = (query) => {
+  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
+  .then((response) => {
+    response.json()
+  .then((data) => {
+    addItensTo(data.results); // Chama a função que adiciona Itens ao elemeneto HTML.
+    addLoading.remove();
+    addEventBtn(); // Chama a função com evento de click no botão, que adiciona os itens ao html
+    removeItemsCart();
+  });
+  });
 };
 
-// Chamar as funções quando a página iniciar
-window.onload = () => {
-  fetchML('computador');
-};
+// window.onload = () => {}
+mercadoLivre('computador');
