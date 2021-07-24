@@ -1,3 +1,9 @@
+const olCart = document.querySelector('.cart__items');
+
+const btnClear = document.querySelector('.empty-cart');
+
+// exclui items do carrinho - ajuda do Emanoel
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -12,10 +18,30 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function cartItemClickListener(event) {
-  const ol = document.querySelector('.cart__items');
-  ol.removeChild(event.target);
+// requisito 4 concluido com a ajuda do Emanoel da tribo 13 A
+const saveCart = () => {
+  localStorage.setItem('productSave', olCart.innerHTML);
+};
+
+const getCartSave = () => {
+  olCart.innerHTML = localStorage.getItem('productSave');
+};
+
+function removeItemCarts() {
+  olCart.innerHTML = '';
+  saveCart();
 }
+
+btnClear.addEventListener('click', () => {
+  removeItemCarts();
+});
+// Pego por parametro a <li> clicada, crio a const ol que tem a classe cart__items, depois removo a <li> que foi clicada. 
+function cartItemClickListener(event) {
+  event.target.remove();
+  saveCart();
+}
+
+olCart.addEventListener('click', (cartItemClickListener));
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -24,9 +50,11 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   ol.appendChild(li);
   li.addEventListener('click', cartItemClickListener);
+  saveCart();
   return li;
 }
 
+//  fetch para adiciona o produto ao carrinho
 const addCartFetch = (query) => {
   fetch(`https://api.mercadolibre.com/items/${query}`)
   .then((response) => response.json())
@@ -36,7 +64,6 @@ const addCartFetch = (query) => {
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
@@ -72,4 +99,5 @@ const fetchML = (query) => {
 
 window.onload = () => {
   fetchML('computador');
+  getCartSave();
 };
