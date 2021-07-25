@@ -1,10 +1,9 @@
 const olCart = document.querySelector('.cart__items');
 const loading = document.querySelector('.loading');
-
+const total = document.querySelector('.total-price');
 const btnClear = document.querySelector('.empty-cart');
 
 // exclui items do carrinho - ajuda do Emanoel
-
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -22,44 +21,69 @@ function createCustomElement(element, className, innerText) {
 // requisito 4 concluido com a ajuda do Emanoel da tribo 13 A
 const saveCart = () => {
   localStorage.setItem('productSave', olCart.innerHTML);
+  localStorage.setItem('totalPriceCart', total.innerHTML);
 };
 
 const getCartSave = () => {
   olCart.innerHTML = localStorage.getItem('productSave');
+  total.innerHTML = localStorage.getItem('totalPriceCart');
 };
 
 function removeItemCarts() {
   olCart.innerHTML = '';
+  total.innerHTML = 0;
   saveCart();
 }
 
 btnClear.addEventListener('click', () => {
   removeItemCarts();
 });
+
+const soma = (valorAtual, precotot) => {
+  const result = valorAtual + precotot;
+  total.innerHTML = Math.round(result * 100) / 100;
+};
+
+const sub = (valorAtual, precotot) => {
+  const result = precotot - valorAtual;
+  total.innerHTML = Math.round(result * 100) / 100;
+};
+
+// vi no notion da turma que o Matheus Duarte postou
+const precototal = (valorAtual, operador) => {
+  const precotot = Number(total.innerHTML);
+  if (operador === '+') soma(valorAtual, precotot);
+  if (operador === '-') sub(valorAtual, precotot);
+};
 // Pego por parametro a <li> clicada, crio a const ol que tem a classe cart__items, depois removo a <li> que foi clicada. 
 function cartItemClickListener(event) {
   event.target.remove();
+  const precoDoProduto = event.target.querySelector('span').innerText;
+  precototal(precoDoProduto, '-');
   saveCart();
 }
-
-olCart.addEventListener('click', (cartItemClickListener));
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   const ol = document.querySelector('.cart__items');
   li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.innerHTML = `SKU: ${sku} | NAME: ${name} | PRICE: $<span>${salePrice}</span>`;
   ol.appendChild(li);
   li.addEventListener('click', cartItemClickListener);
+  precototal(salePrice, '+');
   saveCart();
   return li;
 }
 
 //  fetch para adiciona o produto ao carrinho
-const addCartFetch = (query) => {
-  fetch(`https://api.mercadolibre.com/items/${query}`)
-  .then((response) => response.json())
-  .then((data) => createCartItemElement(data));
+const addCartFetch = async (query) => {
+  try {
+    await fetch(`https://api.mercadolibre.com/items/${query}`)
+    .then((response) => response.json())
+    .then((data) => createCartItemElement(data));
+  } catch (error) {
+    alert(error);
+  }
 };
 
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
@@ -76,10 +100,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
-/* function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-} */
-
 // aprendi com o fechamento de hoje dia 8 de julho com o tio Jack
 const productComponent = (items) => {
   items.forEach((item) => {
@@ -89,16 +109,21 @@ const productComponent = (items) => {
   });
 };
 
-const fetchML = (query) => {
-  fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
+const fetchML = async (query) => {
+  try {
+    await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => {
       response.json().then((data) => {
         productComponent(data.results);
         loading.remove();
       });
     });
+  } catch (error) {
+    alert(error);
+  }
 };
 
+// Agradeço ao Emanoel, Rogerio, Gildo e Matheus da tribo 13A por compartilharem seus conhecimentos.
 window.onload = () => {
   fetchML('computador');
   getCartSave();
