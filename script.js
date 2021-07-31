@@ -1,3 +1,5 @@
+const loading = document.querySelector('.loading');
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -38,6 +40,14 @@ function retrieveCart() {
   getCart().innerHTML = localStorage.getItem('cartContent');
 }
 
+const totalPrice = () => {
+  const priceDisplay = document.querySelector('.total-price');
+  const cartItemsArr = [...getCart().children];
+  const preço = cartItemsArr.reduce((acc, curr) => 
+    acc + Number(curr.innerText.split('$')[1]), 0);
+  priceDisplay.innerText = preço;
+};
+
 function emptyButton() {
   const emptyBtn = document.querySelector('.empty-cart');
   emptyBtn.addEventListener('click', () => {
@@ -61,24 +71,11 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-function loading() {
-  const loadingText = document.createElement('p');
-  loadingText.innerText = 'Loading...';
-  loadingText.className = 'loading';
-  document.querySelector('.container').appendChild(loadingText);
-}
-
-function removeLoading() {
-  document.querySelector('.loading').remove();
-}
-
 async function addNewItemToCart(event) {
-  loading();
   const itemSku = getSkuFromProductItem(event.target.parentElement);
   const response = await fetch(`https://api.mercadolibre.com/items/${itemSku}`);
   const data = await response.json();
   const findOl = document.querySelector('.cart__items');
-  removeLoading();
   findOl.appendChild(createCartItemElement(data));
   totalPrice();
   storeCart();
@@ -94,18 +91,10 @@ function addNewItem(items) {
   });
 }
 
-const totalPrice = () => {
-  const priceDisplay = document.querySelector('.total-price');
-  const cartItemsArr = [...getCart().children];
-  const totalPrice = cartItemsArr.reduce((acc, curr) => 
-    acc + Number(curr.innerText.split('$')[1]), 0);
-  priceDisplay.innerText = totalPrice;
-};
-
 async function getApi(userInput) {
   const response = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${userInput}`);
   const data = await response.json();
-    
+  loading.remove();
     addNewItem(data.results);
 }
 
