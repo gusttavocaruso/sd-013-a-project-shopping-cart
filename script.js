@@ -102,10 +102,12 @@ const addItems = (pc) => {
   });
 };
 // Requisito 1
+const loading = document.querySelector('.loading');
 const getItemsPromises = async (item) => {
   try {
     const getItem = await fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${item}`);
     const product = await getItem.json();
+    loading.remove();
     const result = product.results; // A lista de produtos que devem ser exibidos é o array results no json.
     addItems(result);
   } catch (error) {
