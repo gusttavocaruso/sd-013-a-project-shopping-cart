@@ -12,6 +12,7 @@ const getStorage = () => {
   }
 };
 
+// Requisito 5 
 const total = () => {
   const precoTotal = document.querySelector('.total-price');
   let preco = 0;
@@ -21,6 +22,20 @@ const total = () => {
     preco += Number(computer[1]);
     precoTotal.innerHTML = `${(Math.round((preco * 100)) / 100)}`;
     addStorage();
+  });
+};
+
+// requisito 6 = pegar o button e apagar a lista do carrinho.
+const removeItems = () => {
+  const btnRemove = document.querySelector('.empty-cart');
+  const listaOl = document.querySelector('.cart__items');
+  btnRemove.addEventListener('click', () => {
+    const list = document.querySelectorAll('li');
+    list.forEach((item) => {
+      listaOl.removeChild(item);
+      total();
+      addStorage();
+    });
   });
 };
 
@@ -112,4 +127,5 @@ window.onload = () => {
   getFetch();  
   getStorage();
   total();
+  removeItems();
 };
