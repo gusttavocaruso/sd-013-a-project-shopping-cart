@@ -1,7 +1,37 @@
+const cart = '.cart__items'
+const totalPriceClass = '.total-price'
+const buttonRemoveAll = document.querySelector('.empty-cart');
+
+const saveOnLocalStorage = () => {
+  const recoverOl = document.querySelector(cart);
+  const olText = recoverOl.innerHTML;
+  localStorage.setItem('cartList', '');
+  localStorage.setItem('cartList', JSON.stringify(olText));
+};
+
+const salveTotalPriceOnLocalStorage = () => {
+  const recoverPrice = document.querySelector(totalPriceClass);
+  const text = recoverPrice.innerHTML;
+  localStorage.setItem('totalPrice', '');
+  localStorage.setItem('totalPrice', JSON.stringify(text));
+};
+
+function totalPrice() {
+  const span = document.querySelector(totalPriceClass);
+  let price = 0;
+  const arrayPrices = document.querySelectorAll('li');
+  arrayPrices.forEach((item) => {
+  const product = item.innerText.split('$');
+  price += Number(product[1]);
+  });
+  span.innerHTML = `${(Math.round((price * 100)) / 100)}`;
+  salveTotalPriceOnLocalStorage();
+  } 
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
-  img.src = imageSource;
+  img.src = imageSource
   return img;
 }
 
@@ -12,7 +42,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -29,10 +59,12 @@ function getSkuFromProductItem(item) {
 }
 
 function cartItemClickListener(event) {
-  // coloque seu código aqui
+  event.target.remove();
+  totalPrice();
+  saveOnLocalStorage();
 }
 
-function createCartItemElement({ sku, name, salePrice }) {
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -40,4 +72,63 @@ function createCartItemElement({ sku, name, salePrice }) {
   return li;
 }
 
-window.onload = () => { };
+const productsMl = async () => {
+  const api = await fetch('https://api.mercadolibre.com/sites/MLB/search?q=$computador')
+  const Obj = await api.json();
+  const results = Obj.results;
+  results.forEach((element) => document.querySelector('.items')
+  .appendChild(createProductItemElement(element)));
+};
+
+const addComputer = async (id) => {
+  const oneComputer = await fetch(`https://api.mercadolibre.com/items/${id}`);
+  const jsoneComputer = await oneComputer.json();
+  return jsoneComputer
+}
+
+const removeAll = () => {
+  const recoverProducts = document.querySelectorAll('li');
+  recoverProducts.forEach((element) => element.remove());
+  totalPrice();
+};
+
+const addCart = () => {
+  const section = document.querySelector('.container');
+  section.addEventListener('click', async (event) => {
+    if (event.target.className === 'item__add') {
+      const button = event.target.parentElement;
+      const id = getSkuFromProductItem(button);
+      const data = await addComputer(id);
+      const createComputer = createCartItemElement(data);
+      document.querySelector(cart).appendChild(createComputer);
+      saveOnLocalStorage();
+      totalPrice();
+    }
+    if (event.target.className === 'empty-cart') {
+      removeAll();
+      saveOnLocalStorage();
+      totalPrice();
+  }})
+}
+
+const getOnLocalStorage = () => {
+  const recoverLocalStorage = JSON.parse(localStorage.getItem('cartList'));
+  const recoverTotalPriceOnLocalStorage = JSON.parse(localStorage.getItem('totalPrice'));
+    if (recoverLocalStorage !== null) {
+    const recoverOl = document.querySelector(cart);
+    recoverOl.innerHTML = recoverLocalStorage;
+}
+    if (recoverTotalPriceOnLocalStorage !== null) {
+    const recoverSpan = document.querySelector(totalPriceClass);
+    recoverSpan.innerHTML = recoverTotalPriceOnLocalStorage;
+}
+}
+
+
+
+
+window.onload = () => {
+  productsMl();
+  addCart();
+  getOnLocalStorage();
+};
