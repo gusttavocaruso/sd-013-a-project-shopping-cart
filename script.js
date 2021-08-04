@@ -1,14 +1,16 @@
 let pricesItemsCart = [];
+const CART_ITEMS = '.cart__items';
+const TOTAL_PRICES = '.total-price';
 
 function saveToLocalStorage() {
-  const cartItems = document.querySelector('.cart__items').innerHTML;
-  const totalPrice = document.querySelector('.total-price').innerText;
+  const cartItems = document.querySelector(CART_ITEMS).innerHTML;
+  const totalPrice = document.querySelector(TOTAL_PRICES).innerText;
   localStorage.setItem('cartItems', cartItems);
   localStorage.setItem('totalPrice', totalPrice);
 }
 
 function sumCartTotal(itemPrice) {
-  const sectionTotalPrice = document.querySelector('.total-price');
+  const sectionTotalPrice = document.querySelector(TOTAL_PRICES);
   pricesItemsCart.push(itemPrice);
   const sumPrices = pricesItemsCart.reduce((acc, value) => acc + value);
   sectionTotalPrice.innerText = sumPrices;
@@ -18,7 +20,7 @@ function cartItemClickListener(event, price) {
   const item = event.target;
   item.remove();
   // Com a ajuda do Eduardo no plantão. Para remover o valor do item do total:
-  const sectionTotalPrice = document.querySelector('.total-price');
+  const sectionTotalPrice = document.querySelector(TOTAL_PRICES);
   pricesItemsCart = pricesItemsCart.filter((items) => items !== price);
   const sumRemainedPrices = pricesItemsCart.reduce((acc, value) => acc + value, 0);
   sectionTotalPrice.innerText = sumRemainedPrices;
@@ -27,7 +29,7 @@ function cartItemClickListener(event, price) {
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
-  const ol = document.querySelector('.cart__items');
+  const ol = document.querySelector(CART_ITEMS);
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', (event) => cartItemClickListener(event, salePrice));
@@ -103,7 +105,7 @@ function fetchML(query) {
 function emptyCart() {
   const buttonRemoveItems = document.querySelector('.empty-cart');
   buttonRemoveItems.addEventListener('click', () => {
-    const allCartItems = document.querySelector('.cart__items');
+    const allCartItems = document.querySelector(CART_ITEMS);
     while (allCartItems.lastChild) {
       allCartItems.removeChild(allCartItems.lastChild);
     }
@@ -113,6 +115,6 @@ function emptyCart() {
 window.onload = () => {
   fetchML('computador');
   emptyCart();
-  document.querySelector('.cart__items').innerHTML = localStorage.getItem('cartItems');
-  document.querySelector('.total-price').innerText = localStorage.getItem('totalPrice');
+  document.querySelector(CART_ITEMS).innerHTML = localStorage.getItem('cartItems');
+  document.querySelector(TOTAL_PRICES).innerText = localStorage.getItem('totalPrice');
  };
