@@ -47,6 +47,17 @@ function getSkuFromProductItem(item) {
 
 const cartItems = '.cart__items'; // Início do requisito 4
 
+const totalPrice = () => { // Requisito 5
+  const sum = document.querySelector('.total-price');
+  const li = document.querySelectorAll('li');
+  let price = null;
+  li.forEach((event) => {
+    const item = event.innerText.split('$');
+    price += Number(item[1]);
+  });
+  sum.innerHTML = `${(Math.round((price * 100)) / 100)}`;
+};
+
 const setLocalStorage = () => { // Requisito 4
   const ol = document.querySelector(cartItems); 
   const cartText = ol.innerHTML;
@@ -57,6 +68,7 @@ const setLocalStorage = () => { // Requisito 4
 function cartItemClickListener(event) {
   event.target.remove(); // Requisito 3
   setLocalStorage(); // Requisito 4
+  totalPrice();
 }
 
 const getLocalStorage = () => { // Requisito 4
@@ -95,6 +107,7 @@ const addItemButton = () => {
       document.querySelector('.cart__items').appendChild(li);
       document.querySelector(cartItems).appendChild(li); // Requisito 4
       setLocalStorage(); // Requisito 4
+      totalPrice(); // Requisito 5
     }
   });
 }; // Fim do requisito 2
@@ -103,4 +116,5 @@ window.onload = () => {
   fetchML('computador');
   addItemButton();
   getLocalStorage(); // Requisito 4
+  totalPrice(); // Requisito 5
 };
