@@ -58,6 +58,14 @@ const totalPrice = () => { // Requisito 5
   sum.innerHTML = `${(Math.round((price * 100)) / 100)}`;
 };
 
+const clearCart = () => { // Requisito 6
+  const button = document.querySelector('.empty-cart');
+  button.addEventListener('click', () => {
+    const ol = document.querySelector(cartItems);
+    ol.innerHTML = '';
+  });
+};
+
 const setLocalStorage = () => { // Requisito 4
   const ol = document.querySelector(cartItems); 
   const cartText = ol.innerHTML;
@@ -117,4 +125,5 @@ window.onload = () => {
   addItemButton();
   getLocalStorage(); // Requisito 4
   totalPrice(); // Requisito 5
+  clearCart(); // Requisito 6
 };
