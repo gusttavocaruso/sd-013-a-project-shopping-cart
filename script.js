@@ -1,6 +1,5 @@
 const cart = '.cart__items';
 const totalPriceClass = '.total-price';
-const buttonRemoveAll = document.querySelector('.empty-cart');
 
 const saveOnLocalStorage = () => {
   const recoverOl = document.querySelector(cart);
@@ -129,4 +128,5 @@ window.onload = () => {
   productsMl();
   addCart();
   getOnLocalStorage();
+  document.querySelector('.loading').remove();
 };
