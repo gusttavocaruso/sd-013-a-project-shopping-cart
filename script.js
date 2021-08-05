@@ -65,9 +65,9 @@ function createProductItemElement({ sku, name, image }) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
+// function getSkuFromProductItem(item) {
+//   return item.querySelector('span.item__sku').innerText;
+// }
 
 const fetchApiList = (produto = 'computador') => {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${produto}`).then(
