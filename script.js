@@ -10,7 +10,7 @@ function createProductImageElement(imageSource) {
 const save = () => {
   const olItem = document.querySelector(cart);
   const html = olItem.innerHTML;
-  localStorage.setItem('lista', html);
+  localStorage.setItem('carrinho', html);
 };
 
 const soma = () => {
@@ -38,7 +38,6 @@ function createCustomElement(element, className, innerText) {
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
-
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
@@ -105,21 +104,36 @@ const botaoAddCart = () => {
     }
    });
 };
-// const id = document.getElementsByClassName('item__sku').innerText;
 
 const get = () => {
   const olItem = document.querySelector(cart);
-  olItem.innerHTML = localStorage.getItem('lista');
+  olItem.innerHTML = localStorage.getItem('carrinho');
   olItem.addEventListener('click', (event) => {
-    if (event.target.className === 'cart__items') {
+    if (event.target.className === '.cart__items') {
       cartItemClickListener(event);
       save();
     }
   });
 };
 
+const esvaziaCarrinho = () => {
+  const ol = document.getElementsByClassName('cart__items')[0];
+  while (ol.firstChild) {
+    ol.removeChild(ol.firstChild);
+  }
+  save();
+  valorTotal();
+};
+
+const botaoEsvaziaCarrinho = () => {
+  const botao = document.getElementsByClassName('empty-cart')[0];
+  botao.addEventListener('click', esvaziaCarrinho);
+};
+
 window.onload = () => {
   fetchML('computador');
   botaoAddCart();
   get();
+  valorTotal();
+  botaoEsvaziaCarrinho();
 };
