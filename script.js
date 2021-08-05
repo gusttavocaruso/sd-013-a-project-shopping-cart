@@ -12,7 +12,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-function createProductItemElement({ sku, name, image }) {
+function createProductItemElement(sku, name, image) {
   const section = document.createElement('section');
   section.className = 'item';
 
@@ -32,7 +32,7 @@ function cartItemClickListener(event) {
   // coloque seu código aqui
 }
 
-function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+function createCartItemElement(sku, name, salePrice) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
@@ -44,10 +44,10 @@ function fetchMercadoLivre(produto) {
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${produto}`)
   .then((response) => {
     response.json().then((dadosProduto) => {
-        dadosProduto.results.forEach((result) => {
-        const itemShowed = createCartItemElement(result);
-        const section = document.querySelector('.items');
-        section.appendChild(itemShowed);
+      dadosProduto.results.forEach((result) => {
+        const itemShowed = createProductItemElement(result.id, result.title, result.price);
+        const sectionItems = document.querySelector('.items');  
+        sectionItems.appendChild(itemShowed);
       });
     });
   });
