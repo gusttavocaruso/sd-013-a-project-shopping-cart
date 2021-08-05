@@ -45,7 +45,7 @@ function fetchMercadoLivre(produto) {
   .then((response) => {
     response.json().then((dadosProduto) => {
       dadosProduto.results.forEach((result) => {
-        const itemShowed = createProductItemElement(result.id, result.title, result.price);
+        const itemShowed = createProductItemElement(result.id, result.title, result.thumbnail);
         const sectionItems = document.querySelector('.items');  
         sectionItems.appendChild(itemShowed);
       });
@@ -53,6 +53,28 @@ function fetchMercadoLivre(produto) {
   });
 }
 
+function addToCart() {
+  const itemToAdd = document.querySelector('.items');
+  itemToAdd.addEventListener('click', (event) => {
+    if (event.target.className === 'item__add') {
+      const itemToBeAdd = getSkuFromProductItem(event.target.parentElement);
+      fetch(`https://api.mercadolibre.com/items/${itemToBeAdd}`)
+      .then((response) => {
+        response.json().then((dadosAdicionar) => {
+          const itemAdicionar = createCartItemElement(
+            dadosAdicionar.id, 
+            dadosAdicionar.title, 
+            dadosAdicionar.price,
+            );
+            const olCart = document.querySelector('.cart__items');
+            olCart.appendChild(itemAdicionar);
+        });
+      });
+    }
+  });
+}
+
 window.onload = () => {
   fetchMercadoLivre('computador');
+  addToCart();
 };
