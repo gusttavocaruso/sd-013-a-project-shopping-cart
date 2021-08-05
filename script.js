@@ -75,7 +75,19 @@ function addToCart() {
   });
 }
 
+function emptyCart() {
+  const removeButton = document.querySelector('.empty-cart');
+  removeButton.addEventListener('click', () => {
+    const itemToRemove = document.querySelectorAll('.cart__item');
+    itemToRemove.forEach((item) => {
+      const father = item.parentElement;
+      father.removeChild(item);
+    });
+  });
+}
+
 window.onload = () => {
   fetchMercadoLivre('computador');
   addToCart();
+  emptyCart();
 };
