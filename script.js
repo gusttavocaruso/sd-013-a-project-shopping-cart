@@ -73,12 +73,14 @@ const addItemsToSection = (items) => {
 };
 
 const fetchML = (query) => {
+  const loading = document.querySelector('.loading');
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => {
       response.json()
     .then((data) => {
       addItemsToSection(data.results);
       });
+      loading.remove();
     });
 };
 
