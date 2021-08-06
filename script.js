@@ -1,3 +1,17 @@
+function getSkuFromProductItem(item) {
+  return item.querySelector('span.item__sku').innerText;
+}
+
+function sumCart() {
+  const itemToSum = document.querySelectorAll('.cart__item');
+  let valorTotal = 0;
+  itemToSum.forEach((item) => {
+    valorTotal += Number(item.innerText.split('$')[1]);
+  });
+  const divTotal = document.querySelector('.total-price');
+  divTotal.innerText = Math.round(valorTotal * 100) / 100;
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -24,18 +38,16 @@ function createProductItemElement(sku, name, image) {
   return section;
 }
 
-function getSkuFromProductItem(item) {
-  return item.querySelector('span.item__sku').innerText;
-}
-
 function cartItemClickListener(event) {
   const { parentElement } = event.target;
   parentElement.removeChild(event.target);
+  sumCart();
 }
 
 function createCartItemElement(sku, name, salePrice) {
   const li = document.createElement('li');
   li.className = 'cart__item';
+  li.id = `${sku}`;
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
   return li;
@@ -59,16 +71,14 @@ function addToCart() {
   itemToAdd.addEventListener('click', (event) => {
     if (event.target.className === 'item__add') {
       const itemToBeAdd = getSkuFromProductItem(event.target.parentElement);
-      fetch(`https://api.mercadolibre.com/items/${itemToBeAdd}`)
-      .then((response) => {
+      fetch(`https://api.mercadolibre.com/items/${itemToBeAdd}`).then((response) => {
         response.json().then((dadosAdicionar) => {
           const itemAdicionar = createCartItemElement(
-            dadosAdicionar.id, 
-            dadosAdicionar.title, 
-            dadosAdicionar.price,
+            dadosAdicionar.id, dadosAdicionar.title, dadosAdicionar.price,
             );
             const olCart = document.querySelector('.cart__items');
             olCart.appendChild(itemAdicionar);
+            sumCart();
         });
       });
     }
@@ -83,6 +93,7 @@ function emptyCart() {
       const father = item.parentElement;
       father.removeChild(item);
     });
+    sumCart();
   });
 }
 
