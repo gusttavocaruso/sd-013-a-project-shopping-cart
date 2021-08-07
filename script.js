@@ -65,11 +65,13 @@ const addItem = (itemParam) => {
 };
 
 const fetchComputer = () => {
+  const loading = document.querySelector('.loading');
   const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
   fetch(url)
     .then((response) => response.json())
     .then((computer) => {
       addItem(computer.results);
+      loading.remove();
   });
 };
 
