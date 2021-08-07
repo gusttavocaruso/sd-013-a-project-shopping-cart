@@ -66,7 +66,6 @@ const addItem = (itemParam) => {
 
 const fetchComputer = () => {
   const url = 'https://api.mercadolibre.com/sites/MLB/search?q=computador';
-
   fetch(url)
     .then((response) => response.json())
     .then((computer) => {
@@ -110,8 +109,19 @@ const loadSavedItems = () => {
   totalPrice();
 };
 
+const clear = () => {
+  const button = document.querySelector('.empty-cart');
+  const list = document.querySelector('#cart__items');
+  button.addEventListener('click', () => {
+    list.innerHTML = '';
+    saveItemsLocalStorage();
+    totalPrice();
+  });
+};
+
 window.onload = () => { 
   selectItem();
   fetchComputer();
   loadSavedItems();
+  clear();
  };
