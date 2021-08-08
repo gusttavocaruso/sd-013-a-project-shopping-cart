@@ -126,7 +126,6 @@ const getOnLocalStorage = () => {
 }
 };
 
-
 window.onload = () => {
   productsMl();
   addCart();
