@@ -1,7 +1,16 @@
+// Projeto feito com a ajuda de Rogerio P. e Rafael J.
 const cartItems = document.querySelector('.cart__items');
+const totalPrice = document.querySelector('.total-price');
+let total = 0;
 
 const saveCart = () => {
   localStorage.setItem('key', cartItems.innerHTML);
+  localStorage.setItem('total', total);
+};
+
+const addTotal = ({ price }) => {
+  total += price;
+  totalPrice.innerText = `${Number(total)}`;
 };
 
 function createProductImageElement(imageSource) {
@@ -18,9 +27,17 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
+const removeTotal = (target) => {
+  const wholeText = target.innerHTML.split('PRICE: $');
+  const price = Number(wholeText[1]);
+  total -= price;
+  totalPrice.innerText = `${total}`;
+};
+
 function cartItemClickListener(event) {
   event.target.remove();
   saveCart();
+  removeTotal(event.target);
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
@@ -37,6 +54,7 @@ const fetchItem = async (ItemID) => {
     const jsonFiltrado = await merliv.json();
     const result = createCartItemElement(jsonFiltrado);
     cartItems.appendChild(result);
+    addTotal(jsonFiltrado);
     saveCart();
   } catch (error) {
     console.log(error);
@@ -75,14 +93,20 @@ const fetchProducts = async (QUERY = 'computador') => {
 
 const loadCart = () => {
   const key = localStorage.getItem('key');
+  const totalSaved = localStorage.getItem('total');
   cartItems.innerHTML = key;
   document.querySelectorAll('.cart__item')
     .forEach((item) => item.addEventListener('click', cartItemClickListener));
+  totalPrice.innerText = `${totalSaved}`;
+  console.log(typeof totalSaved);
+  total = Number(totalSaved);
 };
 
 const cleanCart = () => {
   cartItems.innerHTML = '';
+  total = 0;
   saveCart();
+  totalPrice.innerText = `${total}`;
 };
 
 document.querySelector('.empty-cart').addEventListener('click', cleanCart);
