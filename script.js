@@ -94,7 +94,6 @@ const removeAll = () => {
 };
 
 const addCart = () => {
-  const loading = document.querySelector('.loading')
   const section = document.querySelector('.container');
   section.addEventListener('click', async (event) => {
     if (event.target.className === 'item__add') {
@@ -111,7 +110,6 @@ const addCart = () => {
       saveOnLocalStorage();
       totalPrice();
     }
-    loading.remove();
   });
 };
 
