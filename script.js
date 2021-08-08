@@ -79,6 +79,13 @@ const loadCart = () => {
     .forEach((item) => item.addEventListener('click', cartItemClickListener));
 };
 
+const cleanCart = () => {
+  cartItems.innerHTML = '';
+  saveCart();
+};
+
+document.querySelector('.empty-cart').addEventListener('click', cleanCart);
+
 window.onload = async () => {
   await fetchProducts();
   loadCart();
