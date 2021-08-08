@@ -106,8 +106,28 @@ const getLocalStorage = () => {
     }
   });
 };
+
+const getTotalPrice = () => {
+  const span = document.querySelector('.total-price');
+  span.innerHTML = localStorage.getItem('totalPrice');
+};
+
+const cleanCart = () => {
+  const cleanButton = document.querySelector('.empty-cart');
+  cleanButton.addEventListener('click', () => {
+    const ol = document.querySelector(cartItems);
+    while (ol.firstChild) {
+      ol.removeChild(ol.firstChild);
+      totalPrice();
+      localStorage.setItem('cartItems', ol.innerHTML);
+    }
+  });
+};
+
 window.onload = () => {
   fetchML('computador');
   requestEndpointOnItemClick();
   getLocalStorage();
+  getTotalPrice();
+  cleanCart();
 };
