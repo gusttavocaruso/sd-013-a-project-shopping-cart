@@ -67,6 +67,7 @@ const fetchProducts = async (QUERY = 'computador') => {
       const items = document.querySelector('.items');
       items.appendChild(createProductItemElement(item));
     });
+    document.querySelector('.loading').remove();
   } catch (error) {
     alert(error);
   }
