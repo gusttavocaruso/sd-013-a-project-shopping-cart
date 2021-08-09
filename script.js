@@ -9,7 +9,7 @@ function saveLocalStorage() {
   localStorage.setItem('totalPrice', totalPrice);
 }
 
-function somaCartTotal(itemPrice) {
+function somaTotal(itemPrice) {
   const sectionTotalPrice = document.querySelector(tP);
   priceItemCart.push(itemPrice);
   const somaPrices = priceItemCart.reduce((acc, value) => acc + value);
@@ -34,7 +34,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', (event) => cartItemClickListener(event, salePrice));
   ol.appendChild(li);
-  somaCartTotal(salePrice);
+  somaTotal(salePrice);
   saveLocalStorage();
 }
 
@@ -89,19 +89,17 @@ const addItensToSection = (items) => {
 };
 
 const fetchML = (query) => {
-  const loadingText = document.querySelector('loading');
+  const loadingText = document.querySelector('.loading');
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
   .then((response) => {
-    response.json().then((data) => {
-      addItensToSection(data.results);
-    });
+    response.json().then((data) => addItensToSection(data.results));
     loadingText.remove();
   });
 };
 
 function limparCart() {
-  const buttomLimparItens = document.querySelector('.empty-cart');
-  buttomLimparItens.addEventListener('click', () => {
+  const limparItens = document.querySelector('.empty-cart');
+  limparItens.addEventListener('click', () => {
     const allCArtItems = document.querySelector(cI);
     while (allCArtItems.lastChild) {
       allCArtItems.removeChild(allCArtItems.lastChild);
