@@ -32,6 +32,7 @@ function getSkuFromProductItem(item) {
 
 function saveOnLocalStorage() {
   const allItems = document.querySelector(cartItems);
+  console.log(allItems.innerHTML);
   localStorage.setItem('cart', JSON.stringify(allItems.innerHTML)); // Estudar sintaxe de LocalStorage
 }
 
@@ -71,12 +72,14 @@ async function createItemList() {
   });
 }
 
-function createLiElement(id) {
+async function createLiElement(id) {
   const ol = document.querySelector(cartItems);
   fetch(`https://api.mercadolibre.com/items/${id}`)
   .then((request) => request.json())
-  .then((data) => ol.appendChild(createCartItemElement(data)));
-  saveOnLocalStorage();
+  .then((data) => {
+    ol.appendChild(createCartItemElement(data));
+    saveOnLocalStorage();
+  });
 }
 
 function catchId() {
