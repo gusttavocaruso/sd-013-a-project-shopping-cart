@@ -5,8 +5,8 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-function cartItemClickListener(event) {
-  // coloque seu código aqui
+function cartItemClickListener() {
+  // coloque seu código aqui (event)
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
