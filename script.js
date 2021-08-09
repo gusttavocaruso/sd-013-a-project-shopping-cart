@@ -13,7 +13,7 @@ const totalPrice = () => {
   const cartValues = allId.map((id) => prices[id]);
   // console.log(cartValues.reduce((acc, cur) => acc + cur));
   document.querySelector('.total-price').innerText = cartValues
-    .reduce((acc, cur) => acc + cur).toFixed(2);
+    .reduce((acc, cur) => acc + cur);
 };
 
 function createProductImageElement(imageSource) {
@@ -148,4 +148,5 @@ window.onload = () => {
     fetchMercadoLivre('computador');
     loadCart();
     removeCartItems();
+    document.querySelector('.loading').remove();
 };
