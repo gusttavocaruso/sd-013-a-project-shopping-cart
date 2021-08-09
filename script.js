@@ -5,6 +5,26 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+function cartItemClickListener(event) {
+  // coloque seu código aqui
+}
+
+function createCartItemElement({ id: sku, title: name, price: salePrice }) {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  return li;
+}
+
+function fetchItem(event) {
+  const itemId = event.target.parentNode.firstChild.innerText;
+  fetch(`https://api.mercadolibre.com/items/${itemId}`)
+  .then((response) => {
+    response.json().then((data) => createCartItemElement(data));
+  });
+}
+
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
   e.className = className;
@@ -30,26 +50,6 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
 // function getSkuFromProductItem(item) {
 //   return item.querySelector('span.item__sku').innerText;
 // }
-
-function cartItemClickListener(event) {
-  // coloque seu código aqui
-}
-
-function createCartItemElement({ id: sku, title: name, price: salePrice }) {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
-}
-
-function fetchItem(event) {
-  const itemId = event.target.parentNode.firstChild.innerText;
-  fetch(`https://api.mercadolibre.com/items/${itemId}`)
-  .then((response) => {
-    response.json().then((data) => createCartItemElement(data));
-  });
-}
 
 // foi feito o req. 1 utilizando o video que o tio Jack explicando como resolver essa primeira parte.
 const addItensToSection = (items) => {
