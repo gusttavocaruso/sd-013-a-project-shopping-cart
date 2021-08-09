@@ -5,7 +5,7 @@ const totalPrice = () => {
   const allItems = document.querySelectorAll('.cart__item');
   if (allItems.length === 0) {
     document.querySelector('.total-price').innerText = 0;
-    console.log('lista vazia');
+    // console.log('lista vazia');
     return;
   }
   const allId = Array.from(allItems).map((item) => item.id);
