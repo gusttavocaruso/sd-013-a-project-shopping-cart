@@ -1,4 +1,6 @@
 const cartItems = '.cart__items';
+let totalPrice = 0;
+const totalPriceClass = '.total-price';
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -30,25 +32,41 @@ function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
 
+function increaseTotalPrice(item) {
+  totalPrice += item.price;
+  document.querySelector(totalPriceClass)
+  .innerText = totalPrice;
+}
+
+function decreaseTotalPrice(item) {
+  const str = item.innerText;
+  let wantedStr = '';
+  for (let index = 0; index < str.length; index += 1) {
+    if (str[index] === '$') {
+      wantedStr = str.slice((index + 1), (str.length));
+    }
+  }
+  const wantedNumber = parseFloat(wantedStr);
+  totalPrice -= wantedNumber;
+  document.querySelector(totalPriceClass)
+  .innerText = totalPrice;
+}
+
 function saveOnLocalStorage() {
   const allItems = document.querySelector(cartItems);
-  console.log(allItems.innerHTML);
   localStorage.setItem('cart', JSON.stringify(allItems.innerHTML)); // Estudar sintaxe de LocalStorage
 }
 
 function cartItemClickListener(event) {
   event.target.remove('li');
   saveOnLocalStorage();
+  decreaseTotalPrice(event.target);
 }
 
 function getFromLocal() {
   const cartFromLocal = JSON.parse(localStorage.getItem('cart'));
   const ol = document.querySelector(cartItems);
   ol.innerHTML = cartFromLocal;
-  const olAll = document.querySelectorAll(cartItems);
-  olAll.forEach((li) => {
-    li.addEventListener('click', cartItemClickListener);
-  });
 }
 
 function createCartItemElement({ id, title, price }) {
@@ -70,15 +88,18 @@ async function createItemList() {
     );
     list.appendChild(productElement);
   });
+  document.querySelector(totalPriceClass)
+  .innerText = totalPrice;
 }
 
-async function createLiElement(id) {
+function createLiElement(id) {
   const ol = document.querySelector(cartItems);
   fetch(`https://api.mercadolibre.com/items/${id}`)
   .then((request) => request.json())
   .then((data) => {
     ol.appendChild(createCartItemElement(data));
     saveOnLocalStorage();
+    increaseTotalPrice(data);
   });
 }
 
@@ -87,7 +108,6 @@ function catchId() {
   buttons.forEach((button) => {
     button.addEventListener('click', (event) => {
       const wantedId = getSkuFromProductItem(event.target.parentElement);
-      console.log(wantedId);
       createLiElement(wantedId);
     });
 });
@@ -97,6 +117,7 @@ function clearCart() {
   const clearButton = document.querySelector('.empty-cart');
   clearButton.addEventListener('click', () => {
     document.querySelector(cartItems).innerHTML = '';
+    saveOnLocalStorage();
   });
 }
 
