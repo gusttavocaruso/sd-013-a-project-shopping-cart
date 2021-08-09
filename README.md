@@ -449,7 +449,7 @@ Para isso, uma função (já existente) chamada `cartItemClickListener(event)` d
 Ao carregar a página, o estado atual do carrinho de compras deve ser carregado do **LocalStorage**.
 Para que isso funcione, o carrinho de compras deve ser salvo no **LocalStorage**, ou seja, todas as **adições** e **remoções** devem ser abordadas para que a lista atual seja salva.
 
-### 5 - Some o valor total dos itens do carrinho de compras
+### 5 - Some o valor total dos itens do carrinho de compra
 
 Cada vez que se adicionar um item ao carrinho de compras, será necessário somar seus valores e apresentá-los na página principal do projeto. O elemento que tem como filho o preço total dos itens do carrinho deve ter, **obrigatóriamente**, a classe `total-price`.
 
