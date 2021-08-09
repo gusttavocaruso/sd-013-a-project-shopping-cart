@@ -29,11 +29,33 @@ function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   return section;
 }
 
+// 4º Função para fazer o setItem do storage para adicionar/atualizar valores
+const setItemsLocalStorage = () => {
+  const ol = document.querySelector(cartItems);
+  const text = ol.innerHTML; 
+  localStorage.setItem('cartList', '');
+  localStorage.setItem('cartList', JSON.stringify(text));
+};
+
 function cartItemClickListener(event) {
+  // 3º Remove item do carrinho clicando nele
   if (event.target.className === 'cart__item') {
-    event.target.remove();
+    event.target.remove();    
   }
+  setItemsLocalStorage();
 }
+
+// 4° Função para fazer o getItem do storage para retornar o valor
+const getItemsLocalStorage = () => {
+  const getLocalStorage = JSON.parse(localStorage.getItem('cartList'));
+  const ol = document.querySelector(cartItems);
+  ol.innerHTML = getLocalStorage;
+  ol.addEventListener('click', (event) => {
+    if (event.target.className === 'cart__item') {
+      cartItemClickListener(event);
+    }
+  });
+};
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
@@ -54,7 +76,7 @@ const pegaComputadorId = async (id) => {
 function getSkuFromProductItem(item) {
   return item.querySelector('span.item__sku').innerText;
 }
-// Função que adiciona o item ao carrinho
+// 2° Função que adiciona o item ao carrinho
 const bttAdicionarAoCarro = () => {
   const parent = document.querySelector('.items'); // recupera a classe que contem os 50 computadores
   parent.addEventListener('click', async (event) => {
@@ -62,7 +84,8 @@ const bttAdicionarAoCarro = () => {
       const buttonId = getSkuFromProductItem(event.target.parentElement);
       const buttonData = await pegaComputadorId(buttonId);
       const createComputer = createCartItemElement(buttonData);
-      document.querySelector(cartItems).appendChild(createComputer);     
+      document.querySelector(cartItems).appendChild(createComputer);
+      setItemsLocalStorage(); // 4° Chama a função ao disparar o evento, ao add ao carrinho, salva 
     }
   });
 };
@@ -90,4 +113,5 @@ const buscaML = (query) => {
 window.onload = () => {
   buscaML('computador');
   bttAdicionarAoCarro();
+  getItemsLocalStorage();
 };
