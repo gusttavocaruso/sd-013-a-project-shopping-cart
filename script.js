@@ -132,7 +132,20 @@ const fetchMercadoLivre = (query) => {
     });
 };
 
+const removeCartItems = () => {
+  const empytCartButton = document.getElementById('empty-cart');
+  const cart = document.querySelector('ol');
+  empytCartButton.addEventListener('click', () => {
+    while (cart.firstChild) {
+      cart.removeChild(cart.lastChild);
+    }
+    saveCart();
+    totalPrice();
+  });
+};
+
 window.onload = () => { 
     fetchMercadoLivre('computador');
     loadCart();
+    removeCartItems();
 };
