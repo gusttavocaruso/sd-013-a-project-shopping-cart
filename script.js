@@ -101,11 +101,13 @@ const addItensToSection = (items) => {
 
 // 1° Estou fazendo a requisição para a API pegando a informação de todos os computadores
 const buscaML = (query) => {
+  const paragraph = document.querySelector('.loading');
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => { // response traz todas a informações
       response.json().then((data) => {
         // Utiliza a função addItensToSection para inserir o data.results
         addItensToSection(data.results);
+        paragraph.remove();
       });
     });
 };
