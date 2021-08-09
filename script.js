@@ -2,6 +2,7 @@ const createOl = document.querySelector('.cart__items');
 const cartStr = '.cart__items';
 const btnClear = document.querySelector('.empty-cart');
 
+// Requisito 5
 const sum = () => {
   const ol = document.querySelector(cartStr);
   const olChildren = [...ol.children];
@@ -36,6 +37,7 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
+// Requisito 4
 const getLocalStorage = () => {
   const getItem = document.querySelector(cartStr);
   getItem.innerHTML = localStorage.getItem('lista');
@@ -78,7 +80,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   return li;
 }
 
-//Requisito 1
+// Requisito 1
 const createItem = (items) => {
   items.forEach((item) => {
     const itemElement = createProductItemElement(item);
@@ -99,7 +101,7 @@ const computerFetch = () => {
     });
  };
 
-//Requisito 2
+// Requisito 2
 const getItemId = (element) => {
   const parentElem = element.target.parentElement;
   const idSku = getSkuFromProductItem(parentElem);
@@ -124,7 +126,7 @@ const addButton = () => {
   });
 };
 
-//Requisito 6
+// Requisito 6
 const clearCart = () => {
   createOl.innerHTML = '';
   localStorage.removeItem('lista');
@@ -138,5 +140,3 @@ window.onload = () => {
   addButton();
   getLocalStorage();
  };
-
- 
