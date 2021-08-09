@@ -124,10 +124,15 @@ const addProductToSection = (products) => {
     inverter a ordem das funções
 */
 const fetchMercadoLivre = (query) => {
+    const loading = document.createElement('section');
+    loading.className = 'loading';
+    loading.innerText = 'loading...';
+    document.querySelector('.container').appendChild(loading);
     fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
     .then((response) => {
         response.json().then((data) => {
-            addProductToSection(data.results);
+          addProductToSection(data.results);
+          loading.remove();
         });
     });
 };
@@ -148,5 +153,4 @@ window.onload = () => {
     fetchMercadoLivre('computador');
     loadCart();
     removeCartItems();
-    document.querySelector('.loading').remove();
 };
