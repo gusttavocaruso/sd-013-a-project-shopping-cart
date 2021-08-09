@@ -1,6 +1,33 @@
 const createOl = document.querySelector('.cart__items');
 const cartStr = '.cart__items';
-const btnClear= document.querySelector('.empty-cart');
+const btnClear = document.querySelector('.empty-cart');
+
+const sum = () => {
+  const ol = document.querySelector(cartStr);
+  const olChildren = [...ol.children];
+  const price = olChildren.reduce((acc, curr) => {
+  let accumulator = acc;
+  accumulator += Number(curr.innerText.split('$')[1]);
+  return accumulator;
+  }, 0);
+  return price;
+};
+
+const divCreate = () => {
+  const div = document.querySelector('.total-price');
+  div.innerText = `${Math.round(sum() * 100) / 100}`;
+}; 
+
+const saveLocalStorage = () => {
+  const olHtml = createOl.innerHTML;
+  localStorage.setItem('lista', olHtml);
+};
+
+function cartItemClickListener(event) {
+  event.target.remove();
+  saveLocalStorage();
+  divCreate();
+}
 
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
@@ -8,6 +35,15 @@ function createProductImageElement(imageSource) {
   img.src = imageSource;
   return img;
 }
+
+const getLocalStorage = () => {
+  const getItem = document.querySelector(cartStr);
+  getItem.innerHTML = localStorage.getItem('lista');
+  const divs = [...createOl.children];
+  divs.forEach((li) => {
+    li.addEventListener('click', cartItemClickListener);
+  });
+};
 
 function createCustomElement(element, className, innerText) {
   const e = document.createElement(element);
@@ -73,6 +109,8 @@ const getItemId = (element) => {
     .then((data) => {
       const addLi = createCartItemElement(data);
       createOl.appendChild(addLi);
+      saveLocalStorage();
+      divCreate();
     });
   });
 };
@@ -86,26 +124,7 @@ const addButton = () => {
   });
 };
 
-//Requisito 4
-const saveLocalStorage = () => {
-  const olHtml = createOl.innerHTML;
-  localStorage.setItem('lista', olHtml);
-};
-
-function cartItemClickListener(event) {
-  event.target.remove();
-  saveLocalStorage();
-}
-
-const getLocalStorage = () => {
-  const localItems = document.querySelector(cartStr);
-  localItems.innerHTML = localStorage.getItem('lista');
-  const divs = [...createOl.children];
-  divs.forEach((li) => {
-    li.addEventListener('click', cartItemClickListener);
-  });
-};
-
+//Requisito 6
 const clearCart = () => {
   createOl.innerHTML = '';
   localStorage.removeItem('lista');
