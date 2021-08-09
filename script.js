@@ -1,3 +1,14 @@
+let priceItemCart = [];
+const cI = '.cart__items';
+const tP = '.total-price';
+
+function localStorage() {
+  const cartItems = document.querySelector(cI).innerHTML;
+  const totalPrice = document.querySelector(tP).innerText;
+  localStorage.setItem('cartItems', cartItems);
+  localStorage.setItem('totalPrice', totalPrice);
+}
+
 function createProductImageElement(imageSource) {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -5,16 +16,33 @@ function createProductImageElement(imageSource) {
   return img;
 }
 
-function cartItemClickListener() {
-  // coloque seu código aqui (event)
+function somaCartTotal(itemPrice) {
+  const sectionTotalPrice = document.querySelector(tP);
+  priceItemCart.push(itemPrice);
+  const somaPrices = priceItemCart.reduce((acc, value) => acc + value);
+  sectionTotalPrice.innerText = somaPrices;
+}
+
+function cartItemClickListener(event, price) {
+  // coloque seu código aqui
+  const item = event.target;
+  item.remove();
+  const sectionTotalPrice = document.querySelector(tP);
+  priceItemCart = priceItemCart.filter((items) => items !== price);
+  const somaRemanedPrices = priceItemCart.reduce((acc, value) => acc + value, 0);
+  sectionTotalPrice.innerText = somaRemanedPrices;
+  localStorage();
 }
 
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
+  const ol = document.querySelector(cI);
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
+  li.addEventListener('click', (event) => cartItemClickListener(event, salePrice));
+  ol.appendChild(li);
+  somaCartTotal(salePrice);
+  localStorage();
 }
 
 function fetchItem(event) {
@@ -71,4 +99,6 @@ const fetchML = (query) => {
 
 window.onload = () => {
   fetchML('computador');
+  document.querySelector(cI).innerHTML = localStorage.getItem('cartItems');
+  document.querySelector(tP).innerText = localStorage.getItem('totalPrice');
 };
