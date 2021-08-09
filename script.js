@@ -1,3 +1,8 @@
+// Referencias:
+// Ajuda na resolução e explicações de Luiz Portela e Ygor Maia
+// Consulta na resolução do notion da turma: https://www.notion.so/4f7a9d8c1f7e4bbaaa1498084cec1a55?v=b0b5c9144b494b5cbf28cef07e05ef1a&p=7bde9d0b71584592962d361b658e46c9
+// Consulta no código da Vanessa Rios
+
 // Global
 const cartItems = '.cart__items';
 // ==========================================================
@@ -16,7 +21,7 @@ function createCustomElement(element, className, innerText) {
   return e;
 }
 
-// 1° Desestruturando ID, title, thumbnail que acessar os dados fornecidos pela API
+// 1° Desestruturando ID, title, thumbnail que acessa os dados fornecidos pela API
 function createProductItemElement({ id: sku, title: name, thumbnail: image }) {
   const section = document.createElement('section');
   section.className = 'item';
@@ -37,12 +42,26 @@ const setItemsLocalStorage = () => {
   localStorage.setItem('cartList', JSON.stringify(text));
 };
 
+// 5° Função para inserir e alterar o valor dos produtos adicionados
+function totalPrice() {
+  const getTotalPrice = document.querySelector('.total-price'); // Armazena o span do paragrafo com a clate total-price
+  let price = 0; // Atribui um valor inicial para o preço 
+  const todasLi = document.querySelectorAll('li'); // Captirua e atribui a uma const todas as li geradas ao clicar para adicionar ou remover item do carrinho
+  todasLi.forEach((item) => { // Irá utilizar a regra de negócio para cada li que se acumula ao adicionar ou retirar itens do carrinho, alterando o valor total
+    const computerPrice = item.innerText.split('$'); // Splita a informação trazida por item, subdividindo e isolando o que vem depois do $, no caso o preço sem si
+    console.log(computerPrice);  
+    price += Number(computerPrice[1]); // Regra de negócio para que o price seja a soma de price + o valor que consta na posição 1(preço) que foi splitado antes
+  });
+  getTotalPrice.innerHTML = `${(Math.round((price * 100)) / 100)}`; // Arredondando para 2 casas decimais
+}
+
 function cartItemClickListener(event) {
   // 3º Remove item do carrinho clicando nele
   if (event.target.className === 'cart__item') {
     event.target.remove();    
   }
-  setItemsLocalStorage();
+  setItemsLocalStorage(); // Chama a função para salvar as alterações no storage
+  totalPrice();
 }
 
 // 4° Função para fazer o getItem do storage para retornar o valor
@@ -61,8 +80,8 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-  return li;
+  li.addEventListener('click', cartItemClickListener);  
+  return li;  
 }
 
 // 2° Fazendo a resuiqição para a API para pegar por ID utilizando async/await
@@ -85,7 +104,8 @@ const bttAdicionarAoCarro = () => {
       const buttonData = await pegaComputadorId(buttonId);
       const createComputer = createCartItemElement(buttonData);
       document.querySelector(cartItems).appendChild(createComputer);
-      setItemsLocalStorage(); // 4° Chama a função ao disparar o evento, ao add ao carrinho, salva 
+      setItemsLocalStorage(); // 4° Chama a função ao disparar o evento, ao add ao carrinho, salva as alterações no storage
+      totalPrice();  
     }
   });
 };
@@ -101,13 +121,13 @@ const addItensToSection = (items) => {
 
 // 1° Estou fazendo a requisição para a API pegando a informação de todos os computadores
 const buscaML = (query) => {
-  const paragraph = document.querySelector('.loading');
+  const paragraph = document.querySelector('.loading'); // Cria ocnstante que armazena o paragrafo
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
-    .then((response) => { // response traz todas a informações
+    .then((response) => { // 7° response traz todas a informações
       response.json().then((data) => {
         // Utiliza a função addItensToSection para inserir o data.results
         addItensToSection(data.results);
-        paragraph.remove();
+        paragraph.remove(); // 7° Remove o paragrafo assim que completa a requisição
       });
     });
 };
@@ -118,8 +138,9 @@ const createButtonRemoveAll = () => {
   buttonRemoveAll.addEventListener('click', () => { // Adiciono uma escuta no botão com a função
     const ol = document.querySelector(cartItems); // Armazeno numa const toda a ol que contem os intens do carrinho    
     while (ol.firstChild) { // While/enquanto ol tiver um filhos, está é a condição, apagará o primeiro
-      ol.removeChild(ol.firstChild);      
-      setItemsLocalStorage();
+      ol.removeChild(ol.firstChild);
+      totalPrice();   
+      setItemsLocalStorage(); // Chama a função para salvar as alterações no storage
     }
   });
 };
@@ -128,5 +149,6 @@ window.onload = () => {
   buscaML('computador');
   bttAdicionarAoCarro();
   getItemsLocalStorage();
+  totalPrice();
   createButtonRemoveAll();
 };
