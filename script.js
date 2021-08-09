@@ -94,13 +94,27 @@ function clearCart() {
   const clearButton = document.querySelector('.empty-cart');
   clearButton.addEventListener('click', () => {
     document.querySelector(cartItems).innerHTML = '';
-    saveOnLocalStorage();
   });
 }
 
+function addLoading() {
+  const loading = document.createElement('div');
+  document.querySelector('body')
+  .appendChild(loading);
+  loading.innerText = 'loading...';
+  loading.className = 'loading';
+}
+
+function removeLoading() {
+  const loading = document.querySelector('.loading');
+  loading.remove();
+}
+
 window.onload = async function onload() { // Olhar documentação onload
+  addLoading();
   getFromLocal();
   await createItemList();
+  removeLoading();
   catchId();
   clearCart();
 };
