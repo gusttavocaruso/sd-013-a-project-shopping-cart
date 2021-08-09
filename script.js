@@ -110,8 +110,21 @@ const buscaML = (query) => {
     });
 };
 
+//  6° Função para esvaziar o carrinho
+const createButtonRemoveAll = () => {
+  const buttonRemoveAll = document.querySelector('.empty-cart'); // Armazena o botão já criado numa constante
+  buttonRemoveAll.addEventListener('click', () => { // Adiciono uma escuta no botão com a função
+    const ol = document.querySelector(cartItems); // Armazeno numa const toda a ol que contem os intens do carrinho    
+    while (ol.firstChild) { // While/enquanto ol tiver um filhos, está é a condição, apagará o primeiro
+      ol.removeChild(ol.firstChild);      
+      setItemsLocalStorage();
+    }
+  });
+};
+
 window.onload = () => {
   buscaML('computador');
   bttAdicionarAoCarro();
   getItemsLocalStorage();
+  createButtonRemoveAll();
 };
