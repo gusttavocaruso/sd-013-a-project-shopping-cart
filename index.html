@@ -4,20 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Document</title>
+    <title>Shopping Cart</title>
     <link rel="stylesheet" href="style.css" />
     <script src="script.js"></script>
   </head>
 
   <body>
+    <nav class="top-bar">
+        <span class="img-li"><img src="./shopping-cart-gif.gif" class="img-navbar"></span>
+        <span class="name-initial">SHOPPING CART</span>
+      <label class="label-input">Digite sua busca:
+        <input type="text" class="input-name-group">
+      </label>
+    </nav>
     <p class="loading">loading...</p>
     <section class="container">
       <section class="items"></section>
       <section class="cart">
         <span class="cart__title">Carrinho de compras</span>
-        <button class="empty-cart">Esvaziar carrinho</button>
         <ol class="cart__items"></ol>
         <div class="total-price"></div>
+        <button class="empty-cart">Esvaziar carrinho</button>
       </section>
     </section>
   </body>

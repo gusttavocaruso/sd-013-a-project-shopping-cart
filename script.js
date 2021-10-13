@@ -30,7 +30,7 @@ const sumItems = () => {
   }, 0);
   return priceTotal;
 };
-
+// Função que muda o valor total na tela 
 const newDiv = () => {
   const div = document.querySelector('.total-price');
   div.innerText = `${Math.round(sumItems() * 100) / 100}`;
@@ -57,7 +57,7 @@ function cartItemClickListener(event) {
   save();
   newDiv();
 }
-
+// Pegando os dados do JSON e adicionando as novas chaves
 function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   const li = document.createElement('li');
   li.className = 'cart__item';
@@ -65,7 +65,7 @@ function createCartItemElement({ id: sku, title: name, price: salePrice }) {
   li.addEventListener('click', cartItemClickListener);
   return li;
 }
-
+// Adicionando os itens a seção
 const addItensToSection = (results) => {
   results.forEach((result) => {
     const itemElement = createProductItemElement(result);
@@ -73,7 +73,7 @@ const addItensToSection = (results) => {
     section.appendChild(itemElement);
   });
 };
-
+// Requisição a API
 const fetchML = (query) => {
   const paragraph = document.querySelector('.loading');
   fetch(`https://api.mercadolibre.com/sites/MLB/search?q=${query}`)
@@ -83,7 +83,7 @@ const fetchML = (query) => {
       paragraph.remove();
   });
 };
-
+// função que adiciona o item ao carrinho
 const addCart = (event) => {
   const elementoPai = event.target.parentElement;
   const getId = getSkuFromProductItem(elementoPai);
@@ -119,7 +119,7 @@ const saveReload = () => {
     }
   });
 };
-
+// função que remove a lista com o click do botão.
 const removeBtn = () => {
   const botao = document.querySelector('.empty-cart');
   botao.addEventListener('click', () => {
